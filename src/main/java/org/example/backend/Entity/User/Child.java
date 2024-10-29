@@ -1,9 +1,11 @@
 package org.example.backend.Entity.User;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.util.Date;
 
 // Child.java
 public class Child {
+  @TableId
   private String childId;
   private String name;
   private String school;

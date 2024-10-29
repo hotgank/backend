@@ -1,7 +1,10 @@
 package org.example.backend.Entity.Others;
 
 
+import com.baomidou.mybatisplus.annotation.TableId;
+
 public class Unit {
+  @TableId
   private String unitName;
   private String address;
   private String adminId; // Foreign key: Admin ID
