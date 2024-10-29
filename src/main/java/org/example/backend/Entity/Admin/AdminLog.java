@@ -1,8 +1,10 @@
 package org.example.backend.Entity.Admin;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 
 public class AdminLog {
+  @TableId
   private int logId;
   private String adminId;  // Foreign key: Admin ID
   private String actionType;

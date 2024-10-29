@@ -1,8 +1,10 @@
 package org.example.backend.Entity.User;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 
 public class ParentChildRelation {
+  @TableId
   private int relationId;
   private String userId;  // Foreign key: User ID
   private String childId; // Foreign key: Child ID

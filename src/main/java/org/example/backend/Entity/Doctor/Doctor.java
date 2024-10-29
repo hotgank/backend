@@ -1,8 +1,10 @@
 package org.example.backend.Entity.Doctor;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 
 public class Doctor {
+  @TableId
   private String doctorId;
   private String name;
   private String password;
