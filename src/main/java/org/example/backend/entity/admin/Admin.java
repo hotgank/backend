@@ -116,6 +116,3 @@ public class Admin {
   }
   // getters and setters
 }
-
-//Test
-//Test2
