@@ -1,9 +1,9 @@
-package org.example.backend.Service.ServiceImpl.Doctor;
+package org.example.backend.service.serviceImpl.doctor;
 
 import java.util.List;
-import org.example.backend.Entity.Doctor.DoctorChildRelation;
-import org.example.backend.Mapper.Doctor.DoctorChildRelationMapper;
-import org.example.backend.Service.Doctor.DoctorChildRelationService;
+import org.example.backend.entity.doctor.DoctorChildRelation;
+import org.example.backend.mapper.doctor.DoctorChildRelationMapper;
+import org.example.backend.service.doctor.DoctorChildRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

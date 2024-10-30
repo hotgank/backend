@@ -1,8 +1,8 @@
-package org.example.backend.Service.ServiceImpl.Admin;
+package org.example.backend.service.serviceImpl.admin;
 
-import org.example.backend.Entity.Admin.Admin;
-import org.example.backend.Mapper.Admin.AdminMapper;
-import org.example.backend.Service.Admin.AdminService;
+import org.example.backend.entity.admin.Admin;
+import org.example.backend.mapper.admin.AdminMapper;
+import org.example.backend.service.admin.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
