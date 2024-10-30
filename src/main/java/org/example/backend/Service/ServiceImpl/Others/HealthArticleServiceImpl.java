@@ -1,8 +1,8 @@
-package org.example.backend.Service.ServiceImpl.Others;
+package org.example.backend.service.serviceImpl.others;
 
-import org.example.backend.Entity.Others.HealthArticle;
-import org.example.backend.Mapper.Others.HealthArticleMapper;
-import org.example.backend.Service.Others.HealthArticleService;
+import org.example.backend.entity.others.HealthArticle;
+import org.example.backend.mapper.others.HealthArticleMapper;
+import org.example.backend.service.others.HealthArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

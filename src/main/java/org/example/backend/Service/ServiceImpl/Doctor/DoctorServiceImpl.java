@@ -1,8 +1,8 @@
-package org.example.backend.Service.ServiceImpl.Doctor;
+package org.example.backend.service.serviceImpl.doctor;
 
-import org.example.backend.Entity.Doctor.Doctor;
-import org.example.backend.Mapper.Doctor.DoctorMapper;
-import org.example.backend.Service.Doctor.DoctorService;
+import org.example.backend.entity.doctor.Doctor;
+import org.example.backend.mapper.doctor.DoctorMapper;
+import org.example.backend.service.doctor.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

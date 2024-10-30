@@ -1,9 +1,9 @@
-package org.example.backend.Service.ServiceImpl.Admin;
+package org.example.backend.service.serviceImpl.admin;
 
 import java.util.List;
-import org.example.backend.Entity.Admin.AdminLog;
-import org.example.backend.Mapper.Admin.AdminLogMapper;
-import org.example.backend.Service.Admin.AdminLogService;
+import org.example.backend.entity.admin.AdminLog;
+import org.example.backend.mapper.admin.AdminLogMapper;
+import org.example.backend.service.admin.AdminLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

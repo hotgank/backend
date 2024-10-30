@@ -1,8 +1,8 @@
-package org.example.backend.Service.ServiceImpl.Others;
+package org.example.backend.service.serviceImpl.others;
 
-import org.example.backend.Entity.Others.LoginToken;
-import org.example.backend.Mapper.Others.LoginTokenMapper;
-import org.example.backend.Service.Others.LoginTokenService;
+import org.example.backend.entity.others.LoginToken;
+import org.example.backend.mapper.others.LoginTokenMapper;
+import org.example.backend.service.others.LoginTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

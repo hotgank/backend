@@ -1,9 +1,9 @@
-package org.example.backend.Service.ServiceImpl.Others;
+package org.example.backend.service.serviceImpl.others;
 
 import java.util.List;
-import org.example.backend.Entity.Others.Unit;
-import org.example.backend.Mapper.Others.UnitMapper;
-import org.example.backend.Service.Others.UnitService;
+import org.example.backend.entity.others.Unit;
+import org.example.backend.mapper.others.UnitMapper;
+import org.example.backend.service.others.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
