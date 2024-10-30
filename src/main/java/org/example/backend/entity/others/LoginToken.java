@@ -1,8 +1,10 @@
 package org.example.backend.entity.others;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.util.Date;
 
 public class LoginToken {
+  @TableId
   private String accountId;
   private String userType;
   private String username;

@@ -1,9 +1,11 @@
 package org.example.backend.entity.admin;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 
 
 public class Admin {
+  @TableId
   private String adminId;
   private String adminType;  // enum('super', 'first', 'second')
   private String supervisorId;
@@ -114,3 +116,6 @@ public class Admin {
   }
   // getters and setters
 }
+
+//Test
+//Test2

@@ -1,8 +1,10 @@
 package org.example.backend.entity.doctor;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.util.Date;
 
 public class DoctorData {
+  @TableId
   private String doctorId;  // Foreign key: Doctor ID
   private Date date;
   private float rating;

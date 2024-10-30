@@ -1,8 +1,10 @@
 package org.example.backend.entity.user;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 
 public class Message {
+  @TableId
   private int messageId;
   private int consultationId;  // Foreign key: Consultation ID
   private String senderType;   // enum ('doctor', 'user')

@@ -1,8 +1,10 @@
 package org.example.backend.entity.others;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.util.Date;
 
 public class Statistics {
+  @TableId
   private Integer statId;
   private String statType;
   private Integer value;

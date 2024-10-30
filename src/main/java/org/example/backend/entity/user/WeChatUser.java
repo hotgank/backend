@@ -1,6 +1,9 @@
 package org.example.backend.entity.user;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+
 public class WeChatUser {
+  @TableId
   private String userId; // Foreign key: User ID
   private String openid;
   private String sessionKey;
