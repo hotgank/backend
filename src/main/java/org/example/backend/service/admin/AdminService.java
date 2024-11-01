@@ -4,9 +4,9 @@ import java.util.List;
 import org.example.backend.entity.admin.Admin;
 
 public interface AdminService {
-  Admin getById(String adminId);
-  List<Admin> getAll();
-  boolean createAdmin(Admin admin);
-  boolean updateAdmin(Admin admin);
-  boolean deleteAdmin(String adminId);
+  Admin selectById(String adminId);
+  List<Admin> selectAll();
+  String insert(Admin admin);
+  boolean update(Admin admin);
+  boolean delete(String adminId);
 }
