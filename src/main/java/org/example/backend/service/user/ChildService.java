@@ -6,7 +6,7 @@ import org.example.backend.entity.user.Child;
 public interface ChildService {
   Child selectById(String childId);
   List<Child> selectAll();
-  boolean insertChild(Child child);
+  String insertChild(Child child);
   boolean updateChild(Child child);
   boolean deleteChild(String childId);
 }

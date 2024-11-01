@@ -1,5 +1,6 @@
 package org.example.backend.service.serviceImpl.user;
 
+import java.util.UUID;
 import org.example.backend.entity.user.Child;
 import org.example.backend.mapper.user.ChildMapper;
 import org.example.backend.service.user.ChildService;
@@ -25,13 +26,15 @@ public class ChildServiceImpl implements ChildService {
     }
 
     @Override
-    public boolean insertChild(Child child) {
+    public String insertChild(Child child) {
       try {
+        String childId = "C-" + UUID.randomUUID();;
+        child.setChildId(childId);
         childMapper.insertChild(child);
-        return true;
+        return childId;
       } catch (Exception e) {
         e.printStackTrace();
-        return false;
+        return null;
       }
     }
 

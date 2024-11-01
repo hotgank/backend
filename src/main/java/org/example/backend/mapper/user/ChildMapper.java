@@ -4,7 +4,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.example.backend.entity.user.Child;
@@ -20,7 +19,6 @@ public interface ChildMapper{
   @Select("SELECT * FROM u_children WHERE child_id = #{childId}")
   Child selectById(String childId);
 
-  // 插入孩子信息
   // 插入孩子信息
   @Insert("INSERT INTO u_children(child_id, name, school, gender, birthdate, height, weight) "
       + "VALUES(#{childId}, #{name}, #{school}, #{gender}, #{birthdate}, #{height}, #{weight})")
