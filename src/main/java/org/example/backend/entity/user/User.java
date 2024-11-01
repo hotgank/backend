@@ -1,10 +1,8 @@
 package org.example.backend.entity.user;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 
 public class User {
-  @TableId
   private String userId;
   private String username;
   private String password;
