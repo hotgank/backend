@@ -2,7 +2,6 @@ package org.example.backend.controller.user;
 
 import org.example.backend.entity.user.User;
 import org.example.backend.service.user.UserService;
-import org.example.backend.util.EncryptionUtil;
 import org.example.backend.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,7 @@ public class UserController {
   public ResponseEntity<String> selectAll() {
 
     // 调用服务层来查询所有孩子信息
-    String result = userService.getAll().toString();
+    String result = userService.selectAll().toString();
 
     return ResponseEntity.ok(result);
   }
@@ -31,7 +30,7 @@ public class UserController {
   public ResponseEntity<String> selectById(@RequestBody String userIdJson) {
     String userId = JsonParser.parseJsonString(userIdJson, "userId");
     // 调用服务层来根据userId查询用户信息
-    User selectedUser = userService.getById(userId);
+    User selectedUser = userService.selectById(userId);
     // 调用服务层来查询指定孩子信息
     if (selectedUser != null) {
       return ResponseEntity.ok(selectedUser.toString());
@@ -44,10 +43,10 @@ public class UserController {
   public ResponseEntity<String> addUser(@RequestBody User user) {
 
     // 调用服务层来添加用户信息到数据库
-    boolean success = userService.insertUser(user);
+    String result = userService.insert(user);
 
-    if (success) {
-      return ResponseEntity.ok("User information added successfully");
+    if (result != null) {
+      return ResponseEntity.ok("User information added successfully, userId: " + result);
     } else {
       return ResponseEntity.status(500).body("Failed to add user information");
     }
@@ -57,7 +56,7 @@ public class UserController {
   public ResponseEntity<String> updateUser(@RequestBody User user) {
 
     // 调用服务层来更新孩子信息
-    boolean success = userService.updateUser(user);
+    boolean success = userService.update(user);
 
     if (success) {
       return ResponseEntity.ok("User information updated successfully");
@@ -70,7 +69,7 @@ public class UserController {
   public ResponseEntity<String> deleteById(@RequestBody String userIdJson) {
     String userId = JsonParser.parseJsonString(userIdJson, "userId");
     // 调用服务层来删除用户信息
-    boolean success = userService.deleteUser(userId);
+    boolean success = userService.delete(userId);
     if (success) {
       return ResponseEntity.ok("User information deleted successfully");
     } else {
@@ -81,7 +80,7 @@ public class UserController {
   @PostMapping("/register")
   public ResponseEntity<String> registerUser(@RequestBody User user) {
     // 调用服务层来注册用户信息
-    String result = userService.registerUser(user);
+    String result = userService.register(user);
     if (result != null) {
       return ResponseEntity.ok("Registered successfully, userId: " + result);
     } else {

@@ -25,9 +25,16 @@ public interface UserMapper {
   void insertUser(User user);
 
   // 更新用户信息
-  @Update("UPDATE u_users SET username = #{username}, password = #{password}, email = #{email}, "
-      + "phone = #{phone}, registration_date = #{registrationDate}, last_login = #{lastLogin}, "
-      + "status = #{status}, avatar_url = #{avatarUrl} WHERE user_id = #{userId}")
+  @Update("UPDATE u_users SET "
+      + "username = #{username}, "
+      + "password = #{password}, "
+      + "email = #{email}, "
+      + "phone = #{phone}, "
+      + "registration_date = #{registrationDate}, "
+      + "last_login = #{lastLogin}, "
+      + "status = #{status}, "
+      + "avatar_url = #{avatarUrl} "
+      + "WHERE user_id = #{userId}")
   void updateUser(User user);
 
   // 删除用户

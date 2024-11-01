@@ -4,11 +4,11 @@ import java.util.List;
 import org.example.backend.entity.user.User;
 
 public interface UserService {
-  User getById(String userId);
-  List<User> getAll();
-  String insertUser(User user);
-  boolean updateUser(User user);
-  boolean deleteUser(String userId);
+  User selectById(String userId);
+  List<User> selectAll();
+  String insert(User user);
+  boolean update(User user);
+  boolean delete(String userId);
 
-  String registerUser(User user);
+  String register(User user);
 }

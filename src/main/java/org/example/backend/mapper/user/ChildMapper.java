@@ -25,9 +25,14 @@ public interface ChildMapper{
   void insertChild(Child child);
 
   // 更新孩子信息
-  @Update("UPDATE u_children SET name = #{name}, school = #{school}, " +
-      "gender = #{gender}, birthdate = #{birthdate}, height = #{height}, "
-      + "weight= #{weight} WHERE child_id = #{childId}")
+  @Update("UPDATE u_children SET "
+      + "name = #{name}, "
+      + "school = #{school}, "
+      + "gender = #{gender}, "
+      + "birthdate = #{birthdate}, "
+      + "height = #{height}, "
+      + "weight= #{weight} "
+      + "WHERE child_id = #{childId}")
   void updateChild(Child child);
 
   // 根据ID删除孩子信息

@@ -45,7 +45,7 @@ public class ChildController {
   public ResponseEntity<String> addChild(@RequestBody Child child) {
 
     // 调用服务层来添加孩子信息到数据库
-    String result = childService.insertChild(child);
+    String result = childService.insert(child);
 
     if (result != null) {
       return ResponseEntity.ok("Child information added successfully, childId: " + result);
@@ -58,7 +58,7 @@ public class ChildController {
   public ResponseEntity<String> updateChild(@RequestBody Child child) {
 
     // 调用服务层来更新孩子信息
-    boolean success = childService.updateChild(child);
+    boolean success = childService.update(child);
 
     if (success) {
       return ResponseEntity.ok("Child information updated successfully");
@@ -71,7 +71,7 @@ public class ChildController {
   public ResponseEntity<String> deleteChild(@RequestBody String childIdJson) {
     String childId = JsonParser.parseJsonString(childIdJson, "childId");
     // 调用服务层来删除孩子信息
-    boolean success = childService.deleteChild(childId);
+    boolean success = childService.delete(childId);
 
     if (success) {
       return ResponseEntity.ok("Child information deleted successfully");
