@@ -103,6 +103,29 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-redis</artifactId>
     </dependency>
+
+    <!-- 邮件发送 -->
+    <!-- Spring Boot Starter Mail -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-mail</artifactId>
+    </dependency>
+
+    <!-- Angus Mail -->
+    <dependency>
+      <groupId>org.eclipse.angus</groupId>
+      <artifactId>angus-mail</artifactId>
+      <version>1.1.0</version>
+    </dependency>
+
+    <!-- Angus Activation -->
+    <dependency>
+      <groupId>org.eclipse.angus</groupId>
+      <artifactId>angus-activation</artifactId>
+      <version>1.1.0</version>
+    </dependency>
+
+
   </dependencies>
 
   <dependencyManagement>

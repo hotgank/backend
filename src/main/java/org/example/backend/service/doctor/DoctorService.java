@@ -1,7 +1,8 @@
-package org.example.backend.service.doctor;
+package org.example.backend.Service.doctor;
+
+import org.example.backend.entity.doctor.Doctor;
 
 import java.util.List;
-import org.example.backend.entity.doctor.Doctor;
 
 public interface DoctorService {
   Doctor getById(String doctorId);
@@ -9,4 +10,6 @@ public interface DoctorService {
   boolean createDoctor(Doctor doctor);
   boolean updateDoctor(Doctor doctor);
   boolean deleteDoctor(String doctorId);
+  String generateRegisterCode(String email);
+  boolean registerDoctor(Doctor doctor);
 }
