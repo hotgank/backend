@@ -9,4 +9,5 @@ public interface WeChatUserService {
   int createWeChatUser(WeChatUser weChatUser);
   int updateWeChatUser(WeChatUser weChatUser);
   int deleteWeChatUserById(String id);
+  WeChatUser getWeChatUserByOpenId(String openId);
 }
