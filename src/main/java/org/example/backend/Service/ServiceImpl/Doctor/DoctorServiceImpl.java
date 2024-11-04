@@ -86,4 +86,38 @@ public class DoctorServiceImpl implements DoctorService {
       return false;
     }
   }
+
+  @Override
+  public String generateRegisterCode(String email) {
+    // 生成一个唯一的注册码
+    String registerCode = UUID.randomUUID().toString().substring(0, 8);
+    // 存储注册码到数据库或其他存储方式
+    // 这里假设有一个方法可以存储注册码，例如：
+    // registerCodeRepository.save(new RegisterCode(email, registerCode));
+    return registerCode;
+  }
+
+  @Override
+  public boolean registerDoctor(Doctor doctor) {
+//    // 检查注册码是否有效
+//    String email = request.getEmail();
+//    String registerCode = request.getRegisterCode();
+//    // 假设有一个方法可以验证注册码，例如：
+//    // boolean isValid = registerCodeRepository.isValid(email, registerCode);
+//    boolean isValid = true; // 这里假设注册码总是有效的，实际应用中需要验证
+//
+//    if (!isValid) {
+      return false;
+//    }
+//
+//    // 创建医生对象
+//    Doctor doctor = new Doctor();
+//    doctor.setName(request.getName());
+//    doctor.setEmail(email);
+//    doctor.setPassword(request.getPassword());
+//    doctor.setRegisterCode(registerCode);
+//
+//    // 插入医生信息到数据库
+//    return createDoctor(doctor);
+  }
 }

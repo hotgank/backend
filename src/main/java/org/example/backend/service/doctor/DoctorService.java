@@ -9,4 +9,8 @@ public interface DoctorService {
   String insert(Doctor doctor);
   boolean update(Doctor doctor);
   boolean delete(String doctorId);
+
+  String generateRegisterCode(String email);
+
+  boolean registerDoctor(Doctor doctor);
 }
