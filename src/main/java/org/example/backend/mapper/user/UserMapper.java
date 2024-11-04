@@ -3,6 +3,8 @@ package org.example.backend.mapper.user;
 import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.example.backend.entity.user.User;
@@ -11,10 +13,32 @@ import org.example.backend.entity.user.User;
 public interface UserMapper {
   // 查询所有用户信息
   @Select("SELECT * FROM u_users")
+  @Results({
+      @Result(column = "user_id", property = "userId"),
+      @Result(column = "username", property = "username"),
+      @Result(column = "password", property = "password"),
+      @Result(column = "email", property = "email"),
+      @Result(column = "phone", property = "phone"),
+      @Result(column = "registration_date", property = "registrationDate"),
+      @Result(column = "last_login", property = "lastLogin"),
+      @Result(column = "status", property = "status"),
+      @Result(column = "avatar_url", property = "avatarUrl")
+  })
   List<User> selectAll();
 
   // 根据ID查询
   @Select("SELECT * FROM u_users WHERE user_id = #{childId}")
+  @Results({
+      @Result(column = "user_id", property = "userId"),
+      @Result(column = "username", property = "username"),
+      @Result(column = "password", property = "password"),
+      @Result(column = "email", property = "email"),
+      @Result(column = "phone", property = "phone"),
+      @Result(column = "registration_date", property = "registrationDate"),
+      @Result(column = "last_login", property = "lastLogin"),
+      @Result(column = "status", property = "status"),
+      @Result(column = "avatar_url", property = "avatarUrl")
+  })
   User selectById(String childId);
 
   // 插入用户信息
