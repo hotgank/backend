@@ -1,10 +1,8 @@
 package org.example.backend.entity.doctor;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 
 public class Doctor {
-  @TableId
   private String doctorId;
   private String name;
   private String password;
@@ -150,4 +148,26 @@ public class Doctor {
     this.status = status;
   }
   // getters and setters
+
+  @Override
+  public String toString() {
+    return "Doctor{" +
+        "doctorId='" + doctorId + '\'' +
+        ", name='" + name + '\'' +
+        ", password='" + password + '\'' +
+        ", phone='" + phone + '\'' +
+        ", email='" + email + '\'' +
+        ", age=" + age +
+        ", gender='" + gender + '\'' +
+        ", position='" + position + '\'' +
+        ", workplace='" + workplace + '\'' +
+        ", qualification='" + qualification + '\'' +
+        ", experience='" + experience + '\'' +
+        ", rating=" + rating +
+        ", avatarUrl='" + avatarUrl + '\'' +
+        ", registrationDate=" + registrationDate +
+        ", lastLogin=" + lastLogin +
+        ", status='" + status + '\'' +
+        '}';
+  }
 }

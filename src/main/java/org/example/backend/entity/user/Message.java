@@ -1,10 +1,8 @@
 package org.example.backend.entity.user;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 
 public class Message {
-  @TableId
   private int messageId;
   private int consultationId;  // Foreign key: Consultation ID
   private String senderType;   // enum ('doctor', 'user')
@@ -69,4 +67,16 @@ public class Message {
     this.url = url;
   }
   // getters and setters
+  @Override
+  public String toString() {
+    return "Message{" +
+        "messageId=" + messageId +
+        ", consultationId=" + consultationId +
+        ", senderType='" + senderType + '\'' +
+        ", messageText='" + messageText + '\'' +
+        ", timestamp=" + timestamp +
+        ", messageType='" + messageType + '\'' +
+        ", url='" + url + '\'' +
+        '}';
+  }
 }

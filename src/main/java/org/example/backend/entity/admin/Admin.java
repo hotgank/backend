@@ -1,11 +1,9 @@
 package org.example.backend.entity.admin;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 
 
 public class Admin {
-  @TableId
   private String adminId;
   private String adminType;  // enum('super', 'first', 'second')
   private String supervisorId;
@@ -115,4 +113,21 @@ public class Admin {
     this.status = status;
   }
   // getters and setters
+  @Override
+  public String toString() {
+    return "Admin{" +
+        "adminId='" + adminId + '\'' +
+        ", adminType='" + adminType + '\'' +
+        ", supervisorId='" + supervisorId + '\'' +
+        ", unitName='" + unitName + '\'' +
+        ", username='" + username + '\'' +
+        ", password='" + password + '\'' +
+        ", email='" + email + '\'' +
+        ", phone='" + phone + '\'' +
+        ", avatarUrl='" + avatarUrl + '\''+
+        ", registrationDate=" + registrationDate + '\'' +
+        ", lastLogin=" + lastLogin + '\'' +
+        ", status='" + status + '\'' +
+        '}';
+  }
 }

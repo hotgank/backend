@@ -2,7 +2,6 @@ package org.example.backend.controller.user;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.UUID;
 import org.example.backend.entity.user.User;
 import org.example.backend.entity.user.WeChatUser;
 import org.example.backend.service.user.UserService;

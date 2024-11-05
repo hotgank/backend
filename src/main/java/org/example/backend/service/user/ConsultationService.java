@@ -4,9 +4,10 @@ import java.util.List;
 import org.example.backend.entity.user.Consultation;
 
 public interface ConsultationService {
-  List<Consultation> getAllConsultations();
-  Consultation getConsultationById(int id);
-  int createConsultation(Consultation consultation);
-  int updateConsultation(Consultation consultation);
-  int deleteConsultationById(int id);
+  List<Consultation> selectAllConsultations();
+  Consultation selectConsultationById(int id);
+  List<Consultation> selectConsultationByDoctorId(String doctorId);
+  List<Consultation> selectConsultationByUserId(String userId);
+  Consultation selectConsultationByDoctorIdAndUserId(String doctorId, String userId);
+  int insertConsultation(String doctorId, String userId);
 }

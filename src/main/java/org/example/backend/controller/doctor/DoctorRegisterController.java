@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.example.backend.Service.doctor.DoctorService;
+import org.example.backend.service.doctor.DoctorService;
 import org.example.backend.util.MailUtils;
 
 

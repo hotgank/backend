@@ -4,6 +4,9 @@ import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.example.backend.entity.admin.Admin;
@@ -12,10 +15,38 @@ import org.example.backend.entity.admin.Admin;
 public interface AdminMapper{
 
   @Select("SELECT * FROM a_admins")
+  @Results({
+      @Result(column = "admin_id", property = "adminId"),
+      @Result(column = "admin_type", property = "adminType"),
+      @Result(column = "supervisor_id", property = "supervisorId"),
+      @Result(column = "unit_name", property = "unitName"),
+      @Result(column = "username", property = "username"),
+      @Result(column = "password", property = "password"),
+      @Result(column = "email",property = "email"),
+      @Result(column = "phone", property = "phone"),
+      @Result(column = "avatar_url", property = "avatarUrl"),
+      @Result(column = "registration_date", property = "registrationDate"),
+      @Result(column = "last_login", property = "lastLogin"),
+      @Result(column = "status", property = "status")
+  })
   List<Admin> selectAll();
 
   @Select("SELECT * FROM a_admins WHERE admin_id = #{adminId}")
-  Admin selectById(String adminId);
+  @Results({
+      @Result(column = "admin_id", property = "adminId"),
+      @Result(column = "admin_type", property = "adminType"),
+      @Result(column = "supervisor_id", property = "supervisorId"),
+      @Result(column = "unit_name", property = "unitName"),
+      @Result(column = "username", property = "username"),
+      @Result(column = "password", property = "password"),
+      @Result(column = "email",property = "email"),
+      @Result(column = "phone", property = "phone"),
+      @Result(column = "avatar_url", property = "avatarUrl"),
+      @Result(column = "registration_date", property = "registrationDate"),
+      @Result(column = "last_login", property = "lastLogin"),
+      @Result(column = "status", property = "status")
+  })
+  Admin selectById(@Param("adminId") String adminId);
 
   @Insert("INSERT INTO a_admins(admin_id, admin_type, supervisor_id, unit_name, username, "
       + "password, email, phone, avatar_url, registration_date, last_login, status)"
@@ -40,5 +71,5 @@ public interface AdminMapper{
   void updateAdmin(Admin admin);
 
   @Delete("DELETE FROM a_admins WHERE admin_id = #{adminId}")
-  void deleteAdmin(String adminId);
+  void deleteAdmin(@Param("adminId") String adminId);
 }

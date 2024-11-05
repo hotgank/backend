@@ -1,10 +1,8 @@
 package org.example.backend.entity.user;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 
 public class User {
-  @TableId
   private String userId;
   private String username;
   private String password;
@@ -87,4 +85,18 @@ public class User {
     this.avatarUrl = avatarUrl;
   }
   // getters and setters
+  @Override
+  public String toString() {
+    return "User{" +
+        "userId='" + userId + '\'' +
+        ", username='" + username + '\'' +
+        ", password='" + password + '\'' +
+        ", email='" + email + '\'' +
+        ", phone='" + phone + '\'' +
+        ", registrationDate=" + registrationDate +
+        ", lastLogin=" + lastLogin +
+        ", status='" + status + '\'' +
+        ", avatarUrl='" + avatarUrl + '\'' +
+       '}';
+  }
 }

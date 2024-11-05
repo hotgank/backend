@@ -1,15 +1,20 @@
-package org.example.backend.Service.doctor;
-
-import org.example.backend.entity.doctor.Doctor;
+package org.example.backend.service.doctor;
 
 import java.util.List;
+import org.example.backend.entity.doctor.Doctor;
 
 public interface DoctorService {
-  Doctor getById(String doctorId);
-  List<Doctor> getAll();
-  boolean createDoctor(Doctor doctor);
-  boolean updateDoctor(Doctor doctor);
-  boolean deleteDoctor(String doctorId);
+  Doctor selectById(String doctorId);
+  List<Doctor> selectAll();
+  String insert(Doctor doctor);
+  boolean update(Doctor doctor);
+  boolean delete(String doctorId);
+
+  boolean updatePassword(String doctorId, String newPassword);
+
   String generateRegisterCode(String email);
+
   boolean registerDoctor(Doctor doctor);
+
+  boolean validatePassword(String doctorId, String password);
 }
