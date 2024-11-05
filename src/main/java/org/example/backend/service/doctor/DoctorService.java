@@ -10,7 +10,11 @@ public interface DoctorService {
   boolean update(Doctor doctor);
   boolean delete(String doctorId);
 
+  boolean updatePassword(String doctorId, String newPassword);
+
   String generateRegisterCode(String email);
 
   boolean registerDoctor(Doctor doctor);
+
+  boolean validatePassword(String doctorId, String password);
 }

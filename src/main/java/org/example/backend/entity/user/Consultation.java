@@ -1,10 +1,8 @@
 package org.example.backend.entity.user;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 
 public class Consultation {
-  @TableId
   private int consultationId;
   private String doctorId; // Foreign key: Doctor ID
   private String userId;   // Foreign key: User ID
@@ -60,4 +58,15 @@ public class Consultation {
     this.rating = rating;
   }
   // getters and setters
+  @Override
+  public String toString() {
+    return "Consultation{" +
+        "consultationId=" + consultationId +
+        ", doctorId='" + doctorId + '\'' +
+        ", userId='" + userId + '\'' +
+        ", consultationStart=" + consultationStart +
+        ", consultationEnd=" + consultationEnd +
+        ", rating=" + rating +
+        '}';
+  }
 }

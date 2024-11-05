@@ -65,8 +65,13 @@ public class DoctorController {
   }
 
   @PostMapping("/delete")
-  public ResponseEntity<String> deleteDoctor(@RequestBody String doctorIdJson) {
-    String doctorId = JsonParser.parseJsonString(doctorIdJson, "doctorId");
+  public ResponseEntity<String> deleteAccount(@RequestBody String doctorJson) {
+    String doctorId = JsonParser.parseJsonString(doctorJson, "doctorId");
+    String password = JsonParser.parseJsonString(doctorJson, "password");
+
+    if (!doctorService.validatePassword(doctorId, password)){
+      return ResponseEntity.status(400).body("Failed to find doctor information");
+    }
     // 调用服务层来删除医生信息
     boolean success = doctorService.delete(doctorId);
 
@@ -76,4 +81,24 @@ public class DoctorController {
       return ResponseEntity.status(500).body("Failed to delete doctor information");
     }
   }
+
+  @PostMapping("/updatePassword")
+  public ResponseEntity<String> updatePassword(@RequestBody String doctorJson){
+    String doctorId = JsonParser.parseJsonString(doctorJson, "doctorId");
+    String oldPassword = JsonParser.parseJsonString(doctorJson, "oldPassword");
+    if(!doctorService.validatePassword(doctorId, oldPassword)){
+      return ResponseEntity.status(400).body("Failed to find doctor information");
+    }
+    String newPassword1 = JsonParser.parseJsonString(doctorJson, "newPassword1");
+    String newPassword2 = JsonParser.parseJsonString(doctorJson, "newPassword2");
+    if (newPassword1 != null && !newPassword1.equals(newPassword2)) {
+      return ResponseEntity.status(400).body("Passwords do not match");
+    }
+    if(doctorService.updatePassword(doctorId, newPassword1)){
+      return ResponseEntity.ok("Password updated successfully");
+    }else{
+      return ResponseEntity.status(500).body("Failed to update password");
+    }
+  }
+
 }

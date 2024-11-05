@@ -4,6 +4,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
@@ -37,7 +38,7 @@ public interface ChildMapper{
       @Result(column = "height", property = "height"),
       @Result(column = "weight", property = "weight")
   })
-  Child selectById(String childId);
+  Child selectById(@Param("childId") String childId);
 
   // 插入孩子信息
   @Insert("INSERT INTO u_children(child_id, name, school, gender, birthdate, height, weight) "
@@ -57,5 +58,5 @@ public interface ChildMapper{
 
   // 根据ID删除孩子信息
   @Delete("DELETE FROM u_children WHERE child_id = #{childId}")
-  void deleteChild(String childId);
+  void deleteChild(@Param("childId") String childId);
 }

@@ -113,4 +113,21 @@ public class Admin {
     this.status = status;
   }
   // getters and setters
+  @Override
+  public String toString() {
+    return "Admin{" +
+        "adminId='" + adminId + '\'' +
+        ", adminType='" + adminType + '\'' +
+        ", supervisorId='" + supervisorId + '\'' +
+        ", unitName='" + unitName + '\'' +
+        ", username='" + username + '\'' +
+        ", password='" + password + '\'' +
+        ", email='" + email + '\'' +
+        ", phone='" + phone + '\'' +
+        ", avatarUrl='" + avatarUrl + '\''+
+        ", registrationDate=" + registrationDate + '\'' +
+        ", lastLogin=" + lastLogin + '\'' +
+        ", status='" + status + '\'' +
+        '}';
+  }
 }

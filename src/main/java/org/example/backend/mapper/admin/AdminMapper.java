@@ -4,6 +4,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
@@ -45,7 +46,7 @@ public interface AdminMapper{
       @Result(column = "last_login", property = "lastLogin"),
       @Result(column = "status", property = "status")
   })
-  Admin selectById(String adminId);
+  Admin selectById(@Param("adminId") String adminId);
 
   @Insert("INSERT INTO a_admins(admin_id, admin_type, supervisor_id, unit_name, username, "
       + "password, email, phone, avatar_url, registration_date, last_login, status)"
@@ -70,5 +71,5 @@ public interface AdminMapper{
   void updateAdmin(Admin admin);
 
   @Delete("DELETE FROM a_admins WHERE admin_id = #{adminId}")
-  void deleteAdmin(String adminId);
+  void deleteAdmin(@Param("adminId") String adminId);
 }

@@ -88,6 +88,36 @@ public class DoctorServiceImpl implements DoctorService {
   }
 
   @Override
+  public boolean updatePassword(String doctorId, String newPassword) {
+    try {
+      Doctor doctor = selectById(doctorId);
+      if (doctor == null) {
+        return false;
+      }
+      String encryptedPassword = EncryptionUtil.encryptMD5(newPassword);
+      doctor.setPassword(encryptedPassword);
+      update(doctor);
+      return true;
+    } catch (Exception e) {
+      logger.error("Error updating password for doctor with ID {}:{}", doctorId, e.getMessage(), e);
+    }
+    return false;
+  }
+
+  @Override
+  public boolean validatePassword(String doctorId, String password){
+    Doctor doctor = selectById(doctorId);
+    if(doctor == null){
+      return false;
+    }
+    if(EncryptionUtil.verifyMD5(password, doctor.getPassword())){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  @Override
   public String generateRegisterCode(String email) {
     // 生成一个唯一的注册码
     String registerCode = UUID.randomUUID().toString().substring(0, 8);

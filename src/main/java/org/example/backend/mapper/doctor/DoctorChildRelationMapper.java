@@ -4,6 +4,8 @@ import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
@@ -23,10 +25,11 @@ public interface DoctorChildRelationMapper {
       @Result(column = "height", property = "height"),
       @Result(column = "weight", property = "weight")
   })
-  List<Child> selectMyPatients(String doctorId);
+  List<Child> selectMyPatients(@Param("doctorId") String doctorId);
 
-  @Insert("INSERT INTO d_doctors_children(relation_id, doctor_id, child_id, relation_type, created_at) "
-      + "VALUES(#{relationId}, #{doctorId}, #{childId}, #{relationType}, #{createdAt})")
+  @Insert("INSERT INTO d_doctors_children(doctor_id, child_id, relation_type, created_at) "
+      + "VALUES(#{doctorId}, #{childId}, #{relationType}, #{createdAt})")
+  @Options(useGeneratedKeys = true, keyProperty = "relationId")
   int createDoctorChildRelation(DoctorChildRelation relation);
 
   @Delete("DELETE FROM d_doctors_children WHERE doctor_id = #{doctorId} AND child_id = #{childId}")
