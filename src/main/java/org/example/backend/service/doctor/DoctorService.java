@@ -1,4 +1,4 @@
-package org.example.backend.service.doctor;
+package org.example.backend.Service.doctor;
 
 import java.util.List;
 import org.example.backend.entity.doctor.Doctor;
@@ -17,4 +17,6 @@ public interface DoctorService {
   boolean registerDoctor(Doctor doctor);
 
   boolean validatePassword(String doctorId, String password);
+
+  boolean validateRegisterCode(String email, String registerCode);
 }

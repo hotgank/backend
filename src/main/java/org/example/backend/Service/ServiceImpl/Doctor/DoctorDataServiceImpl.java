@@ -1,9 +1,9 @@
-package org.example.backend.service.serviceImpl.doctor;
+package org.example.backend.Service.ServiceImpl.Doctor;
 
 import java.util.List;
 import org.example.backend.entity.doctor.DoctorData;
 import org.example.backend.mapper.doctor.DoctorDataMapper;
-import org.example.backend.service.doctor.DoctorDataService;
+import org.example.backend.Service.doctor.DoctorDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

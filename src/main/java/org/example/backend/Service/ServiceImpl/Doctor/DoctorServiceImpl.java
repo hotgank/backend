@@ -1,24 +1,28 @@
-package org.example.backend.service.serviceImpl.doctor;
+package org.example.backend.Service.ServiceImpl.Doctor;
 
+import jakarta.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.mapper.doctor.DoctorMapper;
-import org.example.backend.service.doctor.DoctorService;
+import org.example.backend.Service.doctor.DoctorService;
 import org.example.backend.util.EncryptionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class DoctorServiceImpl implements DoctorService {
 
   private static final Logger logger = LoggerFactory.getLogger(DoctorServiceImpl.class);
-
+  @Resource
+  private RedisTemplate<String, String> redisTemplate;
   @Autowired
   private DoctorMapper doctorMapper;
 
@@ -118,36 +122,47 @@ public class DoctorServiceImpl implements DoctorService {
   }
 
   @Override
+  public boolean validateRegisterCode(String email, String registerCode) {
+    String storedRegisterCode = redisTemplate.opsForValue().get(email);
+    if (storedRegisterCode == null || !storedRegisterCode.equals(registerCode)) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
   public String generateRegisterCode(String email) {
+    // 检查Redis中是否已存在该邮箱的验证码
+    if (redisTemplate.hasKey(email)) {
+      // 如果存在，则删除旧的验证码
+      redisTemplate.delete(email);
+    }
+
     // 生成一个唯一的注册码
     String registerCode = UUID.randomUUID().toString().substring(0, 8);
-    // 存储注册码到数据库或其他存储方式
-    // 这里假设有一个方法可以存储注册码，例如：
-    // registerCodeRepository.save(new RegisterCode(email, registerCode));
+
+    // 将新的验证码存储到Redis中，设置过期时间为5分钟
+    redisTemplate.opsForValue().set(email, registerCode, 5, TimeUnit.MINUTES);
+
     return registerCode;
   }
 
   @Override
   public boolean registerDoctor(Doctor doctor) {
-//    // 检查注册码是否有效
-//    String email = request.getEmail();
-//    String registerCode = request.getRegisterCode();
-//    // 假设有一个方法可以验证注册码，例如：
-//    // boolean isValid = registerCodeRepository.isValid(email, registerCode);
-//    boolean isValid = true; // 这里假设注册码总是有效的，实际应用中需要验证
-//
-//    if (!isValid) {
-      return false;
-//    }
-//
-//    // 创建医生对象
-//    Doctor doctor = new Doctor();
-//    doctor.setName(request.getName());
-//    doctor.setEmail(email);
-//    doctor.setPassword(request.getPassword());
-//    doctor.setRegisterCode(registerCode);
-//
-//    // 插入医生信息到数据库
-//    return createDoctor(doctor);
+    // 检查注册码是否有效
+    String email = doctor.getEmail();
+
+
+    // 验证注册码是否有效
+
+
+    // 创建医生对象
+    doctor.setPassword(EncryptionUtil.encryptMD5(doctor.getPassword()));
+    doctor.setRating(-1);
+    doctor.setStatus("active");
+    doctor.setRegistrationDate(LocalDateTime.now());
+
+    // 插入医生信息到数据库
+    return insert(doctor) != null;
   }
 }
