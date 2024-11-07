@@ -108,4 +108,16 @@ public class UserServiceImpl implements UserService {
       return null;
     }
   }
+
+  //根据openid查询用户
+  @Override
+  public User selectByOpenId(String openid) {
+    try {
+      return userMapper.selectByOpenId(openid);
+    } catch (Exception e) {
+      // 记录异常日志
+      logger.error("获取用户失败，openid: {}", openid, e);
+      return null;
+    }
+  }
 }

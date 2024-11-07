@@ -55,6 +55,10 @@ public class User {
     return openid;
   }
 
+  public String getSessionKey() {
+    return sessionKey;
+  }
+
   public void setUserId(String userId) {
     this.userId = userId;
   }
@@ -91,9 +95,15 @@ public class User {
     this.avatarUrl = avatarUrl;
   }
 
-  public String getSessionKey() {
-    return sessionKey;
+  public void setOpenid(String openid) {
+    this.openid = openid;
   }
+
+  public void setSessionKey(String sessionKey) {
+    this.sessionKey = sessionKey;
+  }
+
+
   // getters and setters
   @Override
   public String toString() {

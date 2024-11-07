@@ -65,4 +65,16 @@ public interface UserMapper {
   // 删除用户
   @Insert("DELETE FROM u_users WHERE user_id = #{userId}")
   void deleteById(@Param("userId") String userId);
+
+  //根据openid查询用户
+  @Select("SELECT * FROM u_users WHERE openid = #{openid}")
+  @Results({
+      @Result(column = "user_id", property = "userId"),
+      @Result(column = "username", property = "username"),
+      @Result(column = "password", property = "password"),
+      @Result(column = "email", property = "email"),
+      @Result(column = "phone", property = "phone"),
+      @Result(column = "registration_date", property = "registrationDate"),
+  })
+  User selectByOpenId(@Param("openid") String openid);
 }
