@@ -12,6 +12,8 @@ public class User {
   private LocalDateTime lastLogin;
   private String status; // enum ('active', 'disabled')
   private String avatarUrl;
+  private String openid;
+  private String sessionKey;
 
   public String getUserId() {
     return userId;
@@ -49,6 +51,10 @@ public class User {
     return avatarUrl;
   }
 
+  public String getOpenid() {
+    return openid;
+  }
+
   public void setUserId(String userId) {
     this.userId = userId;
   }
@@ -83,6 +89,10 @@ public class User {
 
   public void setAvatarUrl(String avatarUrl) {
     this.avatarUrl = avatarUrl;
+  }
+
+  public String getSessionKey() {
+    return sessionKey;
   }
   // getters and setters
   @Override
