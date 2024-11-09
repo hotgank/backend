@@ -23,4 +23,9 @@ public class RedisUtil {
     String storedToken = redisTemplate.opsForValue().get(userId);
     return storedToken != null && storedToken.equals(token);
   }
+
+  // 从 Redis 中获取 token
+  public String getTokenFromRedis(String userId) {
+    return redisTemplate.opsForValue().get(String.valueOf(userId));  // userId 转换成字符串
+  }
 }

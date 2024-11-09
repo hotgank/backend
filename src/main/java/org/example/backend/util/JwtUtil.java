@@ -1,10 +1,13 @@
 package org.example.backend.util;
 
+import io.jsonwebtoken.JwtException;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *JWT工具类
@@ -13,22 +16,41 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-  private String secretKey = "DoctorChild";
+  // 定义密钥和过期时间
+  private String secret = "yourSecretKey";
+  private long expirationTime = 1000 * 60 * 60 * 24; // 1 day
 
+  // 生成JWT令牌
   public String generateToken(String userId) {
+    Map<String, Object> claims = new HashMap<>();
+    claims.put("userId", userId);
     return Jwts.builder()
-        .setSubject(userId)
+        .setClaims(claims)
         .setIssuedAt(new Date())
-        .setExpiration(new Date(System.currentTimeMillis() + 5 * 60 * 60 * 1000)) // 2个小时过期
-        .signWith(SignatureAlgorithm.HS256, secretKey)
+        .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+        .signWith(SignatureAlgorithm.HS256, secret)
         .compact();
   }
 
-  public Claims validateToken(String token) {
-    return Jwts.parser()
-        .setSigningKey(secretKey)
+  // 验证JWT令牌
+  public boolean validateToken(String token) {
+    try {
+      Jwts.parser()
+          .setSigningKey(secret)
+          .parseClaimsJws(token);
+      return true;
+    } catch (JwtException | IllegalArgumentException e) {
+      return false; // Token 失效或非法
+    }
+  }
+
+  // 从JWT令牌中获取userId
+  public String extractUserId(String token) {
+    Claims claims = Jwts.parser()
+        .setSigningKey(secret)
         .parseClaimsJws(token)
         .getBody();
+    return claims.get("userId", String.class);
   }
 }
 

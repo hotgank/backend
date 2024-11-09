@@ -3,9 +3,7 @@ package org.example.backend.controller.user;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.backend.entity.user.User;
-import org.example.backend.entity.user.WeChatUser;
 import org.example.backend.service.user.UserService;
-import org.example.backend.service.user.WeChatUserService;
 import org.example.backend.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import org.springframework.web.client.RestTemplate;
 import org.example.backend.util.RedisUtil;
+import org.example.backend.util.WeChatDecryptUtil; // 新增解密工具类
 
 /**
  * 微信用户登录控制器
@@ -26,53 +25,68 @@ public class UserLoginController {
   private UserService userService;
 
   @Autowired
-  private WeChatUserService weChatUserService;
-
-  @Autowired
   private JwtUtil jwtUtil;
 
   @Autowired
   private RedisUtil redisUtil;
+
+  @Autowired
+  private WeChatDecryptUtil weChatDecryptUtil;  // 注入解密工具类
 
   @PostMapping("/weChatUserLogin")
   public ResponseEntity<String> login(@RequestBody Map<String, String> body) {
     String appId = body.get("appId");
     String appSecret = body.get("appSecret");
     String code = body.get("code");
+    String encryptedData = body.get("encryptedData");  // 前端传来的加密数据
+    String iv = body.get("iv");  // 前端传来的iv
 
-    //向微信服务器微信用户获取OpenID
+    // 向微信服务器微信用户获取OpenID
     Map<String, String> weChatResponse = getOpenIdAndSessionKeyFromWeChat(appId, appSecret, code);
-    if ( !weChatResponse.containsKey("openid") || !weChatResponse.containsKey("session_key")) {
+    if (!weChatResponse.containsKey("openid") || !weChatResponse.containsKey("session_key")) {
       return ResponseEntity.badRequest().body("Failed to get openid or session_key from WeChat API");
     }
     String openId = weChatResponse.get("openid");
     String sessionKey = weChatResponse.get("session_key");
 
     try {
-      // 查找微信用户表
-      WeChatUser weChatUser = weChatUserService.getWeChatUserByOpenId(openId);
-      // 判断微信用户是否已存在
-      if (weChatUser == null) {
+      // 解密获取用户的敏感数据（头像、昵称、电话）
+      String userInfo = weChatDecryptUtil.decryptUserInfo(encryptedData, iv, sessionKey);
+
+      // 解析解密后的用户信息
+      ObjectMapper objectMapper = new ObjectMapper();
+      JsonNode userJson = objectMapper.readTree(userInfo);
+      String username = userJson.get("nickName").asText();
+      String avatarUrl = userJson.get("avatarUrl").asText();
+      String phone = userJson.has("phoneNumber") ? userJson.get("phoneNumber").asText() : "";
+
+      User user = userService.selectByOpenId(openId);
+      if (user == null) {
         // 创建新用户
-        String userId = userService.register(new User());
-        weChatUser.setOpenid(openId);
-        weChatUser.setUserId(userId);
-        weChatUser.setSessionKey(sessionKey);
-        weChatUserService.createWeChatUser(weChatUser);
+        user = new User();
+        user.setOpenid(openId);
+        user.setSessionKey(sessionKey);
+        user.setUsername(username);
+        user.setAvatarUrl(avatarUrl);
+        user.setPhone(phone);
+        user.setUserId(userService.register(user));
       } else {
         // 如果微信用户存在，则更新用户信息
-        weChatUser.setSessionKey(sessionKey);
-        weChatUserService.updateWeChatUser(weChatUser);
+        user.setSessionKey(sessionKey);
+        user.setUsername(username);
+        user.setAvatarUrl(avatarUrl);
+        user.setPhone(phone);
+        userService.update(user);
       }
 
       // 生成JWT令牌
-      String jwtToken = jwtUtil.generateToken(weChatUser.getUserId());
+      String jwtToken = jwtUtil.generateToken(user.getUserId());
 
       // 将令牌存储在Redis中
-      redisUtil.storeTokenInRedis(weChatUser.getUserId(), jwtToken);
+      redisUtil.storeTokenInRedis(user.getUserId(), jwtToken);
 
-      // 构建并返回登录响应，返回openID和令牌
-      return ResponseEntity.ok("{\"userId\":\"" + weChatUser.getOpenid() + "\",\"token\":\"" + jwtToken + "\"}");
+      // 返回openid和令牌
+      return ResponseEntity.ok("{\"openid\":\"" + user.getOpenid() + "\",\"token\":\"" + jwtToken + "\"}");
     } catch (Exception e) {
       return ResponseEntity.badRequest().body("Failed to create user or update user information");
     }

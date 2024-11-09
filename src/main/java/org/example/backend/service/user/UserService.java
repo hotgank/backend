@@ -11,4 +11,7 @@ public interface UserService {
   boolean delete(String userId);
 
   String register(User user);
+
+  //根据openid查询用户
+  User selectByOpenId(String openid);
 }
