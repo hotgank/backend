@@ -67,6 +67,8 @@ public class UserServiceImpl implements UserService {
   @Override
   public boolean update(User user) {
     try {
+      String sessionKey = EncryptionUtil.encryptMD5(user.getSessionKey());
+      user.setSessionKey(sessionKey);
       userMapper.updateUser(user);
       logger.info("User with ID {} updated successfully", user.getUserId());
       return true;
@@ -94,12 +96,13 @@ public class UserServiceImpl implements UserService {
     try {
       String userId = "U-" + UUID.randomUUID();
       user.setUserId(userId);
-      String username = EncryptionUtil.encryptMD5(user.getUsername());
-      user.setUsername(username);
-      String password = EncryptionUtil.encryptMD5(user.getPassword());
-      user.setPassword(password);
+      String openid = EncryptionUtil.encryptMD5(user.getOpenid());
+      user.setOpenid(openid);
+      String sessionKey = EncryptionUtil.encryptMD5(user.getSessionKey());
+      user.setSessionKey(sessionKey);
       user.setStatus("active");
       user.setRegistrationDate(LocalDateTime.now());
+      user.setLastLogin(LocalDateTime.now());
       userMapper.insertUser(user);
       logger.info("User with ID {} registered successfully", userId);
       return userId;

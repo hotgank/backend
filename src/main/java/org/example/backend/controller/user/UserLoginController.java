@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import org.springframework.web.client.RestTemplate;
 import org.example.backend.util.RedisUtil;
+import org.example.backend.util.WeChatDecryptUtil; // 新增解密工具类
 
 /**
  * 微信用户登录控制器
@@ -29,25 +30,36 @@ public class UserLoginController {
   @Autowired
   private RedisUtil redisUtil;
 
+  @Autowired
+  private WeChatDecryptUtil weChatDecryptUtil;  // 注入解密工具类
+
   @PostMapping("/weChatUserLogin")
   public ResponseEntity<String> login(@RequestBody Map<String, String> body) {
     String appId = body.get("appId");
     String appSecret = body.get("appSecret");
     String code = body.get("code");
-    //用户名
-    String username = body.get("username");
-    //头像url
-    String avatarUrl = body.get("avatarUrl");
+    String encryptedData = body.get("encryptedData");  // 前端传来的加密数据
+    String iv = body.get("iv");  // 前端传来的iv
 
-    //向微信服务器微信用户获取OpenID
+    // 向微信服务器微信用户获取OpenID
     Map<String, String> weChatResponse = getOpenIdAndSessionKeyFromWeChat(appId, appSecret, code);
-    if ( !weChatResponse.containsKey("openid") || !weChatResponse.containsKey("session_key")) {
+    if (!weChatResponse.containsKey("openid") || !weChatResponse.containsKey("session_key")) {
       return ResponseEntity.badRequest().body("Failed to get openid or session_key from WeChat API");
     }
     String openId = weChatResponse.get("openid");
     String sessionKey = weChatResponse.get("session_key");
 
     try {
+      // 解密获取用户的敏感数据（头像、昵称、电话）
+      String userInfo = weChatDecryptUtil.decryptUserInfo(encryptedData, iv, sessionKey);
+
+      // 解析解密后的用户信息
+      ObjectMapper objectMapper = new ObjectMapper();
+      JsonNode userJson = objectMapper.readTree(userInfo);
+      String username = userJson.get("nickName").asText();
+      String avatarUrl = userJson.get("avatarUrl").asText();
+      String phone = userJson.has("phoneNumber") ? userJson.get("phoneNumber").asText() : "";
+
       User user = userService.selectByOpenId(openId);
       if (user == null) {
         // 创建新用户
@@ -56,14 +68,14 @@ public class UserLoginController {
         user.setSessionKey(sessionKey);
         user.setUsername(username);
         user.setAvatarUrl(avatarUrl);
-        userService.register(user);
-      }
-      else {
+        user.setPhone(phone);
+        user.setUserId(userService.register(user));
+      } else {
         // 如果微信用户存在，则更新用户信息
-        user.setOpenid(openId);
         user.setSessionKey(sessionKey);
         user.setUsername(username);
         user.setAvatarUrl(avatarUrl);
+        user.setPhone(phone);
         userService.update(user);
       }
 
@@ -73,9 +85,9 @@ public class UserLoginController {
       // 将令牌存储在Redis中
       redisUtil.storeTokenInRedis(user.getUserId(), jwtToken);
 
+      // 返回openid和令牌
       return ResponseEntity.ok("{\"openid\":\"" + user.getOpenid() + "\",\"token\":\"" + jwtToken + "\"}");
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       return ResponseEntity.badRequest().body("Failed to create user or update user information");
     }
   }
