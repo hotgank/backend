@@ -50,23 +50,6 @@ public class UserController {
     }
   }
 
-  //根据userId获取所有关系表数据
-  @GetMapping("/selectAllRelations")
-  public ResponseEntity<List<ParentChildRelation>> selectAllRelations(HttpServletRequest request) {
-    // 从请求中获取用户ID
-    String userId = (String) request.getAttribute("userId");
-
-    //调试用
-    userId = (String) request.getParameter("userId");
-
-    try {
-      List<ParentChildRelation> relations = parentChildRelationService.getRelationsByUserId(userId);
-      return ResponseEntity.ok(relations);
-    } catch (Exception e) {
-      return ResponseEntity.status(500).body(null);
-    }
-  }
-
   @PostMapping("/add")
   public ResponseEntity<String> addUser(@RequestBody User user) {
 
