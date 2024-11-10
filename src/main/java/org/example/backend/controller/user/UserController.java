@@ -1,6 +1,8 @@
 package org.example.backend.controller.user;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
+import org.example.backend.entity.user.ParentChildRelation;
 import org.example.backend.entity.user.User;
 import org.example.backend.service.serviceImpl.user.ParentChildRelationImpl;
 import org.example.backend.service.user.UserService;
@@ -24,12 +26,18 @@ public class UserController {
   @Autowired
   private UserService userService;
 
+  @Autowired
+  private ParentChildRelationImpl parentChildRelationService;
 
   // 获取用户个人信息
-  @GetMapping("/GetUserInfo")
+  @GetMapping("/getUserInfo")
   public ResponseEntity<String> getUserInfo(HttpServletRequest request) {
     // 从请求中获取用户ID
     String userId = (String) request.getAttribute("userId");
+
+    //调试用
+    userId = (String) request.getParameter("userId");
+
     // 调用服务层来根据userId查询用户信息
     User selectedUser = userService.selectById(userId);
     if (selectedUser != null){
@@ -42,22 +50,20 @@ public class UserController {
     }
   }
 
-  //测试用
-  @PostMapping("/selectById")
-  public ResponseEntity<String> selectById( @RequestBody String userIdJson,HttpServletRequest request) {
-    //String userId = (String) request.getAttribute("userId");
-    String userId = JsonParser.parseJsonString(userIdJson, "userId");
-    // 调用服务层来根据userId查询用户信息
-    User selectedUser = userService.selectById(userId);
+  //根据userId获取所有关系表数据
+  @GetMapping("/selectAllRelations")
+  public ResponseEntity<List<ParentChildRelation>> selectAllRelations(HttpServletRequest request) {
+    // 从请求中获取用户ID
+    String userId = (String) request.getAttribute("userId");
 
-    if (selectedUser != null) {
-      //将user的字段返回
-      return ResponseEntity.ok("{\"username\":\""+selectedUser.getUsername()
-          +"\",\"phone\":\""+selectedUser.getPhone()
-          +"\",\"avatarUrl\":\""+selectedUser.getAvatarUrl()
-          +"\",\"openid\":\""+selectedUser.getOpenid()+"\"}");
-    } else {
-      return ResponseEntity.status(500).body("Failed to Get user information");
+    //调试用
+    userId = (String) request.getParameter("userId");
+
+    try {
+      List<ParentChildRelation> relations = parentChildRelationService.getRelationsByUserId(userId);
+      return ResponseEntity.ok(relations);
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body(null);
     }
   }
 
