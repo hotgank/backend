@@ -1,7 +1,7 @@
 package org.example.backend.controller.doctor;
 
 import org.example.backend.entity.user.Consultation;
-import org.example.backend.service.user.ConsultationService;
+import org.example.backend.service.others.ConsultationService;
 import org.example.backend.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,9 +1,9 @@
-package org.example.backend.Service.ServiceImpl.Doctor;
+package org.example.backend.service.serviceImpl.doctor;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import org.example.backend.Service.ServiceImpl.Doctor.DoctorServiceImpl;
+
 import org.example.backend.entity.doctor.DoctorChildRelation;
 import org.example.backend.entity.user.Child;
 import org.example.backend.mapper.doctor.DoctorChildRelationMapper;
