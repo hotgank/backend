@@ -1,6 +1,8 @@
 package org.example.backend.controller.user;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.example.backend.entity.user.Child;
+import org.example.backend.service.serviceImpl.user.ParentChildRelationImpl;
 import org.example.backend.service.user.ChildService;
 import org.example.backend.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class ChildController {
 
   @Autowired
   private ChildService childService;
+
+  @Autowired
+  private ParentChildRelationImpl parentChildRelationService;
 
   @GetMapping("/selectAll")
   public ResponseEntity<String> selectAll() {
@@ -78,5 +83,15 @@ public class ChildController {
     } else {
       return ResponseEntity.status(500).body("Failed to delete child information");
     }
+  }
+
+  @PostMapping("/createChild")
+  public ResponseEntity<String> createChild(@RequestBody Child child, HttpServletRequest request) {
+    //从请求中获取用户ID
+    String userId = (String) request.getAttribute("userId");
+    //调用服务层来添加孩子信息到数据库
+    String childId = childService.insert(child);
+    //调用服务层来创建孩子和用户的关系
+    return ResponseEntity.ok(" successfully");
   }
 }
