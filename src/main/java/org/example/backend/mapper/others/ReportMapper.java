@@ -1,0 +1,47 @@
+package org.example.backend.mapper.others;
+
+import org.apache.ibatis.annotations.*;
+import org.example.backend.entity.user.Report;
+
+import java.util.List;
+
+@Mapper
+public interface ReportMapper {
+    @Select("SELECT * FROM r_reports WHERE child_id = #{childId} ORDER BY created_at DESC")
+    @Results({
+            @Result(column = "report_id", property = "reportId"),
+            @Result(column = "child_id", property = "childId"),
+            @Result(column = "created_at", property = "createdAt"),
+            @Result(column = "report_type", property = "reportType"),
+            @Result(column = "result", property = "result"),
+            @Result(column = "analyse", property = "analyse"),
+            @Result(column = "comment", property = "comment"),
+            @Result(column = "doctor_id", property = "doctorId"),
+            @Result(column = "url", property = "url")
+    })
+    List <Report> selectByChildId(@Param("childId") String childId);
+
+    @Select("SELECT * FROM r_reports WHERE report_id = #{reportId} ORDER BY created_at DESC")
+    @Results({
+            @Result(column = "report_id", property = "reportId"),
+            @Result(column = "child_id", property = "childId"),
+            @Result(column = "created_at", property = "createdAt"),
+            @Result(column = "report_type", property = "reportType"),
+            @Result(column = "result", property = "result"),
+            @Result(column = "analyse", property = "analyse"),
+            @Result(column = "comment", property = "comment"),
+            @Result(column = "doctor_id", property = "doctorId"),
+            @Result(column = "url", property = "url")
+    })
+    Report selectByReportId(@Param("reportId") String reportId);
+
+    @Insert("INSERT INTO r_reports (child_id, created_at, report_type, result, analyse, comment, doctor_id, url)"
+            + "VALUES (#{childId}, #{createdAt}, #{reportType}, #{result}, #{analyse}, #{comment}, #{doctorId}, #{url})")
+    @Options(useGeneratedKeys = true, keyProperty = "reportId")
+    int insert(Report report);
+
+    @Update("UPDATE r_reports SET child_id = #{childId}, created_at = #{createdAt}, report_type = #{reportType},"
+            + "result = #{result}, analyse = #{analyse}, comment = #{comment}, doctor_id = #{doctorId}, url = #{url} "
+            + "WHERE report_id = #{reportId}")
+    void update(Report report);
+}

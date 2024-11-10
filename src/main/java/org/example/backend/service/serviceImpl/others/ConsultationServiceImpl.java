@@ -1,11 +1,11 @@
-package org.example.backend.service.serviceImpl.user;
+package org.example.backend.service.serviceImpl.others;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import org.example.backend.entity.user.Consultation;
-import org.example.backend.mapper.user.ConsultationMapper;
-import org.example.backend.service.user.ConsultationService;
+import org.example.backend.mapper.others.ConsultationMapper;
+import org.example.backend.service.others.ConsultationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

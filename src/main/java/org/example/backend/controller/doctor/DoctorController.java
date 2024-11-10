@@ -2,7 +2,7 @@ package org.example.backend.controller.doctor;
 
 
 import org.example.backend.entity.doctor.Doctor;
-import org.example.backend.Service.doctor.DoctorService;
+import org.example.backend.service.doctor.DoctorService;
 import org.example.backend.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

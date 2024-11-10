@@ -1,4 +1,4 @@
-package org.example.backend.service.user;
+package org.example.backend.service.others;
 
 import java.util.List;
 import org.example.backend.entity.user.Consultation;
