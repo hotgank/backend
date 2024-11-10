@@ -1,4 +1,4 @@
-package org.example.backend.mapper.user;
+package org.example.backend.mapper.others;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Delete;

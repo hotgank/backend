@@ -1,11 +1,8 @@
-package org.example.backend.mapper.user;
+package org.example.backend.mapper.others;
 
 import java.util.List;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+
+import org.apache.ibatis.annotations.*;
 import org.example.backend.entity.user.Message;
 
 @Mapper
@@ -22,4 +19,8 @@ public interface MessageMapper {
   })
   List <Message> selectById(@Param("consultationId") Integer consultationId);
 
+  @Insert("INSERT INTO c_messages (consultation_id, sender_type, message_text, timestamp, message_type, url)"
+      + "VALUES (#{consultationId}, #{senderType}, #{messageText}, #{timestamp}, #{messageType}, #{url})")
+  @Options(useGeneratedKeys = true, keyProperty = "messageId")
+  int insert(Message message);
 }

@@ -1,4 +1,4 @@
-package org.example.backend.Service.doctor;
+package org.example.backend.service.doctor;
 
 import java.util.List;
 import org.example.backend.entity.doctor.DoctorData;

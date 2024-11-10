@@ -1,4 +1,4 @@
-package org.example.backend.Service.ServiceImpl.Doctor;
+package org.example.backend.service.serviceImpl.doctor;
 
 import jakarta.annotation.Resource;
 import java.time.LocalDateTime;
@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.UUID;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.mapper.doctor.DoctorMapper;
-import org.example.backend.Service.doctor.DoctorService;
+import org.example.backend.service.doctor.DoctorService;
 import org.example.backend.util.EncryptionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
