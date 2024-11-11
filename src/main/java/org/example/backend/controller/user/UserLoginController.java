@@ -35,8 +35,10 @@ public class UserLoginController {
 
   @PostMapping("/weChatUserLogin")
   public ResponseEntity<String> login(@RequestBody Map<String, String> body) {
-    String appId = body.get("appId");
-    String appSecret = body.get("appSecret");
+    //String appId = body.get("appId");
+    String appId = "wx975451ebbab26b24";
+    //String appSecret = body.get("appSecret");
+    String appSecret = "96dd25e0926a1448a51d00560736e451";
     String code = body.get("code");
     String encryptedData = body.get("encryptedData");  // 前端传来的加密数据
     String iv = body.get("iv");  // 前端传来的iv
@@ -49,9 +51,12 @@ public class UserLoginController {
     String openId = weChatResponse.get("openid");
     String sessionKey = weChatResponse.get("session_key");
 
+
     try {
       // 解密获取用户的敏感数据（头像、昵称、电话）
       String userInfo = weChatDecryptUtil.decryptUserInfo(encryptedData, iv, sessionKey);
+
+      //System.out.println("解密后的用户信息：" + userInfo);
 
       // 解析解密后的用户信息
       ObjectMapper objectMapper = new ObjectMapper();
@@ -79,8 +84,10 @@ public class UserLoginController {
         userService.update(user);
       }
 
+
       // 生成JWT令牌
       String jwtToken = jwtUtil.generateToken(user.getUserId());
+      //System.out.println("jwtToken: " + jwtToken);
 
       // 将令牌存储在Redis中
       redisUtil.storeTokenInRedis(user.getUserId(), jwtToken);
@@ -106,8 +113,13 @@ public class UserLoginController {
     try {
       ObjectMapper objectMapper = new ObjectMapper();
       JsonNode jsonNode = objectMapper.readTree(response);
-      String openid = jsonNode.get("openid").asText();
-      String session_key = jsonNode.get("session_key").asText();
+      String openid = jsonNode.get("openid") != null ? jsonNode.get("openid").asText() : null;
+      String session_key = jsonNode.get("session_key") != null ? jsonNode.get("session_key").asText() : null;
+
+      if (openid == null || session_key == null) {
+        throw new RuntimeException("Failed to get openid or session_key from WeChat API response: " + response);
+      }
+      //控制台输出
 
       return Map.of("openid", openid, "session_key", session_key);
     } catch (Exception e) {
