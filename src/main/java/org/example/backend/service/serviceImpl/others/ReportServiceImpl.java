@@ -68,4 +68,17 @@ public class ReportServiceImpl implements ReportService {
       return false;
     }
   }
+
+  @Override
+  public boolean deleteByChildId(String childId) {
+    try {
+      reportMapper.deleteByChildId(childId);
+      return true;
+    }
+    catch (Exception e) {
+      // 记录异常日志
+      logger.error("删除报告失败, childId: {}", childId, e);
+      return false;
+    }
+  }
 }

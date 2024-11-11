@@ -52,12 +52,13 @@ public class UserServiceImpl implements UserService {
     try {
       String userId = "U-" + UUID.randomUUID();
       user.setUserId(userId);
-      String username = encryptionUtil.encryptMD5(user.getUsername());
-      user.setUsername(username);
-      String password = encryptionUtil.encryptMD5(user.getPassword());
-      user.setPassword(password);
+      //String username = EncryptionUtil.encryptMD5(user.getUsername());
+      //user.setUsername(username);
+      //String password = EncryptionUtil.encryptMD5(user.getPassword());
+      //user.setPassword(password);
       user.setStatus("active");
       user.setRegistrationDate(LocalDateTime.now());
+      user.setLastLogin(LocalDateTime.now());
       userMapper.insertUser(user);
       logger.info("User with ID {} inserted successfully", user.getUserId());
       return userId;

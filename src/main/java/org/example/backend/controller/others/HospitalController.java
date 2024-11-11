@@ -4,6 +4,7 @@ import java.util.List;
 import org.example.backend.entity.others.Hospital;
 import org.example.backend.service.others.HospitalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,7 +14,7 @@ public class HospitalController {
   @Autowired
   private HospitalService hospitalService;
 
-  @RequestMapping("/selectAll")
+  @GetMapping("/selectAll")
   public List<Hospital> selectAllHospitals() {
     return hospitalService.selectAllHospitals();
   }

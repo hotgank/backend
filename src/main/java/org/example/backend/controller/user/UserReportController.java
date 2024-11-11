@@ -32,4 +32,27 @@ public class UserReportController {
         }
     }
 
+    //根据childId删除报告
+    @PostMapping("/deleteByChildId")
+    public ResponseEntity<String> deleteByChildId(@RequestBody String childIdJson) {
+        String childId = jsonParser.parseJsonString(childIdJson, "childId");
+        boolean isDeleted = reportService.deleteByChildId(childId);
+        if (isDeleted) {
+            return ResponseEntity.ok("删除成功");
+        } else {
+            return ResponseEntity.status(404).body("未找到相关数据");
+        }
+    }
+
+    //create报告
+    @PostMapping("/createReport")
+    public ResponseEntity<String> createReport(@RequestBody Report report) {
+        int insert = reportService.insertReport(report);
+        if (insert > 0) {
+            return ResponseEntity.ok("添加成功");
+        } else {
+            return ResponseEntity.status(500).body("添加失败");
+        }
+    }
+
 }
