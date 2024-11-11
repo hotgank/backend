@@ -28,7 +28,7 @@ public interface UserMapper {
   List<User> selectAll();
 
   // 根据ID查询
-  @Select("SELECT * FROM u_users WHERE user_id = #{childId}")
+  @Select("SELECT * FROM u_users WHERE user_id = #{userId}")
   @Results({
       @Result(column = "user_id", property = "userId"),
       @Result(column = "username", property = "username"),
@@ -38,9 +38,11 @@ public interface UserMapper {
       @Result(column = "registration_date", property = "registrationDate"),
       @Result(column = "last_login", property = "lastLogin"),
       @Result(column = "status", property = "status"),
-      @Result(column = "avatar_url", property = "avatarUrl")
+      @Result(column = "avatar_url", property = "avatarUrl"),
+      @Result(column = "openid", property = "openid"),
+      @Result(column = "session_key", property = "sessionKey")
   })
-  User selectById(@Param("childId") String childId);
+  User selectById(@Param("userId") String userId);
 
   // 插入用户信息
   @Insert("INSERT INTO u_users(user_id, username, password, email, phone, registration_date,"

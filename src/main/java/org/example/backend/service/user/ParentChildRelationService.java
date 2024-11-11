@@ -5,8 +5,10 @@ import org.example.backend.entity.user.ParentChildRelation;
 
 public interface ParentChildRelationService {
   List<ParentChildRelation> getAllRelations();
-  ParentChildRelation getRelationById(int id);
+  ParentChildRelation getRelationById(int relationId);
   int createRelation(ParentChildRelation relation);
-  int updateRelation(ParentChildRelation relation);
-  int deleteRelationById(int id);
+  Boolean updateRelation(ParentChildRelation relation);
+  Boolean deleteRelationById(int relationId);
+  List<ParentChildRelation> getRelationsByUserId(String userId);
+  Boolean deleteRelationsByChildId(String childId);
 }
