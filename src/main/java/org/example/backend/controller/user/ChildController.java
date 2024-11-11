@@ -27,10 +27,10 @@ public class ChildController {
   private ParentChildRelationImpl parentChildRelationService;
 
   @Autowired
-  private ExcelReader excelReader;
+  private JsonParser jsonParser;
 
   @Autowired
-  private JsonParser jsonParser;
+  private ExcelReader excelReader;
 
   // 处理创建孩子和创建用户的关系请求
   @PostMapping("/createChild")
@@ -40,7 +40,7 @@ public class ChildController {
       String userId = (String) request.getAttribute("userId");
 
       //调试用
-      userId = (String) request.getParameter("userId");
+      userId = request.getParameter("userId");
 
       //调用服务层来添加孩子信息到数据库
       String childId = childService.insert(child);
@@ -88,20 +88,21 @@ public class ChildController {
     }
   }
 
-  // 处理添加孩子信息的请求
-  @PostMapping("/add")
-  public ResponseEntity<String> addChild(@RequestBody Child child) {
+      // 处理添加孩子信息的请求
+      @PostMapping("/add")
+      public ResponseEntity<String> addChild(@RequestBody Child child) {
 
-    // 调用服务层来添加孩子信息到数据库
-    String result = childService.insert(child);
+        // 调用服务层来添加孩子信息到数据库
+        String result = childService.insert(child);
 
-    if (result != null) {
-      return ResponseEntity.ok("Child information added successfully, childId: " + result);
-    } else {
+        if (result != null) {
+          return ResponseEntity.ok("Child information added successfully, childId: " + result);
+        } else {
       return ResponseEntity.status(500).body("Failed to add child information");
     }
   }
 
+  // 处理更新孩子信息的请求
   @PostMapping("/update")
   public ResponseEntity<String> updateChild(@RequestBody Child child) {
 

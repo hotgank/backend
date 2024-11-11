@@ -18,6 +18,13 @@ public class ExcelReader {
 
   private static final Logger logger = LoggerFactory.getLogger(ExcelReader.class);
 
+  /**
+   * 读取Excel文件中的数据，并将每行数据转换为指定类型的对象
+   *
+   * @param fileUrl Excel文件的URL地址
+   * @param clazz   指定类型T的Class对象，用于创建实体对象
+   * @return 包含转换后的对象的列表
+   */
   public <T> List<T> readExcel(String fileUrl, Class<T> clazz) {
     List<T> entityList = new ArrayList<>();
     try (InputStream inputStream = new URL(fileUrl).openStream();
@@ -51,6 +58,15 @@ public class ExcelReader {
     return entityList;
   }
 
+  /**
+   * 将单元格的值分配给实体类中的字段
+   * 此方法根据单元格的类型，将单元格中的值转换为适当的数据类型，并将其设置到给定实体类的指定字段中
+   *
+   * @param cell 单元格，包含要分配给字段的值
+   * @param field 实体类中的字段，将从单元格中获取的值设置到该字段
+   * @param entity 实体对象，其字段将被设置
+   * @throws IllegalAccessException 如果字段设置操作不合法时抛出此异常
+   */
   private <T> void assignCellValueToField(Cell cell, Field field, T entity) throws IllegalAccessException {
     switch (cell.getCellType()) {
       case STRING -> {
@@ -76,6 +92,15 @@ public class ExcelReader {
     }
   }
 
+  /**
+   * 为实体类中的null字段设置默认值
+   * 此方法通过反射检查给定实体类中的字段，并根据字段类型设置默认值
+   * 主要解决了在实体类初始化或数据加载过程中，对于未赋值的字段给予合理默认值的问题
+   *
+   * @param field 要检查并可能设置默认值的字段对象
+   * @param entity 实体类实例，通过此参数可以访问和设置字段值
+   * @throws IllegalAccessException 如果字段不可访问或设置失败
+   */
   private <T> void setDefaultForNullField(Field field, T entity) throws IllegalAccessException {
     if (field.getType() == String.class) {
       field.set(entity, "");

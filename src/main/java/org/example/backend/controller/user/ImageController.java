@@ -1,5 +1,8 @@
 package org.example.backend.controller.user;
 
+import org.example.backend.service.serviceImpl.others.MessageServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +17,9 @@ import java.nio.file.Paths;
 @RestController
 @RequestMapping("/api/image")
 public class ImageController {
+
+  private static final Logger logger = LoggerFactory.getLogger(MessageServiceImpl.class);
+
   // 上传图片并返回图片的URL
   @PostMapping("/upload")
   public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
@@ -41,7 +47,7 @@ public class ImageController {
       //return new ResponseEntity<>(imageUrl, HttpStatus.OK);
       return ResponseEntity.ok("{\"imageUrl\":\""+imageUrl+"\"}");
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.error("Error occurred while uploading image", e);
       return new ResponseEntity<>("Error occurred while uploading image", HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }

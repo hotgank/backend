@@ -1,7 +1,6 @@
 package org.example.backend.service.serviceImpl.user;
 
 import java.util.List;
-import java.util.UUID;
 import org.example.backend.entity.user.ParentChildRelation;
 import org.example.backend.mapper.user.ParentChildRelationMapper;
 import org.example.backend.service.user.ParentChildRelationService;

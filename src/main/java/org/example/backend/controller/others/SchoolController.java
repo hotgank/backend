@@ -4,6 +4,7 @@ import java.util.List;
 import org.example.backend.entity.others.School;
 import org.example.backend.service.others.SchoolService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,7 +14,7 @@ public class SchoolController {
   @Autowired
   private SchoolService schoolService;
 
-  @RequestMapping("/selectAll")
+  @GetMapping("/selectAll")
   public List<School> selectAllSchools() {
     return schoolService.selectAllSchools();
   }

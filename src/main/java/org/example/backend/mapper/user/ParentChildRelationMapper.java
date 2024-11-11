@@ -1,6 +1,5 @@
 package org.example.backend.mapper.user;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;

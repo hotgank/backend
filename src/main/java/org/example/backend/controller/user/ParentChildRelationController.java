@@ -40,11 +40,11 @@ public class ParentChildRelationController {
     }
   }
 
-  //根据repatitionId删除关系
+  //根据relationId删除关系
   @PostMapping("/deleteRelationById")
   public ResponseEntity<String> deleteRelationById(@RequestBody String relationIdJson) {
     try {
-      int relationId = JsonParser.parseJsonInt(relationIdJson, "relationId");
+      int relationId = jsonParser.parseJsonInt(relationIdJson, "relationId");
       boolean isDeleted = parentChildRelationService.deleteRelationById(relationId);
       if (isDeleted) {
         return ResponseEntity.ok("删除成功");
