@@ -40,7 +40,7 @@ public class ParentChildRelationController {
     }
   }
 
-  //根据repatitionId删除关系
+  //根据relationId删除关系
   @PostMapping("/deleteRelationById")
   public ResponseEntity<String> deleteRelationById(@RequestBody String relationIdJson) {
     try {
