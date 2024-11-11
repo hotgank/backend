@@ -2,6 +2,7 @@ package org.example.backend.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Component;
 
@@ -19,23 +20,21 @@ public class WeChatDecryptUtil {
     byte[] sessionKeyByte = Base64.decodeBase64(sessionKey);
 
     // 使用 AES 解密
-    Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
+    Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
     SecretKeySpec keySpec = new SecretKeySpec(sessionKeyByte, "AES");
     cipher.init(Cipher.DECRYPT_MODE, keySpec, new javax.crypto.spec.IvParameterSpec(ivByte));
     byte[] decrypted = cipher.doFinal(encryptedDataByte);
 
     // 转换为 UTF-8 字符串
-    String result = new String(decrypted, "UTF-8");
+    String result = new String(decrypted, StandardCharsets.UTF_8);
 
     // 使用 Jackson 解析解密后的 JSON 数据
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode = objectMapper.readTree(result);
 
-    // 如果解密成功且没有错误码，则返回解密后的数据
-    if (jsonNode.has("errCode") && jsonNode.get("errCode").asInt() == 0) {
-      return result;  // 返回解密后的用户信息
-    } else {
-      throw new Exception("Failed to decrypt user data");
-    }
+    //控制台输出
+    //System.out.println("解密成功");
+    // 如果解析成功，返回解密后的数据
+    return jsonNode.toString();
   }
 }

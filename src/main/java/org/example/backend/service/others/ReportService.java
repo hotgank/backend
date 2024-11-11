@@ -15,4 +15,6 @@ public interface ReportService {
     boolean updateReport(Report report);
 
     boolean deleteByChildId(String childId);
+
+    boolean deleteByReportId(String reportId);
 }

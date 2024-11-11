@@ -37,6 +37,22 @@ public class ParentChildRelationController {
     }
   }
 
+  //根据repatitionId删除关系
+  @PostMapping("/deleteRelationById")
+  public ResponseEntity<String> deleteRelationById(@RequestBody String relationIdJson) {
+    try {
+      int relationId = JsonParser.parseJsonInt(relationIdJson, "relationId");
+      boolean isDeleted = parentChildRelationService.deleteRelationById(relationId);
+      if (isDeleted) {
+        return ResponseEntity.ok("删除成功");
+      } else {
+        return ResponseEntity.status(404).body("未找到相关数据");
+      }
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body("删除失败");
+    }
+  }
+
   //根据childId删除关系
   @PostMapping("/deleteRelationByChildId")
   public ResponseEntity<String> deleteRelationByChildId(@RequestBody String childIdJson) {

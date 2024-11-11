@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 public class RedisUtil {
   @Autowired
   private RedisTemplate<String, String> redisTemplate;
-
   public void storeTokenInRedis(String userId, String token) {
     redisTemplate.opsForValue().set(userId, token, 300, TimeUnit.MINUTES); // 5小时
   }

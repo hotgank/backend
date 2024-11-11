@@ -25,7 +25,7 @@ public class ChildController {
   private ParentChildRelationImpl parentChildRelationService;
 
 
-  // 处理创建孩子和创建用户的关系请求
+  // 创建档案
   @PostMapping("/createChild")
   public ResponseEntity<String> createChild(@RequestBody Child child, HttpServletRequest request) {
     try {
@@ -61,7 +61,7 @@ public class ChildController {
     return ResponseEntity.ok(result);
   }
 
-  // 处理根据childId查询孩子信息的请求
+  // 获取孩子的详细个人信息
   @GetMapping("/selectById")
   public ResponseEntity<String> selectById(@RequestBody String childIdJson) {
     String childId = JsonParser.parseJsonString(childIdJson, "childId");
@@ -82,7 +82,7 @@ public class ChildController {
     }
   }
 
-  // 处理更新孩子信息的请求
+  // 更新孩子个人信息
   @PostMapping("/update")
   public ResponseEntity<String> updateChild(@RequestBody Child child) {
 
@@ -96,6 +96,7 @@ public class ChildController {
     }
   }
 
+  //删除档案
   @PostMapping("/delete")
   public ResponseEntity<String> deleteChild(@RequestBody String childIdJson) {
     String childId = JsonParser.parseJsonString(childIdJson, "childId");

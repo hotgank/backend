@@ -28,7 +28,17 @@ public class UserReportController {
             return ResponseEntity.status(500).body("Failed to find reports");
         }
     }
-
+    // 根据reportId删除
+    @PostMapping("/deleteByReportId")
+    public ResponseEntity<String> deleteByReportId(@RequestBody String reportIdJson) {
+        String reportId = JsonParser.parseJsonString(reportIdJson, "reportId");
+        boolean isDeleted = reportService.deleteByReportId(reportId);
+        if (isDeleted) {
+            return ResponseEntity.ok("删除成功");
+        } else {
+            return ResponseEntity.status(404).body("未找到相关数据");
+        }
+    }
     //根据childId删除报告
     @PostMapping("/deleteByChildId")
     public ResponseEntity<String> deleteByChildId(@RequestBody String childIdJson) {
@@ -52,4 +62,14 @@ public class UserReportController {
         }
     }
 
+    //update报告
+    @PostMapping("/updateReport")
+    public ResponseEntity<String> updateReport(@RequestBody Report report) {
+        boolean update = reportService.updateReport(report);
+        if (update) {
+            return ResponseEntity.ok("更新成功");
+        } else {
+            return ResponseEntity.status(500).body("更新失败");
+        }
+    }
 }
