@@ -48,4 +48,8 @@ public interface ReportMapper {
     //根据childId删除报告
     @Delete("DELETE FROM r_reports WHERE child_id = #{childId}")
     void deleteByChildId(@Param("childId") String childId);
+
+    //根据reportId删除报告
+    @Delete("DELETE FROM r_reports WHERE report_id = #{reportId}")
+    void deleteByReportId(@Param("reportId") String reportId);
 }

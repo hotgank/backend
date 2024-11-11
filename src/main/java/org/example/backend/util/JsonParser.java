@@ -29,4 +29,18 @@ public class JsonParser {
     return null;
   }
 
+  public static int parseJsonInt( String jsonString, String fieldName) {
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      JsonNode jsonNode = objectMapper.readTree(jsonString);
+      JsonNode fieldNode = jsonNode.get(fieldName);
+      if (fieldNode != null && !fieldNode.isNull()) {
+        return fieldNode.asInt();
+      }
+    } catch (Exception e) {
+      // 处理异常，如JSON格式错误或字段不存在
+      System.out.println("Error parsing JSON: " + e.getMessage());
+    }
+    return 0;
+  }
 }

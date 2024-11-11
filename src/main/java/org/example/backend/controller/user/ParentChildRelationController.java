@@ -20,7 +20,8 @@ public class ParentChildRelationController {
   @Autowired
   private ParentChildRelationService parentChildRelationService;
 
-  @Autowired private JsonParser jsonParser;
+  @Autowired
+  private JsonParser jsonParser;
 
   //根据userId获取所有关系表数据
   @GetMapping("/selectAllRelations")
@@ -36,6 +37,22 @@ public class ParentChildRelationController {
       return ResponseEntity.ok(relations);
     } catch (Exception e) {
       return ResponseEntity.status(500).body(null);
+    }
+  }
+
+  //根据repatitionId删除关系
+  @PostMapping("/deleteRelationById")
+  public ResponseEntity<String> deleteRelationById(@RequestBody String relationIdJson) {
+    try {
+      int relationId = jsonParser.parseJsonInt(relationIdJson, "relationId");
+      boolean isDeleted = parentChildRelationService.deleteRelationById(relationId);
+      if (isDeleted) {
+        return ResponseEntity.ok("删除成功");
+      } else {
+        return ResponseEntity.status(404).body("未找到相关数据");
+      }
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body("删除失败");
     }
   }
 

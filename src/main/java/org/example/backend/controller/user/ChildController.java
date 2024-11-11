@@ -58,7 +58,6 @@ public class ChildController {
     }
   }
 
-
   @GetMapping("/selectAll")
   public ResponseEntity<String> selectAll() {
 
@@ -117,6 +116,7 @@ public class ChildController {
     }
   }
 
+  //删除档案
   @PostMapping("/delete")
   public ResponseEntity<String> deleteChild(@RequestBody String childIdJson) {
     String childId = jsonParser.parseJsonString(childIdJson, "childId");
