@@ -79,4 +79,17 @@ public class ChildServiceImpl implements ChildService {
         return false;
       }
     }
+
+    @Override
+    public boolean insertAllChildren(List<Child> children) {
+      try {
+        for (Child child : children) {
+          insert(child);
+        }
+        return true;
+      } catch (Exception e) {
+        logger.error("Error inserting children: {}", e.getMessage(), e);
+        return false;
+      }
+    }
 }

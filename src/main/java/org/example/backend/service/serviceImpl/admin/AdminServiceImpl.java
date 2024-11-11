@@ -22,6 +22,9 @@ public class AdminServiceImpl implements AdminService {
   @Autowired
   private AdminMapper adminMapper;
 
+  @Autowired
+  private EncryptionUtil encryptionUtil;
+
   @Override
   public Admin selectById(String adminId) {
     try {
@@ -49,9 +52,9 @@ public class AdminServiceImpl implements AdminService {
     try {
       String adminId = "A-" + UUID.randomUUID();
       admin.setAdminId(adminId);
-      String username = EncryptionUtil.encryptMD5(admin.getUsername());
+      String username = encryptionUtil.encryptMD5(admin.getUsername());
       admin.setUsername(username);
-      String password = EncryptionUtil.encryptMD5(admin.getPassword());
+      String password = encryptionUtil.encryptMD5(admin.getPassword());
       admin.setPassword(password);
       admin.setRegistrationDate(LocalDateTime.now());
       admin.setStatus("active");

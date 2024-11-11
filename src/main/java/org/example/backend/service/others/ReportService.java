@@ -1,6 +1,6 @@
 package org.example.backend.service.others;
 
-import org.example.backend.entity.user.Report;
+import org.example.backend.entity.others.Report;
 
 import java.util.List;
 

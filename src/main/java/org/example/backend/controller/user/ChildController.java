@@ -5,6 +5,7 @@ import org.example.backend.entity.user.Child;
 import org.example.backend.entity.user.ParentChildRelation;
 import org.example.backend.service.serviceImpl.user.ParentChildRelationImpl;
 import org.example.backend.service.user.ChildService;
+import org.example.backend.util.ExcelReader;
 import org.example.backend.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class ChildController {
   private ParentChildRelationImpl parentChildRelationService;
 
 
-  // 创建档案
+  // 处理创建孩子和创建用户的关系请求
   @PostMapping("/createChild")
   public ResponseEntity<String> createChild(@RequestBody Child child, HttpServletRequest request) {
     try {
@@ -61,7 +62,7 @@ public class ChildController {
     return ResponseEntity.ok(result);
   }
 
-  // 获取孩子的详细个人信息
+  // 处理根据childId查询孩子信息的请求
   @GetMapping("/selectById")
   public ResponseEntity<String> selectById(@RequestBody String childIdJson) {
     String childId = JsonParser.parseJsonString(childIdJson, "childId");
@@ -82,7 +83,20 @@ public class ChildController {
     }
   }
 
-  // 更新孩子个人信息
+  // 处理添加孩子信息的请求
+  @PostMapping("/add")
+  public ResponseEntity<String> addChild(@RequestBody Child child) {
+
+    // 调用服务层来添加孩子信息到数据库
+    String result = childService.insert(child);
+
+    if (result != null) {
+      return ResponseEntity.ok("Child information added successfully, childId: " + result);
+    } else {
+      return ResponseEntity.status(500).body("Failed to add child information");
+    }
+  }
+
   @PostMapping("/update")
   public ResponseEntity<String> updateChild(@RequestBody Child child) {
 
@@ -99,7 +113,7 @@ public class ChildController {
   //删除档案
   @PostMapping("/delete")
   public ResponseEntity<String> deleteChild(@RequestBody String childIdJson) {
-    String childId = JsonParser.parseJsonString(childIdJson, "childId");
+    String childId = jsonParser.parseJsonString(childIdJson, "childId");
     // 调用服务层来删除孩子信息
     boolean success = childService.delete(childId);
 
@@ -107,6 +121,18 @@ public class ChildController {
       return ResponseEntity.ok("Child information deleted successfully");
     } else {
       return ResponseEntity.status(500).body("Failed to delete child information");
+    }
+  }
+
+  @PostMapping("/insertAll")
+  public ResponseEntity<String> insertAllChildren(@RequestBody String urlJson) {
+    String url = jsonParser.parseJsonString(urlJson, "url");
+    List<Child> children = excelReader.readExcel(url, Child.class);
+    boolean success = childService.insertAllChildren(children);
+    if (success) {
+      return ResponseEntity.ok("Children information added successfully");
+    } else {
+      return ResponseEntity.status(500).body("Failed to add children information");
     }
   }
 }

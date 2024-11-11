@@ -16,6 +16,9 @@ public class AdminController {
   @Autowired
   private AdminService adminService;
 
+  @Autowired
+  private JsonParser jsonParser;
+
   @GetMapping("/selectAll")
   public ResponseEntity<String> selectAll() {
     // 调用服务层来查询所有管理员信息
@@ -26,7 +29,7 @@ public class AdminController {
 
   @RequestMapping("/selectById")
   public ResponseEntity<String> selectById(@RequestBody String adminIdJson) {
-    String adminId = JsonParser.parseJsonString(adminIdJson, "adminId");
+    String adminId = jsonParser.parseJsonString(adminIdJson, "adminId");
     // 调用服务层来根据adminId查询管理员信息
     Admin selectedAdmin = adminService.selectById(adminId);
     // 调用服务层来查询指定管理员信息
@@ -63,7 +66,7 @@ public class AdminController {
 
   @RequestMapping("/delete")
   public ResponseEntity<String> deleteAdmin(@RequestBody String adminIdJson) {
-    String adminId = JsonParser.parseJsonString(adminIdJson, "adminId");
+    String adminId = jsonParser.parseJsonString(adminIdJson, "adminId");
     // 调用服务层来删除管理员信息
     boolean success = adminService.delete(adminId);
 

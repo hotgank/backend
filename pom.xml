@@ -61,6 +61,11 @@
       <version>2.13.4.2</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>5.2.3</version>
+    </dependency>
+    <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
       <version>1.15</version>
@@ -81,11 +86,6 @@
       <groupId>io.jsonwebtoken</groupId>
       <artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson if Gson is preferred -->
       <version>0.11.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.json</groupId>
-      <artifactId>json</artifactId>
-      <version>20231013</version>
     </dependency>
 
     <!--引入redis依赖-->
@@ -113,6 +113,11 @@
       <groupId>org.eclipse.angus</groupId>
       <artifactId>angus-activation</artifactId>
       <version>1.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
 
 

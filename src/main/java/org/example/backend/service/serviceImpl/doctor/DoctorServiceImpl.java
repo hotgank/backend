@@ -21,10 +21,15 @@ import java.util.concurrent.TimeUnit;
 public class DoctorServiceImpl implements DoctorService {
 
   private static final Logger logger = LoggerFactory.getLogger(DoctorServiceImpl.class);
+
   @Resource
   private RedisTemplate<String, String> redisTemplate;
+
   @Autowired
   private DoctorMapper doctorMapper;
+
+  @Autowired
+  private EncryptionUtil encryptionUtil;
 
   @Override
   public Doctor selectById(String doctorId) {
@@ -53,7 +58,7 @@ public class DoctorServiceImpl implements DoctorService {
     try {
       String doctorId = "D-" + UUID.randomUUID();
       doctor.setDoctorId(doctorId);
-      String password = EncryptionUtil.encryptMD5(doctor.getPassword());
+      String password = encryptionUtil.encryptMD5(doctor.getPassword());
       doctor.setPassword(password);
       doctor.setRating(-1);
       doctor.setStatus("active");
@@ -64,6 +69,21 @@ public class DoctorServiceImpl implements DoctorService {
     } catch (Exception e) {
       logger.error("Error inserting doctor with ID {}: {}", doctor.getDoctorId(), e.getMessage(), e);
       return null;
+    }
+  }
+
+  @Override
+  public boolean insertAllDoctors(List<Doctor> doctors) {
+    try {
+      for (Doctor doctor : doctors) {
+        insert(doctor);
+      }
+      logger.info("All doctors inserted successfully");
+      return true;
+      }
+    catch (Exception e) {
+      logger.error("Error inserting doctors: {}", e.getMessage(), e);
+      return false;
     }
   }
 
@@ -98,7 +118,7 @@ public class DoctorServiceImpl implements DoctorService {
       if (doctor == null) {
         return false;
       }
-      String encryptedPassword = EncryptionUtil.encryptMD5(newPassword);
+      String encryptedPassword = encryptionUtil.encryptMD5(newPassword);
       doctor.setPassword(encryptedPassword);
       update(doctor);
       return true;
@@ -114,7 +134,7 @@ public class DoctorServiceImpl implements DoctorService {
     if(doctor == null){
       return false;
     }
-    if(EncryptionUtil.verifyMD5(password, doctor.getPassword())){
+    if(encryptionUtil.verifyMD5(password, doctor.getPassword())){
       return true;
     }else{
       return false;
@@ -133,7 +153,7 @@ public class DoctorServiceImpl implements DoctorService {
   @Override
   public String generateRegisterCode(String email) {
     // 检查Redis中是否已存在该邮箱的验证码
-    if (redisTemplate.hasKey(email)) {
+    if (Boolean.TRUE.equals(redisTemplate.hasKey(email))) {
       // 如果存在，则删除旧的验证码
       redisTemplate.delete(email);
     }
@@ -157,7 +177,7 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     // 创建医生对象
-    doctor.setPassword(EncryptionUtil.encryptMD5(doctor.getPassword()));
+    doctor.setPassword(encryptionUtil.encryptMD5(doctor.getPassword()));
     doctor.setRating(-1);
     doctor.setStatus("active");
     doctor.setRegistrationDate(LocalDateTime.now());

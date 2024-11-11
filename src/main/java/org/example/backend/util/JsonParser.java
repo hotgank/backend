@@ -2,7 +2,9 @@ package org.example.backend.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class JsonParser {
 
   /**
@@ -12,7 +14,7 @@ public class JsonParser {
    * @param fieldName 要获取的字段名称
    * @return 字段对应的值，如果字段不存在则返回null
    */
-  public static String parseJsonString(String jsonString, String fieldName) {
+  public String parseJsonString(String jsonString, String fieldName) {
     try {
       ObjectMapper objectMapper = new ObjectMapper();
       JsonNode jsonNode = objectMapper.readTree(jsonString);

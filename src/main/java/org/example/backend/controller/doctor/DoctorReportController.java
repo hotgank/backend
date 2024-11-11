@@ -1,6 +1,6 @@
 package org.example.backend.controller.doctor;
 
-import org.example.backend.entity.user.Report;
+import org.example.backend.entity.others.Report;
 import org.example.backend.service.others.ReportService;
 import org.example.backend.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +18,12 @@ public class DoctorReportController {
 
     @Autowired private ReportService reportService;
 
+    @Autowired
+    private JsonParser jsonParser;
+
     @PostMapping("/selectByChildId")
     public ResponseEntity<String> selectByChildId(@RequestBody String childIdJson) {
-        String childId = JsonParser.parseJsonString(childIdJson, "childId");
+        String childId = jsonParser.parseJsonString(childIdJson, "childId");
         List<Report> reports = reportService.selectByChildId(childId);
         if(reports != null){
             return ResponseEntity.ok(reports.toString());

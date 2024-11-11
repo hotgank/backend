@@ -9,4 +9,6 @@ public interface ChildService {
   String insert(Child child);
   boolean update(Child child);
   boolean delete(String childId);
+
+  boolean insertAllChildren(List<Child> children);
 }

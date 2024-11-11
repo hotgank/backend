@@ -3,7 +3,7 @@ package org.example.backend.mapper.others;
 import java.util.List;
 
 import org.apache.ibatis.annotations.*;
-import org.example.backend.entity.user.Message;
+import org.example.backend.entity.others.Message;
 
 @Mapper
 public interface MessageMapper {

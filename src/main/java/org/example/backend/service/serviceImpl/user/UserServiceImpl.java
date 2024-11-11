@@ -22,6 +22,9 @@ public class UserServiceImpl implements UserService {
   @Autowired
   private UserMapper userMapper;
 
+  @Autowired
+  private EncryptionUtil encryptionUtil;
+
   @Override
   public User selectById(String userId) {
     try {
@@ -49,13 +52,12 @@ public class UserServiceImpl implements UserService {
     try {
       String userId = "U-" + UUID.randomUUID();
       user.setUserId(userId);
-      //String username = EncryptionUtil.encryptMD5(user.getUsername());
-      //user.setUsername(username);
-      //String password = EncryptionUtil.encryptMD5(user.getPassword());
-      //user.setPassword(password);
+      String username = encryptionUtil.encryptMD5(user.getUsername());
+      user.setUsername(username);
+      String password = encryptionUtil.encryptMD5(user.getPassword());
+      user.setPassword(password);
       user.setStatus("active");
       user.setRegistrationDate(LocalDateTime.now());
-      user.setLastLogin(LocalDateTime.now());
       userMapper.insertUser(user);
       logger.info("User with ID {} inserted successfully", user.getUserId());
       return userId;
@@ -66,9 +68,22 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public boolean insertAllUser(List<User> users){
+    try {
+      for (User user : users) {
+        insert(user);
+      }
+      return true;
+    } catch (Exception e) {
+      logger.error("Error inserting users: {}", e.getMessage(), e);
+      return false;
+    }
+  }
+
+  @Override
   public boolean update(User user) {
     try {
-      String sessionKey = EncryptionUtil.encryptMD5(user.getSessionKey());
+      String sessionKey = encryptionUtil.encryptMD5(user.getSessionKey());
       user.setSessionKey(sessionKey);
       userMapper.updateUser(user);
       logger.info("User with ID {} updated successfully", user.getUserId());
@@ -97,9 +112,9 @@ public class UserServiceImpl implements UserService {
     try {
       String userId = "U-" + UUID.randomUUID();
       user.setUserId(userId);
-      String openid = EncryptionUtil.encryptMD5(user.getOpenid());
+      String openid = encryptionUtil.encryptMD5(user.getOpenid());
       user.setOpenid(openid);
-      String sessionKey = EncryptionUtil.encryptMD5(user.getSessionKey());
+      String sessionKey = encryptionUtil.encryptMD5(user.getSessionKey());
       user.setSessionKey(sessionKey);
       user.setStatus("active");
       user.setRegistrationDate(LocalDateTime.now());

@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import org.example.backend.entity.user.Consultation;
+import org.example.backend.entity.others.Consultation;
 
 @Mapper
 public interface ConsultationMapper {
