@@ -1,8 +1,10 @@
 package org.example.backend.controller.user;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import org.example.backend.entity.user.User;
 import org.example.backend.service.user.UserService;
+import org.example.backend.util.ExcelReader;
 import org.example.backend.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
   @Autowired
   private UserService userService;
+
+  @Autowired
+  private JsonParser jsonParser;
+
+  @Autowired
+  private ExcelReader excelReader;
 
   @GetMapping("/selectById")
   public ResponseEntity<String> selectById(HttpServletRequest request) {
@@ -61,9 +69,22 @@ public class UserController {
     }
   }
 
+  @PostMapping("insertAll")
+  public ResponseEntity<String> insertAll(@RequestBody String urlJson) {
+    String url = jsonParser.parseJsonString(urlJson, "url");
+    List<User> users = excelReader.readExcel(url, User.class);
+    // 调用服务层来批量添加用户信息到数据库
+    boolean success = userService.insertAllUser(users);
+    if (success) {
+      return ResponseEntity.ok("User information added successfully");
+    } else {
+      return ResponseEntity.status(500).body("Failed to add user information");
+    }
+  }
+
   @PostMapping("/deleteById")
   public ResponseEntity<String> deleteById(@RequestBody String userIdJson ) {
-    String userId = JsonParser.parseJsonString(userIdJson, "userId");
+    String userId = jsonParser.parseJsonString(userIdJson, "userId");
     // 调用服务层来删除用户信息
     boolean success = userService.delete(userId);
     if (success) {

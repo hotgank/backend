@@ -1,7 +1,7 @@
 package org.example.backend.mapper.others;
 
 import org.apache.ibatis.annotations.*;
-import org.example.backend.entity.user.Report;
+import org.example.backend.entity.others.Report;
 
 import java.util.List;
 

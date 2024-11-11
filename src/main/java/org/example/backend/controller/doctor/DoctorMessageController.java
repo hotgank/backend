@@ -1,7 +1,7 @@
 package org.example.backend.controller.doctor;
 
 import java.util.List;
-import org.example.backend.entity.user.Message;
+import org.example.backend.entity.others.Message;
 import org.example.backend.service.others.MessageService;
 import org.example.backend.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +17,13 @@ public class DoctorMessageController {
 
   @Autowired
   MessageService messageService;
+  @Autowired
+  private JsonParser jsonParser;
 
   @PostMapping("/select")
   public ResponseEntity<String> select(@RequestBody String consultationJson) {
-    String doctorId = JsonParser.parseJsonString(consultationJson, "doctorId");
-    String userId = JsonParser.parseJsonString(consultationJson, "userId");
+    String doctorId = jsonParser.parseJsonString(consultationJson, "doctorId");
+    String userId = jsonParser.parseJsonString(consultationJson, "userId");
     List<Message> messages = messageService.selectMessagesById(doctorId, userId);
     if(messages != null){
       return ResponseEntity.ok(messages.toString());

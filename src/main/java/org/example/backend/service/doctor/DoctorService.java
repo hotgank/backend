@@ -7,6 +7,9 @@ public interface DoctorService {
   Doctor selectById(String doctorId);
   List<Doctor> selectAll();
   String insert(Doctor doctor);
+
+  boolean insertAllDoctors(List<Doctor> doctors);
+
   boolean update(Doctor doctor);
   boolean delete(String doctorId);
 

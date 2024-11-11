@@ -1,8 +1,10 @@
 package org.example.backend.controller.doctor;
 
 
+import java.util.List;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.service.doctor.DoctorService;
+import org.example.backend.util.ExcelReader;
 import org.example.backend.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,12 @@ public class DoctorController {
   @Autowired
   private DoctorService doctorService;
 
+  @Autowired
+  private JsonParser jsonParser;
+
+  @Autowired
+  private ExcelReader excelReader;
+
   @GetMapping("/selectAll")
   public ResponseEntity<String> selectAll() {
 
@@ -26,7 +34,7 @@ public class DoctorController {
 
   @PostMapping("/selectById")
   public ResponseEntity<String> selectById(@RequestBody String doctorIdJson) {
-    String doctorId = JsonParser.parseJsonString(doctorIdJson, "doctorId");
+    String doctorId = jsonParser.parseJsonString(doctorIdJson, "doctorId");
     // 调用服务层来根据doctorId查询医生信息
     Doctor selectedDoctor = doctorService.selectById(doctorId);
 
@@ -51,6 +59,19 @@ public class DoctorController {
     }
   }
 
+  @PostMapping("/insertAll")
+  public ResponseEntity<String> insertAllDoctors(@RequestBody String urlJson) {
+    String url = jsonParser.parseJsonString(urlJson, "url");
+    List<Doctor> doctors = excelReader.readExcel(url, Doctor.class);
+    // 调用服务层来添加医生信息到数据库
+    boolean success = doctorService.insertAllDoctors(doctors);
+    if (success) {
+      return ResponseEntity.ok("doctor information added successfully");
+    } else {
+      return ResponseEntity.status(500).body("Failed to add doctor information");
+    }
+  }
+
   @PostMapping("/update")
   public ResponseEntity<String> updateDoctor(@RequestBody Doctor doctor) {
 
@@ -66,8 +87,8 @@ public class DoctorController {
 
   @PostMapping("/delete")
   public ResponseEntity<String> deleteAccount(@RequestBody String doctorJson) {
-    String doctorId = JsonParser.parseJsonString(doctorJson, "doctorId");
-    String password = JsonParser.parseJsonString(doctorJson, "password");
+    String doctorId = jsonParser.parseJsonString(doctorJson, "doctorId");
+    String password = jsonParser.parseJsonString(doctorJson, "password");
 
     if (!doctorService.validatePassword(doctorId, password)){
       return ResponseEntity.status(400).body("Failed to find doctor information");
@@ -84,13 +105,13 @@ public class DoctorController {
 
   @PostMapping("/updatePassword")
   public ResponseEntity<String> updatePassword(@RequestBody String doctorJson){
-    String doctorId = JsonParser.parseJsonString(doctorJson, "doctorId");
-    String oldPassword = JsonParser.parseJsonString(doctorJson, "oldPassword");
+    String doctorId = jsonParser.parseJsonString(doctorJson, "doctorId");
+    String oldPassword = jsonParser.parseJsonString(doctorJson, "oldPassword");
     if(!doctorService.validatePassword(doctorId, oldPassword)){
       return ResponseEntity.status(400).body("Failed to find doctor information");
     }
-    String newPassword1 = JsonParser.parseJsonString(doctorJson, "newPassword1");
-    String newPassword2 = JsonParser.parseJsonString(doctorJson, "newPassword2");
+    String newPassword1 = jsonParser.parseJsonString(doctorJson, "newPassword1");
+    String newPassword2 = jsonParser.parseJsonString(doctorJson, "newPassword2");
     if (newPassword1 != null && !newPassword1.equals(newPassword2)) {
       return ResponseEntity.status(400).body("Passwords do not match");
     }
