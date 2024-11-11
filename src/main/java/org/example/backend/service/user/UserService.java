@@ -7,6 +7,9 @@ public interface UserService {
   User selectById(String userId);
   List<User> selectAll();
   String insert(User user);
+
+  boolean insertAllUser(List<User> users);
+
   boolean update(User user);
   boolean delete(String userId);
 

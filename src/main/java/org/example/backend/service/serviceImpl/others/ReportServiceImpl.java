@@ -3,7 +3,7 @@ package org.example.backend.service.serviceImpl.others;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.example.backend.entity.user.Report;
+import org.example.backend.entity.others.Report;
 import org.example.backend.mapper.others.ReportMapper;
 import org.example.backend.service.others.ReportService;
 import org.slf4j.Logger;
@@ -65,19 +65,6 @@ public class ReportServiceImpl implements ReportService {
     catch (Exception e) {
       // 记录异常日志
       logger.error("更新报告失败, reportId: {}", report.getReportId(), e);
-      return false;
-    }
-  }
-
-  @Override
-  public boolean deleteByChildId(String childId) {
-    try {
-      reportMapper.deleteByChildId(childId);
-      return true;
-    }
-    catch (Exception e) {
-      // 记录异常日志
-      logger.error("删除报告失败, childId: {}", childId, e);
       return false;
     }
   }

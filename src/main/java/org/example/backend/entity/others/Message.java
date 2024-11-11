@@ -1,4 +1,4 @@
-package org.example.backend.entity.user;
+package org.example.backend.entity.others;
 
 import java.time.LocalDateTime;
 

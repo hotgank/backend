@@ -1,7 +1,7 @@
 package org.example.backend.mapper.others;
 
 import org.apache.ibatis.annotations.*;
-import org.example.backend.entity.user.Report;
+import org.example.backend.entity.others.Report;
 
 import java.util.List;
 
@@ -44,8 +44,4 @@ public interface ReportMapper {
             + "result = #{result}, analyse = #{analyse}, comment = #{comment}, doctor_id = #{doctorId}, url = #{url} "
             + "WHERE report_id = #{reportId}")
     void update(Report report);
-
-    //根据childId删除报告
-    @Delete("DELETE FROM r_reports WHERE child_id = #{childId}")
-    void deleteByChildId(@Param("childId") String childId);
 }

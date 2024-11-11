@@ -1,6 +1,6 @@
 package org.example.backend.service.others;
 
-import org.example.backend.entity.user.Report;
+import org.example.backend.entity.others.Report;
 
 import java.util.List;
 
@@ -13,6 +13,4 @@ public interface ReportService {
     List<Report> selectByChildId(String childId);
 
     boolean updateReport(Report report);
-
-    boolean deleteByChildId(String childId);
 }

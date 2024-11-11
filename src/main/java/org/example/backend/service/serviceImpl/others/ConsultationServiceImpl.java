@@ -3,7 +3,7 @@ package org.example.backend.service.serviceImpl.others;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import org.example.backend.entity.user.Consultation;
+import org.example.backend.entity.others.Consultation;
 import org.example.backend.mapper.others.ConsultationMapper;
 import org.example.backend.service.others.ConsultationService;
 import org.slf4j.Logger;
