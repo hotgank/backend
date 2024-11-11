@@ -1,7 +1,10 @@
 package org.example.backend.controller.user;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
+import org.example.backend.entity.user.ParentChildRelation;
 import org.example.backend.entity.user.User;
+import org.example.backend.service.serviceImpl.user.ParentChildRelationImpl;
 import org.example.backend.service.user.UserService;
 import org.example.backend.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,32 +22,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
+
   @Autowired
   private UserService userService;
 
-  @GetMapping("/selectById")
-  public ResponseEntity<String> selectById(HttpServletRequest request) {
+  @Autowired
+  private ParentChildRelationImpl parentChildRelationService;
+
+  // 获取用户个人信息
+  @GetMapping("/getUserInfo")
+  public ResponseEntity<String> getUserInfo(HttpServletRequest request) {
+    // 从请求中获取用户ID
     String userId = (String) request.getAttribute("userId");
+
+    //调试用
+    userId = (String) request.getParameter("userId");
+
     // 调用服务层来根据userId查询用户信息
     User selectedUser = userService.selectById(userId);
-
-    if (selectedUser != null) {
-      return ResponseEntity.ok(selectedUser.toString());
+    if (selectedUser != null){
+      return ResponseEntity.ok("{\"username\":\""+selectedUser.getUsername()
+          +"\",\"phone\":\""+selectedUser.getPhone()
+          +"\",\"avatarUrl\":\""+selectedUser.getAvatarUrl()
+          +"\",\"openid\":\""+selectedUser.getOpenid()+"\"}");
     } else {
-      return ResponseEntity.status(500).body("Failed to add user information");
-    }
-  }
-
-  @PostMapping("/update")
-  public ResponseEntity<String> updateUser(@RequestBody User user, HttpServletRequest request) {
-    String userId = (String) request.getAttribute("userId");
-    user.setUserId(userId);
-    boolean success = userService.update(user);
-
-    if (success) {
-      return ResponseEntity.ok("User information updated successfully");
-    } else {
-      return ResponseEntity.status(500).body("Failed to update user information");
+      return ResponseEntity.status(500).body("Failed to Get user information");
     }
   }
 

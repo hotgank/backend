@@ -13,4 +13,6 @@ public interface ReportService {
     List<Report> selectByChildId(String childId);
 
     boolean updateReport(Report report);
+
+    boolean deleteByChildId(String childId);
 }
