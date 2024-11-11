@@ -76,4 +76,17 @@ public class ParentChildRelationImpl implements ParentChildRelationService {
       return null;
     }
     }
+
+    // delete all relations by childId
+    @Override
+  public Boolean deleteRelationsByChildId(String childId) {
+    try {
+      parentChildRelationMapper.deleteRelationsByChildId(childId);
+      logger.info("relations deleted successfully");
+      return true;
+    } catch (Exception e) {
+      logger.error("Error deleting relations: {}", e.getMessage(), e);
+      return false;
+    }
+  }
 }

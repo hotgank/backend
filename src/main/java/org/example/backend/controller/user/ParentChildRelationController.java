@@ -4,9 +4,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import org.example.backend.entity.user.ParentChildRelation;
 import org.example.backend.service.user.ParentChildRelationService;
+import org.example.backend.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,6 +34,22 @@ public class ParentChildRelationController {
       return ResponseEntity.ok(relations);
     } catch (Exception e) {
       return ResponseEntity.status(500).body(null);
+    }
+  }
+
+  //根据childId删除关系
+  @PostMapping("/deleteRelationByChildId")
+  public ResponseEntity<String> deleteRelationByChildId(@RequestBody String childIdJson) {
+    try {
+      String childId = JsonParser.parseJsonString(childIdJson, "childId");
+      boolean isDeleted = parentChildRelationService.deleteRelationsByChildId(childId);
+      if (isDeleted) {
+        return ResponseEntity.ok("删除成功");
+      } else {
+        return ResponseEntity.status(404).body("未找到相关数据");
+      }
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body("删除失败");
     }
   }
 }

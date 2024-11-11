@@ -66,4 +66,8 @@ public interface ParentChildRelationMapper {
  // 删除关系
   @Insert("DELETE FROM u_parents_children WHERE relation_id = #{relationId}")
   void deleteRelationById(@Param("relationId") int relationId);
+
+  //根据childId删除所有与childId有关的关系
+  @Insert("DELETE FROM u_parents_children WHERE child_id = #{childId}")
+  void deleteRelationsByChildId(@Param("childId") String childId);
 }

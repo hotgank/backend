@@ -10,4 +10,5 @@ public interface ParentChildRelationService {
   Boolean updateRelation(ParentChildRelation relation);
   Boolean deleteRelationById(int relationId);
   List<ParentChildRelation> getRelationsByUserId(String userId);
+  Boolean deleteRelationsByChildId(String childId);
 }
