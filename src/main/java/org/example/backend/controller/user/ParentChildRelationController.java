@@ -20,6 +20,9 @@ public class ParentChildRelationController {
   @Autowired
   private ParentChildRelationService parentChildRelationService;
 
+  @Autowired
+  private JsonParser jsonParser;
+
   //根据userId获取所有关系表数据
   @GetMapping("/selectAllRelations")
   public ResponseEntity<List<ParentChildRelation>> selectAllRelations(HttpServletRequest request) {
@@ -57,7 +60,7 @@ public class ParentChildRelationController {
   @PostMapping("/deleteRelationByChildId")
   public ResponseEntity<String> deleteRelationByChildId(@RequestBody String childIdJson) {
     try {
-      String childId = JsonParser.parseJsonString(childIdJson, "childId");
+      String childId = jsonParser.parseJsonString(childIdJson, "childId");
       boolean isDeleted = parentChildRelationService.deleteRelationsByChildId(childId);
       if (isDeleted) {
         return ResponseEntity.ok("删除成功");

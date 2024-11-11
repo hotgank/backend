@@ -1,6 +1,7 @@
 package org.example.backend.controller.user;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import org.example.backend.entity.user.Child;
 import org.example.backend.entity.user.ParentChildRelation;
 import org.example.backend.service.serviceImpl.user.ParentChildRelationImpl;
@@ -25,6 +26,11 @@ public class ChildController {
   @Autowired
   private ParentChildRelationImpl parentChildRelationService;
 
+  @Autowired
+  private ExcelReader excelReader;
+
+  @Autowired
+  private JsonParser jsonParser;
 
   // 处理创建孩子和创建用户的关系请求
   @PostMapping("/createChild")
@@ -52,7 +58,6 @@ public class ChildController {
     }
   }
 
-
   @GetMapping("/selectAll")
   public ResponseEntity<String> selectAll() {
 
@@ -65,7 +70,7 @@ public class ChildController {
   // 处理根据childId查询孩子信息的请求
   @GetMapping("/selectById")
   public ResponseEntity<String> selectById(@RequestBody String childIdJson) {
-    String childId = JsonParser.parseJsonString(childIdJson, "childId");
+    String childId = jsonParser.parseJsonString(childIdJson, "childId");
     // 调用服务层来根据childId查询孩子信息
     Child selectedChild = childService.selectById(childId);
 

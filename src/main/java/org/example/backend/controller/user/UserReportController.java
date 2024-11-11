@@ -34,7 +34,7 @@ public class UserReportController {
     // 根据reportId删除
     @PostMapping("/deleteByReportId")
     public ResponseEntity<String> deleteByReportId(@RequestBody String reportIdJson) {
-        String reportId = JsonParser.parseJsonString(reportIdJson, "reportId");
+        String reportId = jsonParser.parseJsonString(reportIdJson, "reportId");
         boolean isDeleted = reportService.deleteByReportId(reportId);
         if (isDeleted) {
             return ResponseEntity.ok("删除成功");
@@ -45,7 +45,7 @@ public class UserReportController {
     //根据childId删除报告
     @PostMapping("/deleteByChildId")
     public ResponseEntity<String> deleteByChildId(@RequestBody String childIdJson) {
-        String childId = JsonParser.parseJsonString(childIdJson, "childId");
+        String childId = jsonParser.parseJsonString(childIdJson, "childId");
         boolean isDeleted = reportService.deleteByChildId(childId);
         if (isDeleted) {
             return ResponseEntity.ok("删除成功");
