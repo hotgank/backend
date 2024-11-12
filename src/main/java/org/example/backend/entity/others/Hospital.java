@@ -28,4 +28,13 @@ public class Hospital {
   public void setAdminId(String adminId) {
     this.adminId = adminId;
   }
+
+  @Override
+  public String toString() {
+    return "Hospital{" +
+            "hospitalName='" + hospitalName + '\'' +
+            ", address='" + address + '\'' +
+            ", adminId='" + adminId + '\'' +
+            '}';
+  }
 }

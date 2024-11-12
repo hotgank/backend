@@ -29,4 +29,13 @@ public class School {
   public void setAdminId(String adminId) {
     this.adminId = adminId;
   }
+
+  @Override
+  public String toString() {
+    return "School{" +
+      "schoolName='" + schoolName + '\'' +
+      ", address='" + address + '\'' +
+      ", adminId='" + adminId + '\'' +
+      '}';
+  }
 }
