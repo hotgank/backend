@@ -1,9 +1,12 @@
 package org.example.backend.controller.doctor;
 
+import java.util.List;
 import java.util.Map;
 import org.example.backend.entity.doctor.Doctor;
+import org.example.backend.entity.others.Hospital;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.example.backend.service.doctor.DoctorService;
 import org.example.backend.util.MailUtils;
+import org.example.backend.service.others.HospitalService;
 
 
 /**
@@ -29,6 +33,9 @@ public class DoctorRegisterController {
 
   @Autowired
   private DoctorService doctorService;
+
+  @Autowired
+  private HospitalService hospitalService;
 
   @PostMapping("/sendRegisterCode")
   public ResponseEntity<String> sendRegisterCode(@RequestBody Map<String, String> body) {
@@ -58,13 +65,15 @@ public class DoctorRegisterController {
     String registerCode = body.get("registerCode");
     String username = body.get("name");
     String password = body.get("password");
+    String workplace = body.get("workplace");
     Doctor doctor = new Doctor();
     doctor.setEmail(email);
     doctor.setName(username);
     doctor.setPassword(password);
+    doctor.setWorkplace(workplace);
     logger.info("收到注册请求，邮箱: {}, 用户名: {}", email, username);
 
-    if (email == null || email.isEmpty() || registerCode == null || registerCode.isEmpty() || username == null || username.isEmpty() || password == null || password.isEmpty()) {
+    if (email == null || email.isEmpty() || registerCode == null || registerCode.isEmpty() || username == null || username.isEmpty() || password == null || password.isEmpty()|| workplace == null || workplace.isEmpty()) {
       logger.error("注册信息不完整");
       return ResponseEntity.status(400).body("注册信息不完整");
     }
@@ -82,14 +91,19 @@ public class DoctorRegisterController {
 //      return ResponseEntity.status(400).body("邮箱已存在");
 //    }
 
-    boolean success = doctorService.registerDoctor(doctor);
+    String success = doctorService.insert(doctor);
 
-    if (success) {
+    if (success!=null) {
       logger.info("用户注册成功，邮箱: {}, 用户名: {}", email, username);
       return ResponseEntity.ok("注册成功");
     } else {
       logger.error("用户注册失败，邮箱: {}, 用户名: {}", email, username);
       return ResponseEntity.status(500).body("注册失败");
     }
+  }
+
+  @GetMapping("/selectAllHospitals")
+  public List<Hospital> selectAllHospitals() {
+    return hospitalService.selectAllHospitals();
   }
 }

@@ -177,10 +177,6 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     // 创建医生对象
-    doctor.setPassword(encryptionUtil.encryptMD5(doctor.getPassword()));
-    doctor.setRating(-1);
-    doctor.setStatus("active");
-    doctor.setRegistrationDate(LocalDateTime.now());
 
     // 插入医生信息到数据库
     return insert(doctor) != null;
