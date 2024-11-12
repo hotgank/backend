@@ -50,7 +50,7 @@ public class UserLoginController {
     }
     String openId = weChatResponse.get("openid");
     String sessionKey = weChatResponse.get("session_key");
-
+    //System.out.println("openId: " + openId);
 
     try {
       // 解密获取用户的敏感数据（头像、昵称、电话）
@@ -70,6 +70,7 @@ public class UserLoginController {
         // 创建新用户
         user = new User();
         user.setOpenid(openId);
+        //System.out.println("userOpenid" + user.getOpenid());
         user.setSessionKey(sessionKey);
         user.setUsername(username);
         user.setAvatarUrl(avatarUrl);

@@ -37,9 +37,6 @@ public class UserController {
     // 从请求中获取用户ID
     String userId = (String) request.getAttribute("userId");
 
-    //调试用
-    userId = (String) request.getParameter("userId");
-
     // 调用服务层来根据userId查询用户信息
     User selectedUser = userService.selectById(userId);
     if (selectedUser != null){

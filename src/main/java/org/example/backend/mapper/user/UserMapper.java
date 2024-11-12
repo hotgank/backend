@@ -45,10 +45,8 @@ public interface UserMapper {
   User selectById(@Param("userId") String userId);
 
   // 插入用户信息
-  @Insert("INSERT INTO u_users(user_id, username, password, email, phone, registration_date,"
-      + " last_login, status, avatar_url) "
-      + "VALUES(#{userId}, #{username}, #{password}, #{email}, #{phone}, #{registrationDate},"
-      + " #{lastLogin}, #{status}, #{avatarUrl})")
+  @Insert("INSERT INTO u_users (user_id, username, password, email, phone, registration_date, last_login, status, avatar_url, openid, session_key) "
+      + "VALUES (#{userId}, #{username}, #{password}, #{email}, #{phone}, #{registrationDate}, #{lastLogin}, #{status}, #{avatarUrl}, #{openid}, #{sessionKey})")
   void insertUser(User user);
 
   // 更新用户信息

@@ -29,9 +29,6 @@ public class ParentChildRelationController {
     // 从请求中获取用户ID
     String userId = (String) request.getAttribute("userId");
 
-    //调试用
-    userId = (String) request.getParameter("userId");
-
     try {
       List<ParentChildRelation> relations = parentChildRelationService.getRelationsByUserId(userId);
       return ResponseEntity.ok(relations);

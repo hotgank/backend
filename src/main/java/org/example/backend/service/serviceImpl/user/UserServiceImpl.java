@@ -112,10 +112,6 @@ public class UserServiceImpl implements UserService {
     try {
       String userId = "U-" + UUID.randomUUID();
       user.setUserId(userId);
-      String openid = encryptionUtil.encryptMD5(user.getOpenid());
-      user.setOpenid(openid);
-      String sessionKey = encryptionUtil.encryptMD5(user.getSessionKey());
-      user.setSessionKey(sessionKey);
       user.setStatus("active");
       user.setRegistrationDate(LocalDateTime.now());
       user.setLastLogin(LocalDateTime.now());
