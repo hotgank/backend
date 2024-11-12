@@ -39,9 +39,6 @@ public class ChildController {
       //从请求中获取用户ID
       String userId = (String) request.getAttribute("userId");
 
-      //调试用
-      userId = request.getParameter("userId");
-
       //调用服务层来添加孩子信息到数据库
       String childId = childService.insert(child);
       //调用服务层来创建孩子和用户的关系
