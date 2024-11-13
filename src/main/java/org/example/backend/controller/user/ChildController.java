@@ -67,7 +67,7 @@ public class ChildController {
   }
 
   // 处理根据childId查询孩子信息的请求
-  @GetMapping("/selectById")
+  @PostMapping("/selectById")
   public ResponseEntity<String> selectById(@RequestBody String childIdJson) {
     String childId = jsonParser.parseJsonString(childIdJson, "childId");
     // 调用服务层来根据childId查询孩子信息
