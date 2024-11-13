@@ -1,6 +1,8 @@
 package org.example.backend.controller.user;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.example.backend.entity.user.Child;
 import org.example.backend.entity.user.ParentChildRelation;
@@ -72,14 +74,20 @@ public class ChildController {
     Child selectedChild = childService.selectById(childId);
 
     if (selectedChild != null) {
-      return ResponseEntity.ok("{\"name\":\""+selectedChild.getName()
-          +"\",\"school\":\""+selectedChild.getSchool()
-          +"\",\"gender\":\""+selectedChild.getGender()
-          +"\",\"birthdate\":\""+selectedChild.getBirthdate()
-          +"\",\"height\":\""+selectedChild.getHeight()
-          +"\",\"weight\":\""+selectedChild.getWeight()
-          +"\"}");
+      // 假设 selectedChild.getBirthdate() 返回的是 java.util.Date 类型，转换为 LocalDate
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      String formattedBirthdate = selectedChild.getBirthdate().toInstant()
+          .atZone(ZoneId.systemDefault())
+          .toLocalDate()
+          .format(formatter);
 
+      return ResponseEntity.ok("{\"name\":\"" + selectedChild.getName()
+          + "\",\"school\":\"" + selectedChild.getSchool()
+          + "\",\"gender\":\"" + selectedChild.getGender()
+          + "\",\"birthdate\":\"" + formattedBirthdate
+          + "\",\"height\":\"" + selectedChild.getHeight()
+          + "\",\"weight\":\"" + selectedChild.getWeight()
+          + "\"}");
     } else {
       return ResponseEntity.status(500).body("Failed to add child information");
     }
