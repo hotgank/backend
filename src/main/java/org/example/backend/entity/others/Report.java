@@ -12,6 +12,7 @@ public class Report {
   private String result;
   private String analyse;
   private String comment;
+  private String doctorId;
   private String url; // Image URL
 
   public int getReportId() {
@@ -78,4 +79,12 @@ public class Report {
     this.url = url;
   }
   // getters and setters
+
+  public String getDoctorId() {
+    return doctorId;
+  }
+
+  public void setDoctorId(String doctorId) {
+    this.doctorId = doctorId;
+  }
 }

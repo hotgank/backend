@@ -56,10 +56,10 @@ public interface DoctorMapper{
   Doctor selectById(String doctorId);
 
   @Insert("INSERT INTO d_doctors(doctor_id, name, password, phone, email, "
-      + "age, gender, position, workplace, qualification, experience, rating, "
+      + "birthdate, gender, position, workplace, qualification, experience, rating, "
       + "avatar_url, registration_date, last_login, status) "
       + "VALUES (#{doctorId}, #{name}, #{password}, #{phone}, #{email}, "
-      + "#{age}, #{gender}, #{position}, #{workplace}, #{qualification}, #{experience}, "
+      + "#{birthdate}, #{gender}, #{position}, #{workplace}, #{qualification}, #{experience}, "
       + "#{rating}, #{avatarUrl}, #{registrationDate}, #{lastLogin}, #{status})")
   void insertDoctor(Doctor doctor);
 
@@ -68,7 +68,7 @@ public interface DoctorMapper{
       + "password = #{password}, "
       + "phone = #{phone}, "
       + "email = #{email}, "
-      + "age = #{age}, "
+      + "birthdate = #{birthdate}, "
       + "gender = #{gender}, "
       + "position = #{position}, "
       + "workplace = #{workplace}, "
@@ -83,4 +83,8 @@ public interface DoctorMapper{
 
   @Delete("DELETE FROM d_doctors WHERE doctor_id = #{doctorId}")
   void deleteDoctor(@Param("doctorId") String doctorId);
+
+  // 新增方法：根据邮箱和密码查询 doctor_id
+  @Select("SELECT doctor_id FROM d_doctors WHERE email = #{email} AND password = #{password}")
+  String selectDoctorIdByEmailAndPassword(@Param("email") String email, @Param("password") String password);
 }

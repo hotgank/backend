@@ -20,7 +20,7 @@ public class ReportServiceImpl implements ReportService {
   private ReportMapper reportMapper;
 
   @Override
-  public Report selectByReportId(String reportId) {
+  public Report selectByReportId(int reportId) {
     try {
       return reportMapper.selectByReportId(reportId);
     }
@@ -47,7 +47,8 @@ public class ReportServiceImpl implements ReportService {
   public int insertReport(Report report) {
     try {
       report.setCreatedAt(LocalDateTime.now());
-      return reportMapper.insert(report);
+      reportMapper.insert(report);
+      return reportMapper.selectAll().size();
     }
     catch (Exception e) {
       // 记录异常日志
@@ -83,7 +84,7 @@ public class ReportServiceImpl implements ReportService {
   }
 
   @Override
-  public boolean deleteByReportId(String reportId) {
+  public boolean deleteByReportId(int reportId) {
     try {
       reportMapper.deleteByReportId(reportId);
       return true;
@@ -92,6 +93,18 @@ public class ReportServiceImpl implements ReportService {
       // 记录异常日志
       logger.error("删除报告失败, reportId: {}", reportId, e);
       return false;
+    }
+  }
+
+  @Override
+  public List<Report> selectAll() {
+    try {
+      return reportMapper.selectAll();
+    }
+    catch (Exception e) {
+      // 记录异常日志
+      logger.error("获取所有报告失败", e);
+      return null;
     }
   }
 }

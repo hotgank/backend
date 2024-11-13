@@ -33,11 +33,11 @@ public interface ReportMapper {
             @Result(column = "doctor_id", property = "doctorId"),
             @Result(column = "url", property = "url")
     })
-    Report selectByReportId(@Param("reportId") String reportId);
+    Report selectByReportId(@Param("reportId") int reportId);
 
     @Insert("INSERT INTO r_reports (child_id, created_at, report_type, result, analyse, comment, doctor_id, url)"
             + "VALUES (#{childId}, #{createdAt}, #{reportType}, #{result}, #{analyse}, #{comment}, #{doctorId}, #{url})")
-    @Options(useGeneratedKeys = true, keyProperty = "reportId")
+    @Options(useGeneratedKeys = true, keyProperty = "reportId", keyColumn = "report_id")
     int insert(Report report);
 
     @Update("UPDATE r_reports SET child_id = #{childId}, created_at = #{createdAt}, report_type = #{reportType},"
@@ -51,5 +51,18 @@ public interface ReportMapper {
 
     //根据reportId删除报告
     @Delete("DELETE FROM r_reports WHERE report_id = #{reportId}")
-    void deleteByReportId(@Param("reportId") String reportId);
+    void deleteByReportId(@Param("reportId") int reportId);
+
+    //查询所有报告
+    @Select("SELECT * FROM r_reports")
+    @Results({
+            @Result(column = "report_id", property = "reportId"),
+            @Result(column = "child_id", property = "childId"),
+            @Result(column = "created_at", property = "createdAt"),
+            @Result(column = "report_type", property = "reportType"),
+            @Result(column = "result", property = "result"),
+            @Result(column = "analyse", property = "analyse"),
+            @Result(column = "comment", property = "comment"),
+    })
+    List<Report> selectAll();
 }

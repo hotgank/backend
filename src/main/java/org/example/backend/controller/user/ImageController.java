@@ -18,7 +18,7 @@ import java.nio.file.Paths;
 @RequestMapping("/api/image")
 public class ImageController {
 
-  private static final Logger logger = LoggerFactory.getLogger(MessageServiceImpl.class);
+  private static final Logger logger = LoggerFactory.getLogger(ImageController.class);
 
   // 上传图片并返回图片的URL
   @PostMapping("/upload")

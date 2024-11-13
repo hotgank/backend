@@ -1,5 +1,6 @@
 package org.example.backend.entity.doctor;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 
 public class Doctor {
@@ -8,7 +9,7 @@ public class Doctor {
   private String password;
   private String phone;
   private String email;
-  private int age;
+  private Date birthdate;
   private String gender;
   private String position;
   private String workplace;
@@ -40,8 +41,8 @@ public class Doctor {
     return email;
   }
 
-  public int getAge() {
-    return age;
+  public Date getbirthdate() {
+    return birthdate;
   }
 
   public String getGender() {
@@ -104,8 +105,8 @@ public class Doctor {
     this.email = email;
   }
 
-  public void setAge(int age) {
-    this.age = age;
+  public void setbirthdate(Date birthdate) {
+    this.birthdate = birthdate;
   }
 
   public void setGender(String gender) {
@@ -157,7 +158,7 @@ public class Doctor {
         ", password='" + password + '\'' +
         ", phone='" + phone + '\'' +
         ", email='" + email + '\'' +
-        ", age=" + age +
+        ", birthdate=" + (birthdate != null ? birthdate.toString() : "null") +
         ", gender='" + gender + '\'' +
         ", position='" + position + '\'' +
         ", workplace='" + workplace + '\'' +
@@ -165,9 +166,10 @@ public class Doctor {
         ", experience='" + experience + '\'' +
         ", rating=" + rating +
         ", avatarUrl='" + avatarUrl + '\'' +
-        ", registrationDate=" + registrationDate +
-        ", lastLogin=" + lastLogin +
+        ", registrationDate=" + (registrationDate != null ? registrationDate.toString() : "null") +
+        ", lastLogin=" + (lastLogin != null ? lastLogin.toString() : "null") +
         ", status='" + status + '\'' +
         '}';
   }
+
 }
