@@ -83,4 +83,8 @@ public interface DoctorMapper{
 
   @Delete("DELETE FROM d_doctors WHERE doctor_id = #{doctorId}")
   void deleteDoctor(@Param("doctorId") String doctorId);
+
+  // 新增方法：根据邮箱和密码查询 doctor_id
+  @Select("SELECT doctor_id FROM d_doctors WHERE email = #{email} AND password = #{password}")
+  String selectDoctorIdByEmailAndPassword(@Param("email") String email, @Param("password") String password);
 }

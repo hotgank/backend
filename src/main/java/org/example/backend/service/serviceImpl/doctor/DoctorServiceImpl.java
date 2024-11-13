@@ -151,6 +151,12 @@ public class DoctorServiceImpl implements DoctorService {
   }
 
   @Override
+  public String loginByEmail(String email, String password) {
+    String passwordMD5 = encryptionUtil.encryptMD5(password);
+    return doctorMapper.selectDoctorIdByEmailAndPassword(email,passwordMD5);
+  }
+
+  @Override
   public String generateRegisterCode(String email) {
     // 检查Redis中是否已存在该邮箱的验证码
     if (Boolean.TRUE.equals(redisTemplate.hasKey(email))) {

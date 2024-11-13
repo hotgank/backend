@@ -50,6 +50,7 @@ public class SecurityConfig {
         .csrf().disable()  // 禁用 CSRF 防护
         .authorizeHttpRequests((requests) -> requests
             .requestMatchers("/api/userLogin/**").permitAll() // 允许登录相关的请求
+            .requestMatchers("/api/DoctorLogin/**").permitAll()
             .requestMatchers("/api/DoctorRegister/**").permitAll()
             .requestMatchers("/api/admin/**").permitAll()
             .anyRequest().authenticated()  // 其他请求都需要认证
