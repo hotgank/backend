@@ -152,7 +152,7 @@ public class Doctor {
 
   @Override
   public String toString() {
-    return "Doctor{" +
+    return "{" +
         "doctorId='" + doctorId + '\'' +
         ", name='" + name + '\'' +
         ", password='" + password + '\'' +
@@ -171,5 +171,26 @@ public class Doctor {
         ", status='" + status + '\'' +
         '}';
   }
+
+  public String toJson() {
+    return "{"
+        + "\"doctorId\":\"" + doctorId + "\","
+        + "\"name\":\"" + name + "\","
+        + "\"phone\":\"" + phone + "\","
+        + "\"email\":\"" + email + "\","
+        + "\"birthdate\":" + (birthdate != null ? "\"" + birthdate.toString() + "\"" : "null") + ","
+        + "\"gender\":\"" + gender + "\","
+        + "\"position\":\"" + position + "\","
+        + "\"workplace\":\"" + workplace + "\","
+        + "\"qualification\":\"" + qualification + "\","
+        + "\"experience\":\"" + experience + "\","
+        + "\"rating\":" + rating + ","
+        + "\"avatarUrl\":\"" + avatarUrl + "\","
+        + "\"registrationDate\":" + (registrationDate != null ? "\"" + registrationDate.toString() + "\"" : "null") + ","
+        + "\"lastLogin\":" + (lastLogin != null ? "\"" + lastLogin.toString() + "\"" : "null") + ","
+        + "\"status\":\"" + status + "\""
+        + "}";
+  }
+
 
 }

@@ -2,6 +2,7 @@ package org.example.backend.controller.doctor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDateTime;
 import java.util.Map;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.user.User;
@@ -36,6 +37,7 @@ public class DoctorLoginController {
     String email = body.get("email");
     String password = body.get("password");
     log.info("Received login request for email: {}", email);
+
     // 查询数据库，查找是否有该邮箱的用户
     String doctorId = doctorService.loginByEmail(email, password);
     if (doctorId == null) {
@@ -48,7 +50,18 @@ public class DoctorLoginController {
     // 将 token 存储到 Redis（如果需要）
     redisUtil.storeTokenInRedis(doctorId, jwtToken);
 
-    // 返回 JWT token
-    return ResponseEntity.ok("{\"token\":\"" + jwtToken + "\"}");
+    // 获取医生的详细信息
+    Doctor doctor = doctorService.selectById(doctorId);
+    doctor.setLastLogin(LocalDateTime.now());
+    doctor.setStatus("online");
+    doctorService.update(doctor);
+    doctor.setDoctorId(null);
+    doctor.setPassword(null);
+    // 构建响应体
+    String response = "{\"token\":\"" + jwtToken + "\",\"doctor\":" + doctor.toJson() + "}";
+
+    // 返回 JWT token 和医生的详细信息
+    return ResponseEntity.ok(response);
   }
+
 }
