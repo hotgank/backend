@@ -34,7 +34,7 @@ public class UserReportController {
     // 根据reportId删除
     @PostMapping("/deleteByReportId")
     public ResponseEntity<String> deleteByReportId(@RequestBody String reportIdJson) {
-        String reportId = jsonParser.parseJsonString(reportIdJson, "reportId");
+        int reportId = jsonParser.parseJsonInt(reportIdJson, "reportId");
         boolean isDeleted = reportService.deleteByReportId(reportId);
         if (isDeleted) {
             return ResponseEntity.ok("删除成功");
@@ -59,6 +59,7 @@ public class UserReportController {
     public ResponseEntity<String> createReport(@RequestBody Report report) {
         int insert = reportService.insertReport(report);
         if (insert > 0) {
+            System.out.println("Report inserted successfully: " + insert);
             return ResponseEntity.ok("添加成功");
         } else {
             return ResponseEntity.status(500).body("添加失败");
