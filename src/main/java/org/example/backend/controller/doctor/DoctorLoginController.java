@@ -58,7 +58,7 @@ public class DoctorLoginController {
     doctor.setDoctorId(null);
     doctor.setPassword(null);
     // 构建响应体
-    String response = "{\"token\":\"" + jwtToken + "\",\"doctor\":" + doctor.toString() + "}";
+    String response = "{\"token\":\"" + jwtToken + "\",\"doctor\":" + doctor.toJson() + "}";
 
     // 返回 JWT token 和医生的详细信息
     return ResponseEntity.ok(response);
