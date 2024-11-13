@@ -23,7 +23,7 @@ public class DoctorController {
   @Autowired
   private ExcelReader excelReader;
 
-  @GetMapping("/selectAll")
+  @PostMapping("/selectAll")
   public ResponseEntity<String> selectAll() {
 
     // 调用服务层来查询所有医生信息

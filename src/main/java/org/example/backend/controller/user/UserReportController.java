@@ -22,13 +22,13 @@ public class UserReportController {
     private JsonParser jsonParser;
 
     @PostMapping("/selectByChildId")
-    public ResponseEntity<String> selectByChildId(@RequestBody String childIdJson) {
+    public ResponseEntity<List<Report>> selectByChildId(@RequestBody String childIdJson) {
         String childId = jsonParser.parseJsonString(childIdJson, "childId");
         List<Report> reports = reportService.selectByChildId(childId);
         if(reports != null){
-            return ResponseEntity.ok(reports.toString());
+            return ResponseEntity.ok(reports);
         }else{
-            return ResponseEntity.status(500).body("Failed to find reports");
+            return ResponseEntity.status(500).body(null);
         }
     }
     // 根据reportId删除

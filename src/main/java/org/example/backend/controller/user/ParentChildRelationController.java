@@ -24,7 +24,7 @@ public class ParentChildRelationController {
   private JsonParser jsonParser;
 
   //根据userId获取所有关系表数据
-  @GetMapping("/selectAllRelations")
+  @PostMapping("/selectAllRelations")
   public ResponseEntity<List<ParentChildRelation>> selectAllRelations(HttpServletRequest request) {
     // 从请求中获取用户ID
     String userId = (String) request.getAttribute("userId");
