@@ -22,4 +22,6 @@ public interface DoctorService {
   boolean validatePassword(String doctorId, String password);
 
   boolean validateRegisterCode(String email, String registerCode);
+
+  String loginByEmail(String email, String password);
 }
