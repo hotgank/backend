@@ -8,7 +8,7 @@ public interface ReportService {
 
     int insertReport(Report report);
 
-    Report selectByReportId(String reportId);
+    Report selectByReportId(int reportId);
 
     List<Report> selectByChildId(String childId);
 
@@ -16,5 +16,7 @@ public interface ReportService {
 
     boolean deleteByChildId(String childId);
 
-    boolean deleteByReportId(String reportId);
+    boolean deleteByReportId(int reportId);
+
+    List<Report> selectAll();
 }
