@@ -32,9 +32,8 @@ public class ParentChildRelationImpl implements ParentChildRelationService {
   @Override
   public int createRelation(ParentChildRelation relation) {
     try {
-      parentChildRelationMapper.insertRelation(relation);
       logger.info("relation created successfully");
-      return parentChildRelationMapper.selectAll().size();
+      return parentChildRelationMapper.insertRelation(relation);
     } catch (Exception e) {
       logger.error("Error creating relation: {}", e.getMessage(), e);
       return -1;

@@ -28,7 +28,7 @@ public class UserMessageController {
         String userId = jsonParser.parseJsonString(consultationJson, "userId");
         List<Message> messages = messageService.selectMessagesById(doctorId, userId);
         if(messages != null){
-            return ResponseEntity.ok(messages.toString());
+            return ResponseEntity.ok(jsonParser.toJsonFromEntityList(messages));
         }else{
             return ResponseEntity.status(500).body("Failed to find messages");
         }

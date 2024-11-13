@@ -70,7 +70,8 @@ public class ConsultationServiceImpl implements ConsultationService {
       consultation.setDoctorId(doctorId);
       consultation.setUserId(userId);
       consultation.setConsultationStart(LocalDateTime.now());
-      return consultationMapper.insertConsultation(consultation);
+      consultationMapper.insertConsultation(consultation);
+      return consultation.getConsultationId();
     } catch (Exception e) {
       // 记录异常日志
       logger.error("创建咨询失败, doctorId: {}, userId: {}",

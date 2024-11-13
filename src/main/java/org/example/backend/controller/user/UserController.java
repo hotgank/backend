@@ -56,7 +56,7 @@ public class UserController {
     User selectedUser = userService.selectById(userId);
 
     if (selectedUser != null) {
-      return ResponseEntity.ok(selectedUser.toString());
+      return ResponseEntity.ok(jsonParser.toJsonFromEntity(selectedUser));
     } else {
       return ResponseEntity.status(500).body("Failed to add user information");
     }

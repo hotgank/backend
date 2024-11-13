@@ -57,9 +57,8 @@ public class UserReportController {
     //create报告
     @PostMapping("/createReport")
     public ResponseEntity<String> createReport(@RequestBody Report report) {
-        int insert = reportService.insertReport(report);
-        if (insert > 0) {
-            System.out.println("Report inserted successfully: " + insert);
+        int result = reportService.insertReport(report);
+        if (result > 0) {
             return ResponseEntity.ok("添加成功");
         } else {
             return ResponseEntity.status(500).body("添加失败");

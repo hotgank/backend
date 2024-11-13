@@ -8,7 +8,7 @@ public interface DoctorChildRelationService {
 
   List<Child> selectMyPatients(DoctorChildRelation relation);
 
-  boolean createDoctorChildRelation(DoctorChildRelation relation);
+  int createDoctorChildRelation(DoctorChildRelation relation);
 
   boolean deleteDoctorChildRelation(DoctorChildRelation relation);
 }

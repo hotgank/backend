@@ -7,7 +7,6 @@ import org.example.backend.service.user.ParentChildRelationService;
 import org.example.backend.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,13 +24,13 @@ public class ParentChildRelationController {
 
   //根据userId获取所有关系表数据
   @PostMapping("/selectAllRelations")
-  public ResponseEntity<List<ParentChildRelation>> selectAllRelations(HttpServletRequest request) {
+  public ResponseEntity <String> selectAllRelations(HttpServletRequest request) {
     // 从请求中获取用户ID
     String userId = (String) request.getAttribute("userId");
 
     try {
       List<ParentChildRelation> relations = parentChildRelationService.getRelationsByUserId(userId);
-      return ResponseEntity.ok(relations);
+      return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relations));
     } catch (Exception e) {
       return ResponseEntity.status(500).body(null);
     }

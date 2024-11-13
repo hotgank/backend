@@ -34,7 +34,7 @@ public class AdminController {
     Admin selectedAdmin = adminService.selectById(adminId);
     // 调用服务层来查询指定管理员信息
     if (selectedAdmin != null) {
-      return ResponseEntity.ok(selectedAdmin.toString());
+      return ResponseEntity.ok(jsonParser.toJsonFromEntity(selectedAdmin));
     } else {
       return ResponseEntity.status(500).body("Failed to add admin information");
     }

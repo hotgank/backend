@@ -6,11 +6,12 @@ import java.util.List;
 
 public interface ReportService {
 
-    int insertReport(Report report);
 
     Report selectByReportId(int reportId);
 
     List<Report> selectByChildId(String childId);
+
+    int insertReport(Report report);
 
     boolean updateReport(Report report);
 
