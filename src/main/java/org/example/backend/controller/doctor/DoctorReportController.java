@@ -26,7 +26,7 @@ public class DoctorReportController {
         String childId = jsonParser.parseJsonString(childIdJson, "childId");
         List<Report> reports = reportService.selectByChildId(childId);
         if(reports != null){
-            return ResponseEntity.ok(reports.toString());
+            return ResponseEntity.ok(jsonParser.toJsonFromEntityList(reports));
         }else{
             return ResponseEntity.status(500).body("Failed to find reports");
         }

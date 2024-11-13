@@ -1,10 +1,8 @@
 package org.example.backend.entity.others;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 
 public class Report {
-  @TableId
   private int reportId;
   private String childId; // Foreign key: Child ID
   private LocalDateTime createdAt;
@@ -86,5 +84,20 @@ public class Report {
 
   public void setDoctorId(String doctorId) {
     this.doctorId = doctorId;
+  }
+
+  @Override
+  public String toString() {
+    return "Report{" +
+        "reportId=" + reportId +
+        ", childId='" + childId + '\'' +
+        ", createdAt=" + createdAt +
+        ", reportType='" + reportType + '\'' +
+        ", result='" + result + '\'' +
+        ", analyse='" + analyse + '\'' +
+        ", comment='" + comment + '\'' +
+        ", doctorId='" + doctorId + '\'' +
+        ", url='" + url + '\'' +
+        '}';
   }
 }

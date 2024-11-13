@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ReportServiceImpl implements ReportService {
 
-  private static final Logger logger = LoggerFactory.getLogger(MessageServiceImpl.class);
+  private static final Logger logger = LoggerFactory.getLogger(ReportServiceImpl.class);
 
   @Autowired
   private ReportMapper reportMapper;
@@ -48,7 +48,7 @@ public class ReportServiceImpl implements ReportService {
     try {
       report.setCreatedAt(LocalDateTime.now());
       reportMapper.insert(report);
-      return reportMapper.selectAll().size();
+      return report.getReportId();
     }
     catch (Exception e) {
       // 记录异常日志
@@ -107,4 +107,5 @@ public class ReportServiceImpl implements ReportService {
       return null;
     }
   }
+
 }

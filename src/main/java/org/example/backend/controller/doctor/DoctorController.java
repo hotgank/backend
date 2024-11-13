@@ -39,7 +39,7 @@ public class DoctorController {
     Doctor selectedDoctor = doctorService.selectById(doctorId);
 
     if (selectedDoctor != null) {
-      return ResponseEntity.ok(selectedDoctor.toString());
+      return ResponseEntity.ok(jsonParser.toJsonFromEntity(selectedDoctor));
     } else {
       return ResponseEntity.status(500).body("Failed to add doctor information");
     }

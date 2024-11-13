@@ -39,7 +39,7 @@ public class DoctorConsultationController {
     Consultation consultation =
         consultationService.selectConsultationByDoctorIdAndUserId(doctorId, userId);
     if(consultation != null){
-      return ResponseEntity.ok(consultation.toString());
+      return ResponseEntity.ok(jsonParser.toJsonFromEntity(consultation));
     }else{
       return ResponseEntity.badRequest().body("Failed to select consultation");
     }

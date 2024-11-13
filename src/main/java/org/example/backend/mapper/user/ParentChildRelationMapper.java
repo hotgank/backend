@@ -3,6 +3,7 @@ package org.example.backend.mapper.user;
 import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
@@ -51,8 +52,8 @@ public interface ParentChildRelationMapper {
   //插入新关系
   @Insert("INSERT INTO u_parents_children(relation_id, user_id, child_id, relation_type, created_at) "
       + "VALUES(#{relationId}, #{userId}, #{childId}, #{relationType}, #{createdAt})")
-
-  void insertRelation(ParentChildRelation relation);
+  @Options(useGeneratedKeys = true, keyProperty = "relationId")
+  int insertRelation(ParentChildRelation relation);
   // 更新关系
   @Insert("UPDATE u_parents_children SET "
       + "user_id = #{userId}, "

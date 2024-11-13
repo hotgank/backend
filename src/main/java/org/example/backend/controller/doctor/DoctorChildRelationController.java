@@ -24,9 +24,9 @@ public class DoctorChildRelationController {
   @PostMapping("/add")
   public ResponseEntity<String> addDoctorChildRelation(@RequestBody DoctorChildRelation relation) {
     // 调用服务层来添加管理员信息到数据库
-    boolean success = doctorChildRelationService.createDoctorChildRelation(relation);
+    int result = doctorChildRelationService.createDoctorChildRelation(relation);
 
-    if (success) {
+    if (result > 0) {
       return ResponseEntity.ok("Successfully bound doctor with child");
     } else {
       return ResponseEntity.status(500).body("Failed to bound doctor with child");

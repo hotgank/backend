@@ -41,7 +41,8 @@ public class MessageServiceImpl implements MessageService {
   public int insertMessage(Message message) {
     try {
       message.setTimestamp(LocalDateTime.now());
-      return messageMapper.insert(message);
+      messageMapper.insert(message);
+      return message.getMessageId();
     }
     catch (Exception e) {
       // 记录异常日志

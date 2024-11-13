@@ -35,15 +35,16 @@ public class DoctorChildRelationServiceImpl implements DoctorChildRelationServic
   }
 
   @Override
-  public boolean createDoctorChildRelation(DoctorChildRelation relation) {
+  public int createDoctorChildRelation(DoctorChildRelation relation) {
     try {
       relation.setCreatedAt(LocalDateTime.now());
-      int relationId = doctorChildRelationMapper.createDoctorChildRelation(relation);
+      doctorChildRelationMapper.createDoctorChildRelation(relation);
+      int relationId = relation.getRelationId();
       logger.info("Relation with ID {} updated successfully", relationId);
-      return true;
+      return relationId;
     } catch (Exception e) {
       logger.error("Error creating relation: {}", e.getMessage(), e);
-      return false;
+      return 0;
     }
   }
 
