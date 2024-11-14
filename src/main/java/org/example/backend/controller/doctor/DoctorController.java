@@ -1,11 +1,15 @@
 package org.example.backend.controller.doctor;
 
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import org.example.backend.entity.doctor.Doctor;
+import org.example.backend.entity.user.ParentChildRelation;
 import org.example.backend.service.doctor.DoctorService;
 import org.example.backend.util.ExcelReader;
 import org.example.backend.util.JsonParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/doctor")
 public class DoctorController {
 
+  private static final Logger log = LoggerFactory.getLogger(DoctorController.class);
   @Autowired
   private DoctorService doctorService;
 
@@ -119,6 +124,18 @@ public class DoctorController {
       return ResponseEntity.ok("Password updated successfully");
     }else{
       return ResponseEntity.status(500).body("Failed to update password");
+    }
+  }
+
+  @GetMapping("/information")
+  public ResponseEntity<String> getInformation(HttpServletRequest request) {
+    try {
+      //从请求中获取用户ID
+      String userId = (String) request.getAttribute("userId");
+
+      return ResponseEntity.ok("{\"Id\":\""+userId+"\"}");
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body("Failed");
     }
   }
 
