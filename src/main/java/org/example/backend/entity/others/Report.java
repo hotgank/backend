@@ -7,6 +7,7 @@ public class Report {
   private String childId; // Foreign key: Child ID
   private LocalDateTime createdAt;
   private String reportType;
+  private String state;
   private String result;
   private String analyse;
   private String comment;
@@ -99,5 +100,12 @@ public class Report {
         ", doctorId='" + doctorId + '\'' +
         ", url='" + url + '\'' +
         '}';
+  }
+
+  public String getState() {
+	return state;
+}
+  public void setState(String state) {
+    this.state = state;
   }
 }
