@@ -7,6 +7,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Component
 public class JsonParser {
@@ -96,6 +97,7 @@ public class JsonParser {
   public String toJsonFromEntityList(List<?> entityList) {
     try {
       ObjectMapper objectMapper = new ObjectMapper();
+      objectMapper.registerModule(new JavaTimeModule());  // 注册 JavaTimeModule
       objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
       // 将对象列表转换为JSON字符串
       return objectMapper.writeValueAsString(entityList);

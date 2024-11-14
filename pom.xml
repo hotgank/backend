@@ -125,6 +125,12 @@
       <artifactId>commons-httpclient</artifactId>
       <version>3.1</version>
     </dependency>
+
+    <!--jackson-datatype-jsr310 模块处理 LocalDateTime-->
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
