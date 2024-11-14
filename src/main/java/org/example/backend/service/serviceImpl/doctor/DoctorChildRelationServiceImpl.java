@@ -34,6 +34,18 @@ public class DoctorChildRelationServiceImpl implements DoctorChildRelationServic
   }
 
   @Override
+  public List<Child> selectRecentPatients(String doctorId, String relationStatus) {
+    try {
+      List<Child> myPatients = doctorChildRelationMapper.selectRecentPatients(doctorId, relationStatus);
+      logger.info("获取最近患者成功");
+      return myPatients;
+    } catch (Exception e) {
+      logger.error("获取最近患者失败", e);
+      return Collections.emptyList();
+    }
+  }
+
+  @Override
   public int createDoctorChildRelation(DoctorChildRelation relation) {
     try {
       relation.setCreatedAt(LocalDateTime.now());

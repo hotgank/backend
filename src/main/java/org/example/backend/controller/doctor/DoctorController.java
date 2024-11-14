@@ -33,9 +33,9 @@ public class DoctorController {
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(result));
   }
 
-  @PostMapping("/selectById")
-  public ResponseEntity<String> selectById(@RequestBody String doctorIdJson) {
-    String doctorId = jsonParser.parseJsonString(doctorIdJson, "doctorId");
+  @GetMapping("/selectById")
+  public ResponseEntity<String> selectById(HttpServletRequest request) {
+    String doctorId = (String) request.getAttribute("doctorId");
     // 调用服务层来根据doctorId查询医生信息
     Doctor selectedDoctor = doctorService.selectById(doctorId);
 
@@ -74,8 +74,8 @@ public class DoctorController {
   }
 
   @PostMapping("/update")
-  public ResponseEntity<String> updateDoctor(@RequestBody Doctor doctor) {
-
+  public ResponseEntity<String> updateDoctor(@RequestBody Doctor doctor, HttpServletRequest request) {
+    doctor.setDoctorId((String) request.getAttribute("doctorId"));
     // 调用服务层来更新医生信息
     boolean success = doctorService.update(doctor);
 
@@ -86,9 +86,9 @@ public class DoctorController {
     }
   }
 
-  @PostMapping("/delete")
-  public ResponseEntity<String> deleteAccount(@RequestBody String doctorJson) {
-    String doctorId = jsonParser.parseJsonString(doctorJson, "doctorId");
+  @GetMapping("/delete")
+  public ResponseEntity<String> deleteAccount(@RequestBody String doctorJson, HttpServletRequest request) {
+    String doctorId = (String) request.getAttribute("doctorId");
     String password = jsonParser.parseJsonString(doctorJson, "password");
 
     if (!doctorService.validatePassword(doctorId, password)){
@@ -104,9 +104,9 @@ public class DoctorController {
     }
   }
 
-  @PostMapping("/updatePassword")
-  public ResponseEntity<String> updatePassword(@RequestBody String doctorJson){
-    String doctorId = jsonParser.parseJsonString(doctorJson, "doctorId");
+  @GetMapping("/updatePassword")
+  public ResponseEntity<String> updatePassword(@RequestBody String doctorJson, HttpServletRequest request){
+    String doctorId = (String) request.getAttribute("doctorId");
     String oldPassword = jsonParser.parseJsonString(doctorJson, "oldPassword");
     if(!doctorService.validatePassword(doctorId, oldPassword)){
       return ResponseEntity.status(400).body("Failed to find doctor information");

@@ -3,7 +3,13 @@ package org.example.backend.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -104,6 +110,42 @@ public class JsonParser {
     } catch (Exception e) {
       logger.error("转换失败", e);
       return "转换失败: " + e.getMessage();
+    }
+  }
+
+  /**
+   * 从JSON对象中移除指定的键值对
+   *
+   * @param jsonString JSON格式的字符串
+   * @param key 要移除的键
+   * @return 移除指定键值对后的JSON字符串
+   */
+  public String removeKeyFromJson(String jsonString, String key) {
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      JsonNode rootNode = objectMapper.readTree(jsonString);
+
+      // 递归移除键值对
+      removeKeyRecursively(rootNode, key);
+
+      return objectMapper.writeValueAsString(rootNode);
+    } catch (IOException e) {
+        logger.info("移除键值对失败: {}", e.getMessage());
+      return "移除键值对失败: " + e.getMessage();
+    }
+  }
+
+  private static void removeKeyRecursively(JsonNode node, String key) {
+    if (node instanceof ObjectNode) {
+      ((ObjectNode) node).remove(key);
+      for (Iterator<String> it = node.fieldNames(); it.hasNext(); ) {
+        String fieldName = it.next();
+        removeKeyRecursively(node.get(fieldName), key);
+      }
+    } else if (node instanceof ArrayNode) {
+      for (JsonNode element : node) {
+        removeKeyRecursively(element, key);
+      }
     }
   }
 }
