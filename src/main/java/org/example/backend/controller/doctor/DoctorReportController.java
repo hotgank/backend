@@ -1,5 +1,6 @@
 package org.example.backend.controller.doctor;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.example.backend.entity.others.Report;
 import org.example.backend.service.others.ReportService;
 import org.example.backend.util.JsonParser;
@@ -22,8 +23,8 @@ public class DoctorReportController {
     private JsonParser jsonParser;
 
     @PostMapping("/selectByChildId")
-    public ResponseEntity<String> selectByChildId(@RequestBody String childIdJson) {
-        String childId = jsonParser.parseJsonString(childIdJson, "childId");
+    public ResponseEntity<String> selectByChildId(HttpServletRequest request) {
+        String childId = (String) request.getAttribute("childId");
         List<Report> reports = reportService.selectByChildId(childId);
         if(reports != null){
             return ResponseEntity.ok(jsonParser.toJsonFromEntityList(reports));

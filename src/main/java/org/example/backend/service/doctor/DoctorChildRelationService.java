@@ -8,6 +8,8 @@ public interface DoctorChildRelationService {
 
   List<Child> selectMyPatients(String doctorId, String relationStatus);
 
+  List<Child> selectRecentPatients(String doctorId, String relationStatus);
+
   int createDoctorChildRelation(DoctorChildRelation relation);
 
   boolean updateDoctorChildRelation(DoctorChildRelation relation);

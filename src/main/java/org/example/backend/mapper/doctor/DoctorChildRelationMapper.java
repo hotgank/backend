@@ -28,6 +28,21 @@ public interface DoctorChildRelationMapper {
   })
   List<Child> selectMyPatients(@Param("doctorId") String doctorId, @Param("relationStatus") String relationStatus);
 
+  @Select("SELECT * FROM u_children WHERE child_id IN "
+          + "(SELECT child_id FROM d_doctors_children "
+          + "WHERE doctor_id = #{doctorId} AND relation_status = #{relationStatus} "
+          + "ORDER BY created_at DESC LIMIT 5)")
+  @Results({
+          @Result(column = "child_id", property = "childId"),
+          @Result(column = "name", property = "name"),
+          @Result(column = "school", property = "school"),
+          @Result(column = "gender", property = "gender"),
+          @Result(column = "birthdate", property = "birthdate"),
+          @Result(column = "height", property = "height"),
+          @Result(column = "weight", property = "weight")
+  })
+  List<Child> selectRecentPatients(@Param("doctorId") String doctorId, @Param("relationStatus") String relationStatus);
+
   @Insert("INSERT INTO d_doctors_children(doctor_id, child_id, relation_status, created_at) "
       + "VALUES(#{doctorId}, #{childId}, #{relationStatus}, #{createdAt})")
   @Options(useGeneratedKeys = true, keyProperty = "relationId")
