@@ -6,7 +6,7 @@ public class DoctorChildRelation {
   private int relationId;
   private String doctorId; // Foreign key: Doctor ID
   private String childId;  // Foreign key: Child ID
-  private String relationType;
+  private String relationStatus;
   private LocalDateTime createdAt;
 
   public int getRelationId() {
@@ -21,8 +21,8 @@ public class DoctorChildRelation {
     return childId;
   }
 
-  public String getRelationType() {
-    return relationType;
+  public String getRelationStatus() {
+    return relationStatus;
   }
 
   public LocalDateTime getCreatedAt() {
@@ -41,8 +41,8 @@ public class DoctorChildRelation {
     this.childId = childId;
   }
 
-  public void setRelationType(String relationType) {
-    this.relationType = relationType;
+  public void setRelationStatus(String relationStatus) {
+    this.relationStatus = relationStatus;
   }
 
   public void setCreatedAt(LocalDateTime createdAt) {
@@ -56,7 +56,7 @@ public class DoctorChildRelation {
         "relationId=" + relationId +
         ", doctorId='" + doctorId + '\'' +
         ", childId='" + childId + '\'' +
-        ", relationType='" + relationType + '\'' +
+        ", relationType='" + relationStatus + '\'' +
         ", createdAt=" + createdAt +
         '}';
   }

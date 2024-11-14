@@ -4,12 +4,9 @@ package org.example.backend.controller.doctor;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import org.example.backend.entity.doctor.Doctor;
-import org.example.backend.entity.user.ParentChildRelation;
 import org.example.backend.service.doctor.DoctorService;
 import org.example.backend.util.ExcelReader;
 import org.example.backend.util.JsonParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/doctor")
 public class DoctorController {
 
-  private static final Logger log = LoggerFactory.getLogger(DoctorController.class);
   @Autowired
   private DoctorService doctorService;
 
@@ -58,7 +54,7 @@ public class DoctorController {
     String result = doctorService.insert(doctor);
 
     if (result != null) {
-      return ResponseEntity.ok("doctor information added successfully, doctorId: " + result);
+      return ResponseEntity.ok("{\\\"doctorId\\\": \\\"\" + result + \"\\\"}");
     } else {
       return ResponseEntity.status(500).body("Failed to add doctor information");
     }

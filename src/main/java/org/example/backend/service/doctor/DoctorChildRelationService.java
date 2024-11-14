@@ -6,9 +6,11 @@ import org.example.backend.entity.user.Child;
 
 public interface DoctorChildRelationService {
 
-  List<Child> selectMyPatients(DoctorChildRelation relation);
+  List<Child> selectMyPatients(String doctorId, String relationStatus);
 
   int createDoctorChildRelation(DoctorChildRelation relation);
+
+  boolean updateDoctorChildRelation(DoctorChildRelation relation);
 
   boolean deleteDoctorChildRelation(DoctorChildRelation relation);
 }
