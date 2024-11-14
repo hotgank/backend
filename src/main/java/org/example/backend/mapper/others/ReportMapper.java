@@ -42,8 +42,16 @@ public interface ReportMapper {
     @Options(useGeneratedKeys = true, keyProperty = "reportId", keyColumn = "report_id")
     int insert(Report report);
 
-    @Update("UPDATE r_reports SET child_id = #{childId}, created_at = #{createdAt}, report_type = #{reportType}, state = #{state}"
-            + "result = #{result}, analyse = #{analyse}, comment = #{comment}, doctor_id = #{doctorId}, url = #{url} "
+    @Update("UPDATE r_reports SET "
+            + "child_id = #{childId}, "
+            + "created_at = #{createdAt}, "
+            + "report_type = #{reportType}, "
+            + "state = #{state}, "
+            + "result = #{result}, "
+            + "analyse = #{analyse}, "
+            + "comment = #{comment}, "
+            + "doctor_id = #{doctorId}, "
+            + "url = #{url} "
             + "WHERE report_id = #{reportId}")
     void update(Report report);
 

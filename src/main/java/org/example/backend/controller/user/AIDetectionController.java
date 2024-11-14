@@ -108,6 +108,7 @@ public class AIDetectionController {
       Report report = reportService.selectByReportId(reportId);
       if (response != null) { // 判断是否成功
         report = reportUtil.generateReportFromJson(response, report);
+        logger.info("AIDetect Response: {}", response);
         report.setState("检测完成");
         reportService.updateReport(report);
       } else {

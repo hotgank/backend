@@ -28,9 +28,9 @@ public class DoctorController {
   public ResponseEntity<String> selectAll() {
 
     // 调用服务层来查询所有医生信息
-    String result = doctorService.selectAll().toString();
+    List<Doctor> result = doctorService.selectAll();
 
-    return ResponseEntity.ok(result);
+    return ResponseEntity.ok(jsonParser.toJsonFromEntityList(result));
   }
 
   @PostMapping("/selectById")
