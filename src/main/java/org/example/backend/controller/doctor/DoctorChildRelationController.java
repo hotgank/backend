@@ -1,16 +1,15 @@
 package org.example.backend.controller.doctor;
 
 import java.util.List;
+
+import jakarta.servlet.http.HttpServletRequest;
 import org.example.backend.entity.doctor.DoctorChildRelation;
 import org.example.backend.entity.user.Child;
 import org.example.backend.service.doctor.DoctorChildRelationService;
 import org.example.backend.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/doctor/relation")
@@ -21,20 +20,35 @@ public class DoctorChildRelationController {
   @Autowired
   private JsonParser jsonParser;
 
-  @PostMapping("/selectMyPatients")
-  public ResponseEntity<String> selectMyPatients(@RequestBody String doctorIdJson) {
-    String doctorId = jsonParser.parseJsonString(doctorIdJson, "doctorId");
+  @GetMapping("/selectMyPatients")
+  public ResponseEntity<String> selectMyPatients(HttpServletRequest request) {
+    String doctorId = (String) request.getAttribute("userId");
     // 调用服务层来查询患者信息
     List<Child> relations = doctorChildRelationService.selectMyPatients(doctorId, "approved");
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relations));
   }
 
-  @PostMapping("/selectPendingPatients")
-  public ResponseEntity<String> selectPendingPatients(@RequestBody String doctorIdJson) {
+  @GetMapping("/selectPendingPatients")
+  public ResponseEntity<String> selectPendingPatients(HttpServletRequest request) {
+    String doctorId = (String) request.getAttribute("userId");
     // 调用服务层来查询待绑定患者信息
-    String doctorId = jsonParser.parseJsonString(doctorIdJson, "doctorId");
-    // 调用服务层来查询患者信息
     List<Child> relations = doctorChildRelationService.selectMyPatients(doctorId, "pending");
+    return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relations));
+  }
+
+  @GetMapping("/selectRecentPatients")
+  public ResponseEntity<String> selectRecentPatients(HttpServletRequest request) {
+    String doctorId = (String) request.getAttribute("userId");
+    // 调用服务层来查询待绑定患者信息
+    List<Child> relations = doctorChildRelationService.selectRecentPatients(doctorId, "approved");
+    return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relations));
+  }
+
+  @GetMapping("/selectRecentPendingPatients")
+  public ResponseEntity<String> selectRecentPendingPatients(HttpServletRequest request) {
+    String doctorId = (String) request.getAttribute("userId");
+    // 调用服务层来查询待绑定患者信息
+    List<Child> relations = doctorChildRelationService.selectRecentPatients(doctorId, "pending");
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relations));
   }
 
