@@ -22,11 +22,11 @@ public class UserReportController {
     private JsonParser jsonParser;
 
     @PostMapping("/selectByChildId")
-    public ResponseEntity<List<Report>> selectByChildId(@RequestBody String childIdJson) {
+    public ResponseEntity<String> selectByChildId(@RequestBody String childIdJson) {
         String childId = jsonParser.parseJsonString(childIdJson, "childId");
         List<Report> reports = reportService.selectByChildId(childId);
         if(reports != null){
-            return ResponseEntity.ok(reports);
+            return ResponseEntity.ok(jsonParser.toJsonFromEntityList(reports));
         }else{
             return ResponseEntity.status(500).body(null);
         }
