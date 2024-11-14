@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.example.backend.service.others.ReportService;
+import org.example.backend.util.ReportUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
@@ -32,6 +33,9 @@ public class AIDetectionController {
   @Autowired
   private ReportService reportService;
 
+  @Autowired
+  private ReportUtil reportUtil;
+
   //日志输出
   private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(
       AIDetectionController.class);
@@ -43,7 +47,7 @@ public class AIDetectionController {
 
     Report report = new Report();
     report.setChildId(childId);
-    report.setReportType("正在检测");
+    report.setReportType("脊柱异位");
     report.setUrl(imageUrl);
     int reportId =reportService.insertReport(report);
     // Start the async task
@@ -102,12 +106,9 @@ public class AIDetectionController {
       String response = post(requestUrl, headers, myBody);
       Report report = reportService.selectByReportId(reportId);
       if (response != null) { // 判断是否成功
-        report.setResult(response);
-        report.setReportType("检测成功");
+        report = reportUtil.generateReportFromJson(response, report);
         reportService.updateReport(report);
       } else {
-        //reportService.deleteByReportId(reportId);
-        report.setReportType("检测失败");
         reportService.updateReport(report);
       }
     } catch (IOException e) {
