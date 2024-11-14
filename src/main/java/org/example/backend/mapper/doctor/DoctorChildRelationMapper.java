@@ -9,13 +9,14 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.example.backend.entity.doctor.DoctorChildRelation;
 import org.example.backend.entity.user.Child;
 
 @Mapper
 public interface DoctorChildRelationMapper {
   @Select("SELECT * FROM u_children WHERE child_id IN "
-      + "(SELECT child_id FROM d_doctors_children WHERE doctor_id = #{doctorId} ORDER BY created_at)")
+      + "(SELECT child_id FROM d_doctors_children WHERE doctor_id = #{doctorId} AND relation_status = #{relationStatus} ORDER BY created_at)")
   @Results({
       @Result(column = "child_id", property = "childId"),
       @Result(column = "name", property = "name"),
@@ -25,12 +26,16 @@ public interface DoctorChildRelationMapper {
       @Result(column = "height", property = "height"),
       @Result(column = "weight", property = "weight")
   })
-  List<Child> selectMyPatients(@Param("doctorId") String doctorId);
+  List<Child> selectMyPatients(@Param("doctorId") String doctorId, @Param("relationStatus") String relationStatus);
 
-  @Insert("INSERT INTO d_doctors_children(doctor_id, child_id, relation_type, created_at) "
-      + "VALUES(#{doctorId}, #{childId}, #{relationType}, #{createdAt})")
+  @Insert("INSERT INTO d_doctors_children(doctor_id, child_id, relation_status, created_at) "
+      + "VALUES(#{doctorId}, #{childId}, #{relationStatus}, #{createdAt})")
   @Options(useGeneratedKeys = true, keyProperty = "relationId")
   int createDoctorChildRelation(DoctorChildRelation relation);
+
+  @Update("UPDATE d_doctors_children SET relation_status = #{relationStatus} "
+      + "WHERE child_id = #{childId} AND doctor_id = #{doctorId}")
+  boolean updateDoctorChildRelation(DoctorChildRelation relation);
 
   @Delete("DELETE FROM d_doctors_children WHERE doctor_id = #{doctorId} AND child_id = #{childId}")
   int deleteDoctorChildRelation(DoctorChildRelation relation);

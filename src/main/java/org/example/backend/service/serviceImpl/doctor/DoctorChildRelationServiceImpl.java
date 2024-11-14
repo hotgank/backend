@@ -16,16 +16,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class DoctorChildRelationServiceImpl implements DoctorChildRelationService {
 
-  private static final Logger logger = LoggerFactory.getLogger(DoctorServiceImpl.class);
+  private static final Logger logger = LoggerFactory.getLogger(DoctorChildRelationServiceImpl.class);
 
   @Autowired
   private DoctorChildRelationMapper doctorChildRelationMapper;
 
   @Override
-  public List<Child> selectMyPatients(DoctorChildRelation relation) {
+  public List<Child> selectMyPatients(String doctorId, String relationStatus) {
     try {
-      String doctorId = relation.getDoctorId();
-      List<Child> myPatients = doctorChildRelationMapper.selectMyPatients(doctorId);
+      List<Child> myPatients = doctorChildRelationMapper.selectMyPatients(doctorId, relationStatus);
       logger.info("获取我的患者成功");
       return myPatients;
     } catch (Exception e) {
@@ -38,13 +37,35 @@ public class DoctorChildRelationServiceImpl implements DoctorChildRelationServic
   public int createDoctorChildRelation(DoctorChildRelation relation) {
     try {
       relation.setCreatedAt(LocalDateTime.now());
-      doctorChildRelationMapper.createDoctorChildRelation(relation);
-      int relationId = relation.getRelationId();
-      logger.info("Relation with ID {} updated successfully", relationId);
-      return relationId;
+      relation.setRelationStatus("pending");
+      int result = doctorChildRelationMapper.createDoctorChildRelation(relation);
+      if(result > 0){
+        int relationId = relation.getRelationId();
+        logger.info("Relation with ID {} updated successfully", relationId);
+        return relationId;
+      }else{
+        logger.error("Error creating relation");
+        return 0;
+      }
     } catch (Exception e) {
       logger.error("Error creating relation: {}", e.getMessage(), e);
       return 0;
+    }
+  }
+
+  @Override
+  public boolean updateDoctorChildRelation(DoctorChildRelation relation) {
+    try {
+      boolean updated = doctorChildRelationMapper.updateDoctorChildRelation(relation);
+      if (updated) {
+        logger.info("DoctorChildRelation with ID {} updated successfully", relation.getRelationId());
+      } else {
+        logger.error("Error updating relation");
+      }
+      return updated;
+    } catch (Exception e) {
+      logger.error("Error updating relation: {}", e.getMessage(),e);
+      return false;
     }
   }
 
