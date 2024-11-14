@@ -48,6 +48,7 @@ public class AIDetectionController {
     Report report = new Report();
     report.setChildId(childId);
     report.setReportType("脊柱异位");
+    report.setState("检测中");
     report.setUrl(imageUrl);
     int reportId =reportService.insertReport(report);
     // Start the async task
@@ -107,8 +108,11 @@ public class AIDetectionController {
       Report report = reportService.selectByReportId(reportId);
       if (response != null) { // 判断是否成功
         report = reportUtil.generateReportFromJson(response, report);
+        logger.info("AIDetect Response: {}", response);
+        report.setState("检测完成");
         reportService.updateReport(report);
       } else {
+        report.setState("检测失败");
         reportService.updateReport(report);
       }
     } catch (IOException e) {
