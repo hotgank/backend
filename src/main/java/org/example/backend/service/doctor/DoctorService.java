@@ -30,4 +30,6 @@ public interface DoctorService {
   String isUsernameExist(String username);
 
   String isEmailExist(String email);
+
+  String getAvatarBase64(String doctorId);
 }
