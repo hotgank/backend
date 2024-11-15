@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.example.backend.entity.user.ParentChildRelation;
+import org.example.backend.entity.user.Child;
 
 /**
  *  ParentChildRelationMapper
@@ -70,4 +71,16 @@ public interface ParentChildRelationMapper {
   //根据childId删除所有与childId有关的关系
   @Insert("DELETE FROM u_parents_children WHERE child_id = #{childId}")
   void deleteRelationsByChildId(@Param("childId") String childId);
+
+  //根据userId查询所有关系，然后根据childId查询出所有孩子
+  @Select("SELECT * FROM u_children WHERE child_id IN "
+      + "(SELECT child_id FROM u_parents_children WHERE user_id = #{userId})")
+  @Results({
+      @Result(column = "child_id", property = "childId"),
+      @Result(column = "name", property = "name"),
+      @Result(column = "school", property = "school"),
+      @Result(column = "gender", property = "gender"),
+      @Result(column = "birthdate",property = "birthdate"),
+  })
+  List<Child> selectChildrenByUserId(@Param("userId") String userId);
 }

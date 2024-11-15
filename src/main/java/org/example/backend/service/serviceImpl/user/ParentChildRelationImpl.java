@@ -1,6 +1,7 @@
 package org.example.backend.service.serviceImpl.user;
 
 import java.util.List;
+import org.example.backend.entity.user.Child;
 import org.example.backend.entity.user.ParentChildRelation;
 import org.example.backend.mapper.user.ParentChildRelationMapper;
 import org.example.backend.service.user.ParentChildRelationService;
@@ -86,6 +87,17 @@ public class ParentChildRelationImpl implements ParentChildRelationService {
     } catch (Exception e) {
       logger.error("Error deleting relations: {}", e.getMessage(), e);
       return false;
+    }
+  }
+
+  @Override
+  public List<Child> getChildrenByUserId(String userId) {
+    try {
+      logger.info("getting children by userId");
+      return parentChildRelationMapper.selectChildrenByUserId(userId);
+    } catch (Exception e) {
+      logger.error("Error getting children by userId: {}", e.getMessage(), e);
+      return null;
     }
   }
 }

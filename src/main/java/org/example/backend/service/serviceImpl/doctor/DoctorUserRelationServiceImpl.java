@@ -4,27 +4,28 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-import org.example.backend.entity.doctor.DoctorChildRelation;
+import org.example.backend.entity.doctor.DoctorUserRelation;
 import org.example.backend.entity.user.Child;
-import org.example.backend.mapper.doctor.DoctorChildRelationMapper;
-import org.example.backend.service.doctor.DoctorChildRelationService;
+import org.example.backend.entity.user.User;
+import org.example.backend.mapper.doctor.DoctorUserRelationMapper;
+import org.example.backend.service.doctor.DoctorUserRelationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DoctorChildRelationServiceImpl implements DoctorChildRelationService {
+public class DoctorUserRelationServiceImpl implements DoctorUserRelationService {
 
-  private static final Logger logger = LoggerFactory.getLogger(DoctorChildRelationServiceImpl.class);
+  private static final Logger logger = LoggerFactory.getLogger(DoctorUserRelationServiceImpl.class);
 
   @Autowired
-  private DoctorChildRelationMapper doctorChildRelationMapper;
+  private DoctorUserRelationMapper doctorUserRelationMapper;
 
   @Override
-  public List<Child> selectMyPatients(String doctorId, String relationStatus) {
+  public List<User> selectMyPatients(String doctorId, String relationStatus) {
     try {
-      List<Child> myPatients = doctorChildRelationMapper.selectMyPatients(doctorId, relationStatus);
+      List<User> myPatients = doctorUserRelationMapper.selectMyPatients(doctorId, relationStatus);
       logger.info("获取我的患者成功");
       return myPatients;
     } catch (Exception e) {
@@ -34,9 +35,9 @@ public class DoctorChildRelationServiceImpl implements DoctorChildRelationServic
   }
 
   @Override
-  public List<Child> selectRecentPatients(String doctorId, String relationStatus) {
+  public List<User> selectRecentPatients(String doctorId, String relationStatus) {
     try {
-      List<Child> myPatients = doctorChildRelationMapper.selectRecentPatients(doctorId, relationStatus);
+      List<User> myPatients = doctorUserRelationMapper.selectRecentPatients(doctorId, relationStatus);
       logger.info("获取最近患者成功");
       return myPatients;
     } catch (Exception e) {
@@ -46,11 +47,11 @@ public class DoctorChildRelationServiceImpl implements DoctorChildRelationServic
   }
 
   @Override
-  public int createDoctorChildRelation(DoctorChildRelation relation) {
+  public int createDoctorUserRelation(DoctorUserRelation relation) {
     try {
       relation.setCreatedAt(LocalDateTime.now());
       relation.setRelationStatus("pending");
-      int result = doctorChildRelationMapper.createDoctorChildRelation(relation);
+      int result = doctorUserRelationMapper.createDoctorUserRelation(relation);
       if(result > 0){
         int relationId = relation.getRelationId();
         logger.info("Relation with ID {} updated successfully", relationId);
@@ -66,11 +67,11 @@ public class DoctorChildRelationServiceImpl implements DoctorChildRelationServic
   }
 
   @Override
-  public boolean updateDoctorChildRelation(DoctorChildRelation relation) {
+  public boolean updateDoctorUserRelation(DoctorUserRelation relation) {
     try {
-      boolean updated = doctorChildRelationMapper.updateDoctorChildRelation(relation);
+      boolean updated = doctorUserRelationMapper.updateDoctorUserRelation(relation);
       if (updated) {
-        logger.info("DoctorChildRelation with ID {} updated successfully", relation.getRelationId());
+        logger.info("DoctorUserRelation with ID {} updated successfully", relation.getRelationId());
       } else {
         logger.error("Error updating relation");
       }
@@ -82,9 +83,9 @@ public class DoctorChildRelationServiceImpl implements DoctorChildRelationServic
   }
 
   @Override
-  public boolean deleteDoctorChildRelation(DoctorChildRelation relation) {
+  public boolean deleteDoctorUserRelation(DoctorUserRelation relation) {
     try {
-      int deletedRows = doctorChildRelationMapper.deleteDoctorChildRelation(relation);
+      int deletedRows = doctorUserRelationMapper.deleteDoctorUserRelation(relation);
       logger.info("{} rows deleted from relation table", deletedRows);
       return true;
     } catch (Exception e) {

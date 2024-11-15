@@ -3,19 +3,19 @@ package org.example.backend.controller.doctor;
 import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.example.backend.entity.doctor.DoctorChildRelation;
-import org.example.backend.entity.user.Child;
-import org.example.backend.service.doctor.DoctorChildRelationService;
+import org.example.backend.entity.doctor.DoctorUserRelation;
+import org.example.backend.service.doctor.DoctorUserRelationService;
 import org.example.backend.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.example.backend.entity.user.User;
 
 @RestController
 @RequestMapping("api/doctor/relation")
-public class DoctorChildRelationController {
+public class DoctorUserRelationController {
   @Autowired
-  DoctorChildRelationService doctorChildRelationService;
+  DoctorUserRelationService doctorUserRelationService;
 
   @Autowired
   private JsonParser jsonParser;
@@ -24,7 +24,7 @@ public class DoctorChildRelationController {
   public ResponseEntity<String> selectMyPatients(HttpServletRequest request) {
     String doctorId = (String) request.getAttribute("userId");
     // 调用服务层来查询患者信息
-    List<Child> relations = doctorChildRelationService.selectMyPatients(doctorId, "approved");
+    List<User> relations = doctorUserRelationService.selectMyPatients(doctorId, "approved");
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relations));
   }
 
@@ -32,7 +32,7 @@ public class DoctorChildRelationController {
   public ResponseEntity<String> selectPendingPatients(HttpServletRequest request) {
     String doctorId = (String) request.getAttribute("userId");
     // 调用服务层来查询待绑定患者信息
-    List<Child> relations = doctorChildRelationService.selectMyPatients(doctorId, "pending");
+    List<User> relations = doctorUserRelationService.selectMyPatients(doctorId, "pending");
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relations));
   }
 
@@ -40,7 +40,7 @@ public class DoctorChildRelationController {
   public ResponseEntity<String> selectRecentPatients(HttpServletRequest request) {
     String doctorId = (String) request.getAttribute("userId");
     // 调用服务层来查询待绑定患者信息
-    List<Child> relations = doctorChildRelationService.selectRecentPatients(doctorId, "approved");
+    List<User> relations = doctorUserRelationService.selectRecentPatients(doctorId, "approved");
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relations));
   }
 
@@ -48,14 +48,14 @@ public class DoctorChildRelationController {
   public ResponseEntity<String> selectRecentPendingPatients(HttpServletRequest request) {
     String doctorId = (String) request.getAttribute("userId");
     // 调用服务层来查询待绑定患者信息
-    List<Child> relations = doctorChildRelationService.selectRecentPatients(doctorId, "pending");
+    List<User> relations = doctorUserRelationService.selectRecentPatients(doctorId, "pending");
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relations));
   }
 
   @PostMapping("/add")
-  public ResponseEntity<String> addDoctorChildRelation(@RequestBody DoctorChildRelation relation) {
+  public ResponseEntity<String> addDoctorUserRelation(@RequestBody DoctorUserRelation relation) {
     // 调用服务层来添加医患信息到数据库
-    int result = doctorChildRelationService.createDoctorChildRelation(relation);
+    int result = doctorUserRelationService.createDoctorUserRelation(relation);
 
     if (result > 0) {
       return ResponseEntity.ok("Successfully bound doctor with child");
@@ -65,10 +65,10 @@ public class DoctorChildRelationController {
   }
 
   @PostMapping("/approve")
-  public ResponseEntity<String> approveDoctorChildRelation(@RequestBody DoctorChildRelation relation) {
+  public ResponseEntity<String> approveDoctorUserRelation(@RequestBody DoctorUserRelation relation) {
     relation.setRelationStatus("approved");
     // 调用服务层来通过医患信息到数据库
-    boolean success = doctorChildRelationService.updateDoctorChildRelation(relation);
+    boolean success = doctorUserRelationService.updateDoctorUserRelation(relation);
 
     if (success) {
       return ResponseEntity.ok("Successfully reviewed doctor child relation");
@@ -78,10 +78,10 @@ public class DoctorChildRelationController {
   }
 
   @PostMapping("/reject")
-  public ResponseEntity<String> rejectDoctorChildRelation(@RequestBody DoctorChildRelation relation) {
+  public ResponseEntity<String> rejectDoctorUserRelation(@RequestBody DoctorUserRelation relation) {
     relation.setRelationStatus("rejected");
     // 调用服务层来拒绝医患信息到数据库
-    boolean success = doctorChildRelationService.updateDoctorChildRelation(relation);
+    boolean success = doctorUserRelationService.updateDoctorUserRelation(relation);
 
     if (success) {
       return ResponseEntity.ok("Successfully reviewed doctor child relation");
@@ -91,9 +91,9 @@ public class DoctorChildRelationController {
   }
 
   @PostMapping("/delete")
-  public ResponseEntity<String> deleteDoctorChildRelation(@RequestBody DoctorChildRelation relation) {
+  public ResponseEntity<String> deleteDoctorUserRelation(@RequestBody DoctorUserRelation relation) {
     // 调用服务层来删除咨询医患信息到数据库
-    boolean success = doctorChildRelationService.deleteDoctorChildRelation(relation);
+    boolean success = doctorUserRelationService.deleteDoctorUserRelation(relation);
 
     if (success) {
       return ResponseEntity.ok("Successfully deleted doctor child relation");
