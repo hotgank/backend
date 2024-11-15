@@ -22,7 +22,7 @@ public class DoctorChildRelationController {
 
   @GetMapping("/selectMyPatients")
   public ResponseEntity<String> selectMyPatients(HttpServletRequest request) {
-    String doctorId = (String) request.getAttribute("doctorId");
+    String doctorId = (String) request.getAttribute("userId");
     // 调用服务层来查询患者信息
     List<Child> relations = doctorChildRelationService.selectMyPatients(doctorId, "approved");
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relations));
@@ -30,7 +30,7 @@ public class DoctorChildRelationController {
 
   @GetMapping("/selectPendingPatients")
   public ResponseEntity<String> selectPendingPatients(HttpServletRequest request) {
-    String doctorId = (String) request.getAttribute("doctorId");
+    String doctorId = (String) request.getAttribute("userId");
     // 调用服务层来查询待绑定患者信息
     List<Child> relations = doctorChildRelationService.selectMyPatients(doctorId, "pending");
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relations));
@@ -38,7 +38,7 @@ public class DoctorChildRelationController {
 
   @GetMapping("/selectRecentPatients")
   public ResponseEntity<String> selectRecentPatients(HttpServletRequest request) {
-    String doctorId = (String) request.getAttribute("doctorId");
+    String doctorId = (String) request.getAttribute("userId");
     // 调用服务层来查询待绑定患者信息
     List<Child> relations = doctorChildRelationService.selectRecentPatients(doctorId, "approved");
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relations));
@@ -46,7 +46,7 @@ public class DoctorChildRelationController {
 
   @GetMapping("/selectRecentPendingPatients")
   public ResponseEntity<String> selectRecentPendingPatients(HttpServletRequest request) {
-    String doctorId = (String) request.getAttribute("doctorId");
+    String doctorId = (String) request.getAttribute("userId");
     // 调用服务层来查询待绑定患者信息
     List<Child> relations = doctorChildRelationService.selectRecentPatients(doctorId, "pending");
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relations));

@@ -24,7 +24,7 @@ public class DoctorReportController {
 
     @PostMapping("/selectByChildId")
     public ResponseEntity<String> selectByChildId(HttpServletRequest request) {
-        String childId = (String) request.getAttribute("childId");
+        String childId = (String) request.getAttribute("userId");
         List<Report> reports = reportService.selectByChildId(childId);
         if(reports != null){
             return ResponseEntity.ok(jsonParser.toJsonFromEntityList(reports));

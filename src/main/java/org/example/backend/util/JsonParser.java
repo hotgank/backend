@@ -83,6 +83,7 @@ public class JsonParser {
   public String toJsonFromEntity(Object entity) {
     try {
       ObjectMapper objectMapper = new ObjectMapper();
+      objectMapper.registerModule(new JavaTimeModule());  // 注册 JavaTimeModule
       objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
       // 将对象转换为JSON字符串
       return objectMapper.writeValueAsString(entity);
