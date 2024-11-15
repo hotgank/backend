@@ -2,7 +2,8 @@ package org.example.backend.controller.doctor;
 
 
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.Date;
+
+import java.sql.Date;
 import java.util.List;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.service.doctor.DoctorService;
@@ -152,8 +153,8 @@ public class DoctorController {
     String doctorId = (String) request.getAttribute("userId");
     String name = jsonParser.parseJsonString(doctorJson, "name");
     String phone = jsonParser.parseJsonString(doctorJson, "phone");
-//    String birthdateStr = jsonParser.parseJsonString(doctorJson, "birthdate");
-//    Date date = new Date(Long.parseLong(birthdateStr));
+    String birthdateStr = jsonParser.parseJsonString(doctorJson, "birthdate");
+    Date date = new Date(Long.parseLong(birthdateStr));
     String gender = jsonParser.parseJsonString(doctorJson, "gender");
     String experience = jsonParser.parseJsonString(doctorJson, "experience");
     Doctor doctor = doctorService.selectById(doctorId);
@@ -161,7 +162,7 @@ public class DoctorController {
     doctor.setPhone(phone);
     doctor.setGender(gender);
     doctor.setExperience(experience);
-//    doctor.setbirthdate((java.sql.Date) date);
+    doctor.setbirthdate(date);
 
     if (doctorService.update(doctor)) {
       return ResponseEntity.ok("Data updated successfully");
