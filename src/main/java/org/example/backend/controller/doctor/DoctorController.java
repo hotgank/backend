@@ -128,8 +128,11 @@ public class DoctorController {
     try {
       //从请求中获取用户ID
       String userId = (String) request.getAttribute("userId");
-
-      return ResponseEntity.ok("{\"Id\":\""+userId+"\"}");
+      Doctor doctor = doctorService.selectById(userId);
+      String result = jsonParser.removeKeyFromJson(jsonParser.removeKeyFromJson(
+          jsonParser.toJsonFromEntity(doctor),"doctorId" ),"password");
+//      String result = jsonParser.toJsonFromEntity(doctor);
+      return ResponseEntity.ok(result);
     } catch (Exception e) {
       return ResponseEntity.status(500).body("Failed");
     }
