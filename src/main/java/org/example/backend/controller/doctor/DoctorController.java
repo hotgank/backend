@@ -2,19 +2,25 @@ package org.example.backend.controller.doctor;
 
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.sql.Date;
 import java.util.List;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.service.doctor.DoctorService;
 import org.example.backend.util.ExcelReader;
 import org.example.backend.util.JsonParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/api/doctor")
 public class DoctorController {
 
+  private static final Logger log = LoggerFactory.getLogger(DoctorController.class);
   @Autowired
   private DoctorService doctorService;
 
@@ -74,7 +80,8 @@ public class DoctorController {
   }
 
   @PostMapping("/update")
-  public ResponseEntity<String> updateDoctor(@RequestBody Doctor doctor, HttpServletRequest request) {
+  public ResponseEntity<String> updateDoctor(@RequestBody Doctor doctor,
+      HttpServletRequest request) {
     doctor.setDoctorId((String) request.getAttribute("userId"));
     // 调用服务层来更新医生信息
     boolean success = doctorService.update(doctor);
@@ -87,11 +94,12 @@ public class DoctorController {
   }
 
   @GetMapping("/delete")
-  public ResponseEntity<String> deleteAccount(@RequestBody String doctorJson, HttpServletRequest request) {
+  public ResponseEntity<String> deleteAccount(@RequestBody String doctorJson,
+      HttpServletRequest request) {
     String doctorId = (String) request.getAttribute("userId");
     String password = jsonParser.parseJsonString(doctorJson, "password");
 
-    if (!doctorService.validatePassword(doctorId, password)){
+    if (!doctorService.validatePassword(doctorId, password)) {
       return ResponseEntity.status(400).body("Failed to find doctor information");
     }
     // 调用服务层来删除医生信息
@@ -104,11 +112,12 @@ public class DoctorController {
     }
   }
 
-  @GetMapping("/updatePassword")
-  public ResponseEntity<String> updatePassword(@RequestBody String doctorJson, HttpServletRequest request){
+  @PostMapping("/updatePassword")
+  public ResponseEntity<String> updatePassword(@RequestBody String doctorJson,
+      HttpServletRequest request) {
     String doctorId = (String) request.getAttribute("userId");
     String oldPassword = jsonParser.parseJsonString(doctorJson, "oldPassword");
-    if(!doctorService.validatePassword(doctorId, oldPassword)){
+    if (!doctorService.validatePassword(doctorId, oldPassword)) {
       return ResponseEntity.status(400).body("Failed to find doctor information");
     }
     String newPassword1 = jsonParser.parseJsonString(doctorJson, "newPassword1");
@@ -116,9 +125,9 @@ public class DoctorController {
     if (newPassword1 != null && !newPassword1.equals(newPassword2)) {
       return ResponseEntity.status(400).body("Passwords do not match");
     }
-    if(doctorService.updatePassword(doctorId, newPassword1)){
+    if (doctorService.updatePassword(doctorId, newPassword1)) {
       return ResponseEntity.ok("Password updated successfully");
-    }else{
+    } else {
       return ResponseEntity.status(500).body("Failed to update password");
     }
   }
@@ -128,11 +137,37 @@ public class DoctorController {
     try {
       //从请求中获取用户ID
       String userId = (String) request.getAttribute("userId");
-
-      return ResponseEntity.ok("{\"Id\":\""+userId+"\"}");
+      Doctor doctor = doctorService.selectById(userId);
+      String result = jsonParser.removeKeyFromJson(jsonParser.removeKeyFromJson(
+          jsonParser.toJsonFromEntity(doctor), "doctorId"), "password");
+//      String result = jsonParser.toJsonFromEntity(doctor);
+      return ResponseEntity.ok(result);
     } catch (Exception e) {
       return ResponseEntity.status(500).body("Failed");
     }
   }
 
+  @PostMapping("/updateData")
+  public ResponseEntity<String> updateData(@RequestBody String doctorJson,
+      HttpServletRequest request) {
+    String doctorId = (String) request.getAttribute("userId");
+    String name = jsonParser.parseJsonString(doctorJson, "name");
+    String phone = jsonParser.parseJsonString(doctorJson, "phone");
+    String birthdateStr = jsonParser.parseJsonString(doctorJson, "birthdate");
+    Date date = new Date(Long.parseLong(birthdateStr));
+    String gender = jsonParser.parseJsonString(doctorJson, "gender");
+    String experience = jsonParser.parseJsonString(doctorJson, "experience");
+    Doctor doctor = doctorService.selectById(doctorId);
+    doctor.setName(name);
+    doctor.setPhone(phone);
+    doctor.setGender(gender);
+    doctor.setExperience(experience);
+    doctor.setbirthdate(date);
+
+    if (doctorService.update(doctor)) {
+      return ResponseEntity.ok("Data updated successfully");
+    } else {
+      return ResponseEntity.status(500).body("Failed to update Data");
+    }
+  }
 }
