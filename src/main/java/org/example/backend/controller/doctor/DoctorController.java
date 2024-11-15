@@ -282,7 +282,7 @@ public ResponseEntity<String> uploadAvatarBase64(@RequestBody String base64Image
     byte[] imageBytes = Base64.getDecoder().decode(base64Data);
 
     // 构建文件保存路径
-    String folder = System.getProperty("user.dir") + File.separator + "doctor_avatars" + File.separator;
+    String folder = System.getProperty("user.dir") + File.separator + "uploads" + File.separator + "doctor_avatars" + File.separator;
     String fileName = doctorId + ".jpg";
 
     // 确保文件夹存在
@@ -314,7 +314,7 @@ public ResponseEntity<String> uploadAvatarBase64(@RequestBody String base64Image
   @GetMapping("/get_avatar_base64")
   public ResponseEntity<String> getAvatarBase64(HttpServletRequest request) {
     String doctorId = (String) request.getAttribute("userId");
-    String folder = System.getProperty("user.dir") + File.separator + "doctor_avatars" + File.separator;
+    String folder = System.getProperty("user.dir") + File.separator + "uploads" +File.separator + "doctor_avatars" + File.separator;
     String fileName = doctorId + ".jpg";
     Path path = Paths.get(folder + fileName);
     log.info(folder+fileName);
