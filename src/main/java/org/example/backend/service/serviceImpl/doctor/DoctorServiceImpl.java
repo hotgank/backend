@@ -157,6 +157,30 @@ public class DoctorServiceImpl implements DoctorService {
   }
 
   @Override
+  public String loginByUsername(String username, String password) {
+    String passwordMD5 = encryptionUtil.encryptMD5(password);
+    return doctorMapper.selectDoctorIdByUsernameAndPassword(username,passwordMD5);
+  }
+
+  @Override
+  public String isUsernameExist(String username) {
+    String doctorId = doctorMapper.isUsernameExist(username);
+    if (doctorId != null) {
+      return doctorId;
+    }
+    return null;
+  }
+
+  @Override
+  public String isEmailExist(String email) {
+    String doctorId = doctorMapper.isEmailExist(email);
+    if (doctorId != null) {
+      return doctorId;
+    }
+    return null;
+  }
+
+  @Override
   public String generateRegisterCode(String email) {
     // 检查Redis中是否已存在该邮箱的验证码
     if (Boolean.TRUE.equals(redisTemplate.hasKey(email))) {

@@ -24,4 +24,10 @@ public interface DoctorService {
   boolean validateRegisterCode(String email, String registerCode);
 
   String loginByEmail(String email, String password);
+
+  String loginByUsername(String username, String password);
+
+  String isUsernameExist(String username);
+
+  String isEmailExist(String email);
 }

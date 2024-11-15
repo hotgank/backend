@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 public class Doctor {
   private String doctorId;
   private String name;
+  private String username;
   private String password;
   private String phone;
   private String email;
@@ -29,6 +30,9 @@ public class Doctor {
     return name;
   }
 
+  public String getUsername() {
+    return username;
+  }
   public String getPassword() {
     return password;
   }
@@ -91,6 +95,9 @@ public class Doctor {
 
   public void setName(String name) {
     this.name = name;
+  }
+  public void setUsername(String username) {
+    this.username = username;
   }
 
   public void setPassword(String password) {
@@ -172,25 +179,7 @@ public class Doctor {
         '}';
   }
 
-  public String toJson() {
-    return "{"
-        + "\"doctorId\":\"" + doctorId + "\","
-        + "\"name\":\"" + name + "\","
-        + "\"phone\":\"" + phone + "\","
-        + "\"email\":\"" + email + "\","
-        + "\"birthdate\":" + (birthdate != null ? "\"" + birthdate.toString() + "\"" : "null") + ","
-        + "\"gender\":\"" + gender + "\","
-        + "\"position\":\"" + position + "\","
-        + "\"workplace\":\"" + workplace + "\","
-        + "\"qualification\":\"" + qualification + "\","
-        + "\"experience\":\"" + experience + "\","
-        + "\"rating\":" + rating + ","
-        + "\"avatarUrl\":\"" + avatarUrl + "\","
-        + "\"registrationDate\":" + (registrationDate != null ? "\"" + registrationDate.toString() + "\"" : "null") + ","
-        + "\"lastLogin\":" + (lastLogin != null ? "\"" + lastLogin.toString() + "\"" : "null") + ","
-        + "\"status\":\"" + status + "\""
-        + "}";
-  }
+
 
 
 }

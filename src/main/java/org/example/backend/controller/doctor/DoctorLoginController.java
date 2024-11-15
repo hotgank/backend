@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.example.backend.util.JwtUtil;
 import org.example.backend.util.RedisUtil;
 import org.example.backend.service.doctor.DoctorService;
+import org.example.backend.util.JsonParser;
 
 @RestController
 @RequestMapping("/api/DoctorLogin")
@@ -32,15 +33,18 @@ public class DoctorLoginController {
   @Autowired
   private RedisUtil redisUtil;  // 假设你有一个 RedisUtil 来存储 token
 
-  @PostMapping("/login")
-  public ResponseEntity<String> login(@RequestBody Map<String, String> body) {
+  @Autowired
+  private JsonParser jsonParser;
+
+  @PostMapping("/loginByEmail")
+  public ResponseEntity<String> loginByEmail(@RequestBody Map<String, String> body) {
     String email = body.get("email");
     String password = body.get("password");
     log.info("Received login request for email: {}", email);
 
     // 查询数据库，查找是否有该邮箱的用户
     String doctorId = doctorService.loginByEmail(email, password);
-    if (doctorId == null) {
+    if (doctorId == null|| doctorId.isEmpty()) {
       return ResponseEntity.badRequest().body("账号或密码错误");
     }
 
@@ -55,13 +59,46 @@ public class DoctorLoginController {
     doctor.setLastLogin(LocalDateTime.now());
     doctor.setStatus("online");
     doctorService.update(doctor);
-    doctor.setDoctorId(null);
-    doctor.setPassword(null);
+    String doctorJson = jsonParser.toJsonFromEntity(doctor);
+    doctorJson = jsonParser.removeKeyFromJson(doctorJson, "password");
+    doctorJson = jsonParser.removeKeyFromJson(doctorJson, "doctorId");
     // 构建响应体
-    String response = "{\"token\":\"" + jwtToken + "\",\"doctor\":" + doctor.toJson() + "}";
+    String response = "{\"token\":\"" + jwtToken + "\",\"doctor\":" + doctorJson  + "}";
 
     // 返回 JWT token 和医生的详细信息
     return ResponseEntity.ok(response);
   }
 
+  @PostMapping("/loginByUsername")
+  public ResponseEntity<String> loginByUsername(@RequestBody Map<String, String> body) {
+    String username = body.get("username");
+    String password = body.get("password");
+    log.info("Received login request for username: {}", username);
+
+    // 查询数据库，查找是否有该邮箱的用户
+    String doctorId = doctorService.loginByUsername(username, password);
+    if (doctorId == null|| doctorId.isEmpty()) {
+      return ResponseEntity.badRequest().body("账号或密码错误");
+    }
+
+    // 生成 JWT token
+    String jwtToken = jwtUtil.generateToken(doctorId);
+
+    // 将 token 存储到 Redis（如果需要）
+    redisUtil.storeTokenInRedis(doctorId, jwtToken);
+
+    // 获取医生的详细信息
+    Doctor doctor = doctorService.selectById(doctorId);
+    doctor.setLastLogin(LocalDateTime.now());
+    doctor.setStatus("online");
+    doctorService.update(doctor);
+    String doctorJson = jsonParser.toJsonFromEntity(doctor);
+    doctorJson = jsonParser.removeKeyFromJson(doctorJson, "password");
+    doctorJson = jsonParser.removeKeyFromJson(doctorJson, "doctorId");
+    // 构建响应体
+    String response = "{\"token\":\"" + jwtToken + "\",\"doctor\":" + doctorJson  + "}";
+
+    // 返回 JWT token 和医生的详细信息
+    return ResponseEntity.ok(response);
+  }
 }

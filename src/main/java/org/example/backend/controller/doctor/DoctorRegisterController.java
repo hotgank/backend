@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Map;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.others.Hospital;
+import org.example.backend.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +39,11 @@ public class DoctorRegisterController {
 
   @Autowired
   private HospitalService hospitalService;
+  @Autowired
+  private RedisUtil redisUtil;
+  @Qualifier("redisTemplate")
+  @Autowired
+  private RedisTemplate redisTemplate;
 
   @PostMapping("/sendRegisterCode")
   public ResponseEntity<String> sendRegisterCode(@RequestBody Map<String, String> body) {
@@ -45,6 +53,11 @@ public class DoctorRegisterController {
     if (email == null || email.isEmpty()) {
       logger.error("邮箱地址为空");
       return ResponseEntity.status(400).body("邮箱地址不能为空");
+    }
+
+    String EmailExist = doctorService.isEmailExist(email);
+    if (!(EmailExist == null||EmailExist.isEmpty())) {
+      return ResponseEntity.status(400).body("邮箱已存在");
     }
 
     String registerCode = doctorService.generateRegisterCode(email);
@@ -63,17 +76,19 @@ public class DoctorRegisterController {
   public ResponseEntity<String> register(@RequestBody Map<String, String> body) {
     String email = body.get("email");
     String registerCode = body.get("registerCode");
-    String username = body.get("name");
+    String name = body.get("name");
+    String username = body.get("username");
     String password = body.get("password");
     String workplace = body.get("workplace");
     Doctor doctor = new Doctor();
     doctor.setEmail(email);
-    doctor.setName(username);
+    doctor.setName(name);
+    doctor.setUsername(username);
     doctor.setPassword(password);
     doctor.setWorkplace(workplace);
     logger.info("收到注册请求，邮箱: {}, 用户名: {}", email, username);
 
-    if (email == null || email.isEmpty() || registerCode == null || registerCode.isEmpty() || username == null || username.isEmpty() || password == null || password.isEmpty()|| workplace == null || workplace.isEmpty()) {
+    if (email == null || email.isEmpty() || registerCode == null || registerCode.isEmpty() || username == null || username.isEmpty() || password == null || password.isEmpty()|| workplace == null || workplace.isEmpty()|| name == null || name.isEmpty()) {
       logger.error("注册信息不完整");
       return ResponseEntity.status(400).body("注册信息不完整");
     }
@@ -84,17 +99,21 @@ public class DoctorRegisterController {
       return ResponseEntity.status(400).body("注册码错误或无效");
     }
 
+    String UsernameExist = doctorService.isUsernameExist(username);
+    if (!(UsernameExist == null||UsernameExist.isEmpty())) {
+      return ResponseEntity.status(400).body("用户名已存在");
+    }
 
-
-//    if (doctorService.isEmailExist(email)) {
-//      logger.error("邮箱已存在，邮箱: {}", email);
-//      return ResponseEntity.status(400).body("邮箱已存在");
-//    }
+    String EmailExist = doctorService.isEmailExist(email);
+    if (!(EmailExist == null||EmailExist.isEmpty())) {
+      return ResponseEntity.status(400).body("邮箱已存在");
+    }
 
     String success = doctorService.insert(doctor);
 
     if (success!=null) {
       logger.info("用户注册成功，邮箱: {}, 用户名: {}", email, username);
+      redisTemplate.delete(email);
       return ResponseEntity.ok("注册成功");
     } else {
       logger.error("用户注册失败，邮箱: {}, 用户名: {}", email, username);
