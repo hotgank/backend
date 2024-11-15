@@ -3,7 +3,13 @@ package org.example.backend.controller.doctor;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Date;
+import java.util.Base64;
 import java.util.List;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.service.doctor.DoctorService;
@@ -12,8 +18,16 @@ import org.example.backend.util.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+
 
 
 @RestController
@@ -170,4 +184,151 @@ public class DoctorController {
       return ResponseEntity.status(500).body("Failed to update Data");
     }
   }
+
+//  @PostMapping("/upload_avatar")
+//  public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+//    String doctorId = (String) request.getAttribute("userId");
+//
+//    // 检查文件是否为图片
+//    if (!file.getContentType().startsWith("image/")) {
+//      return new ResponseEntity<>("Only image files are allowed", HttpStatus.BAD_REQUEST);
+//    }
+//
+//    // 构建一个文件夹路径字符串，用于保存上传的图片,根目录下的AIDetectionImage文件夹
+//    String folder = System.getProperty("user.dir") + File.separator + "doctor_avatars" + File.separator;
+//    String fileName = file.getOriginalFilename();
+//
+//    if (fileName == null) {
+//      return new ResponseEntity<>("File name is missing", HttpStatus.BAD_REQUEST);
+//    }
+//
+//    fileName = doctorId + ".jpg";
+//
+//    try {
+//      // 确保文件夹存在
+//      File directory = new File(folder);
+//      if (!directory.exists()) {
+//        directory.mkdirs();
+//      }
+//
+//      // 将图片保存到文件夹
+//      byte[] bytes = file.getBytes();
+//      Path path = Paths.get(folder + fileName);
+//      Files.write(path, bytes);
+//
+//      // 返回图片的URL（假设你的URL是 localhost:8080/images/{filename}）
+//      // localhost:8080 根据实际 IP 和端口号进行修改
+//      String imageUrl = "http://localhost:8080/doctor_avatars/" + fileName;
+//      Doctor doctor = doctorService.selectById(doctorId);
+//      doctor.setAvatarUrl(imageUrl);
+//
+//      if (!doctorService.update(doctor)) {
+//        return ResponseEntity.status(500).body("Failed to upload avatar");
+//      }
+//
+//      return ResponseEntity.ok("{\"imageUrl\":\"" + imageUrl + "\"}");
+//    } catch (IOException e) {
+//      log.error("Error occurred while uploading image", e);
+//      return new ResponseEntity<>("Error occurred while uploading image", HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
+//  }
+//
+//  @GetMapping("/get_avatar/{doctorId}")
+//  public ResponseEntity<Resource> getAvatar(HttpServletRequest request) {
+//    // 构建一个文件夹路径字符串，用于保存上传的图片,根目录下的AIDetectionImage文件夹
+//    String doctorId = (String) request.getAttribute("userId");
+//    String folder = System.getProperty("user.dir") + File.separator + "doctor_avatars" + File.separator;
+//    String fileName = doctorId + ".jpg";
+//    Path path = Paths.get(folder + fileName);
+//
+//    Resource resource = new FileSystemResource(path.toFile());
+//
+//    if (resource.exists() && resource.isReadable()) {
+//      return ResponseEntity.ok()
+//          .contentType(MediaType.IMAGE_JPEG)
+//          .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileName + "\"")
+//          .body(resource);
+//    } else {
+//      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//    }
+//  }
+@PostMapping("/upload_avatar_base64")
+public ResponseEntity<String> uploadAvatarBase64(@RequestBody String base64Image, HttpServletRequest request) {
+  String doctorId = (String) request.getAttribute("userId");
+
+  // 解析 JSON 字符串
+  base64Image = jsonParser.parseJsonString(base64Image, "base64Image");
+
+  // 检查 Base64 数据的格式
+  if (base64Image == null || !base64Image.startsWith("data:image")) {
+    return new ResponseEntity<>("Invalid image format", HttpStatus.BAD_REQUEST);
+  }
+
+  // 提取 Base64 字符串中的数据部分
+  String[] base64Parts = base64Image.split(",", 2);
+  if (base64Parts.length != 2) {
+    return new ResponseEntity<>("Invalid Base64 data", HttpStatus.BAD_REQUEST);
+  }
+
+  String base64Data = base64Parts[1];
+
+  // 额外的检查：确保 Base64 数据的长度是 4 的倍数
+  if (base64Data.length() % 4 != 0) {
+    return new ResponseEntity<>("Base64 data length is not a multiple of 4", HttpStatus.BAD_REQUEST);
+  }
+
+  try {
+    // 解码 Base64 字符串为字节数组
+    byte[] imageBytes = Base64.getDecoder().decode(base64Data);
+
+    // 构建文件保存路径
+    String folder = System.getProperty("user.dir") + File.separator + "doctor_avatars" + File.separator;
+    String fileName = doctorId + ".jpg";
+
+    // 确保文件夹存在
+    File directory = new File(folder);
+    if (!directory.exists()) {
+      directory.mkdirs();
+    }
+
+    // 保存文件
+    Path path = Paths.get(folder + fileName);
+    Files.write(path, imageBytes);
+
+    // 返回图片的 URL
+    String imageUrl = "http://localhost:8080/doctor_avatars/" + fileName;
+    Doctor doctor = doctorService.selectById(doctorId);
+    doctor.setAvatarUrl(imageUrl);
+
+    if (!doctorService.update(doctor)) {
+      return ResponseEntity.status(500).body("Failed to upload avatar");
+    }
+
+    return ResponseEntity.ok("Successfully uploaded");
+  } catch (IllegalArgumentException | IOException e) {
+    log.error("Error occurred while uploading Base64 image", e);
+    return new ResponseEntity<>("Error occurred while uploading image", HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+}
+
+  @GetMapping("/get_avatar_base64")
+  public ResponseEntity<String> getAvatarBase64(HttpServletRequest request) {
+    String doctorId = (String) request.getAttribute("userId");
+    String folder = System.getProperty("user.dir") + File.separator + "doctor_avatars" + File.separator;
+    String fileName = doctorId + ".jpg";
+    Path path = Paths.get(folder + fileName);
+    log.info(folder+fileName);
+    try {
+      // 读取文件内容为字节数组
+      byte[] imageBytes = Files.readAllBytes(path);
+
+      // 编码为Base64字符串
+      String base64Image = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
+
+      return ResponseEntity.ok("{\"base64Image\": \""+base64Image+"\"}");
+    } catch (IOException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+  }
+
 }
