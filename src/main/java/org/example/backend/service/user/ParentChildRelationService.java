@@ -1,6 +1,7 @@
 package org.example.backend.service.user;
 
 import java.util.List;
+import org.example.backend.entity.user.Child;
 import org.example.backend.entity.user.ParentChildRelation;
 
 public interface ParentChildRelationService {
@@ -11,4 +12,5 @@ public interface ParentChildRelationService {
   Boolean deleteRelationById(int relationId);
   List<ParentChildRelation> getRelationsByUserId(String userId);
   Boolean deleteRelationsByChildId(String childId);
+  List<Child> getChildrenByUserId(String userId);
 }

@@ -2,6 +2,7 @@ package org.example.backend.controller.user;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
+import org.example.backend.entity.user.Child;
 import org.example.backend.entity.user.ParentChildRelation;
 import org.example.backend.service.user.ParentChildRelationService;
 import org.example.backend.util.JsonParser;
@@ -65,6 +66,18 @@ public class ParentChildRelationController {
       }
     } catch (Exception e) {
       return ResponseEntity.status(500).body("删除失败");
+    }
+  }
+
+  //根据userId获取所有孩子
+  @PostMapping("/getChildrenByUserId")
+  public ResponseEntity<String> getChildrenByUserId(@RequestBody String userIdJson) {
+    try {
+      String userId = jsonParser.parseJsonString(userIdJson, "userId");
+      List<Child> children = parentChildRelationService.getChildrenByUserId(userId);
+      return ResponseEntity.ok(jsonParser.toJsonFromEntityList(children));
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body(null);
     }
   }
 }
