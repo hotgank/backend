@@ -166,6 +166,7 @@ public class DoctorController {
       HttpServletRequest request) {
     String doctorId = (String) request.getAttribute("userId");
     String name = jsonParser.parseJsonString(doctorJson, "name");
+    String username = jsonParser.parseJsonString(doctorJson, "username");
     String phone = jsonParser.parseJsonString(doctorJson, "phone");
     String birthdateStr = jsonParser.parseJsonString(doctorJson, "birthdate");
     Date date = new Date(Long.parseLong(birthdateStr));
@@ -173,6 +174,7 @@ public class DoctorController {
     String experience = jsonParser.parseJsonString(doctorJson, "experience");
     Doctor doctor = doctorService.selectById(doctorId);
     doctor.setName(name);
+    doctor.setUsername(username);
     doctor.setPhone(phone);
     doctor.setGender(gender);
     doctor.setExperience(experience);
