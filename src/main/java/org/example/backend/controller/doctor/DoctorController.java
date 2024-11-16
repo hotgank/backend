@@ -154,7 +154,9 @@ public class DoctorController {
       Doctor doctor = doctorService.selectById(userId);
       String result = jsonParser.removeKeyFromJson(jsonParser.removeKeyFromJson(
           jsonParser.toJsonFromEntity(doctor), "doctorId"), "password");
-//      String result = jsonParser.toJsonFromEntity(doctor);
+      result = jsonParser.removeKeyFromJson(result, "avatarUrl");
+      result = jsonParser.removeKeyFromJson(result, "status");
+
       return ResponseEntity.ok(result);
     } catch (Exception e) {
       return ResponseEntity.status(500).body("Failed");

@@ -62,6 +62,8 @@ public class DoctorLoginController {
     String doctorJson = jsonParser.toJsonFromEntity(doctor);
     doctorJson = jsonParser.removeKeyFromJson(doctorJson, "password");
     doctorJson = jsonParser.removeKeyFromJson(doctorJson, "doctorId");
+    doctorJson = jsonParser.removeKeyFromJson(doctorJson, "avatarUrl");
+    doctorJson = jsonParser.removeKeyFromJson(doctorJson, "status");
     // 构建响应体
     String response = "{\"token\":\"" + jwtToken + "\",\"doctor\":" + doctorJson  + "}";
 
@@ -75,7 +77,7 @@ public class DoctorLoginController {
     String password = body.get("password");
     log.info("Received login request for username: {}", username);
 
-    // 查询数据库，查找是否有该邮箱的用户
+    // 查询数据库，查找是否有该用户名的用户
     String doctorId = doctorService.loginByUsername(username, password);
     if (doctorId == null|| doctorId.isEmpty()) {
       return ResponseEntity.badRequest().body("账号或密码错误");
@@ -95,6 +97,8 @@ public class DoctorLoginController {
     String doctorJson = jsonParser.toJsonFromEntity(doctor);
     doctorJson = jsonParser.removeKeyFromJson(doctorJson, "password");
     doctorJson = jsonParser.removeKeyFromJson(doctorJson, "doctorId");
+    doctorJson = jsonParser.removeKeyFromJson(doctorJson, "avatarUrl");
+    doctorJson = jsonParser.removeKeyFromJson(doctorJson, "status");
     // 构建响应体
     String response = "{\"token\":\"" + jwtToken + "\",\"doctor\":" + doctorJson  + "}";
 

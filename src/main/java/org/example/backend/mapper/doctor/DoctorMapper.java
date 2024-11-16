@@ -92,7 +92,7 @@ public interface DoctorMapper{
   String selectDoctorIdByEmailAndPassword(@Param("email") String email, @Param("password") String password);
 
   @Select("SELECT doctor_id FROM d_doctors WHERE username = #{username} AND password = #{password}")
-  String selectDoctorIdByUsernameAndPassword(@Param("email") String email, @Param("username") String username);
+  String selectDoctorIdByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
 
   @Select("SELECT doctor_id FROM d_doctors WHERE username = #{username}")
   String isUsernameExist(@Param("username") String username);
