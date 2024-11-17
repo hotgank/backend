@@ -16,4 +16,6 @@ public interface DoctorUserRelationService {
   boolean updateDoctorUserRelation(DoctorUserRelation relation);
 
   boolean deleteDoctorUserRelation(DoctorUserRelation relation);
+
+  List<DoctorUserRelation> selectPendingPatients(String doctorId, String relationStatus);
 }
