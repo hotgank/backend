@@ -17,7 +17,7 @@ public class DoctorUserRelation {
     return doctorId;
   }
 
-  public String getChildId() {
+  public String getUserId() {
     return userId;
   }
 
@@ -37,8 +37,8 @@ public class DoctorUserRelation {
     this.doctorId = doctorId;
   }
 
-  public void setChildId(String childId) {
-    this.userId = childId;
+  public void setUserId(String userId) {
+    this.userId = userId;
   }
 
   public void setRelationStatus(String relationStatus) {
