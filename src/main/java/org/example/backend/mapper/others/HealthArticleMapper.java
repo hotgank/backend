@@ -47,5 +47,19 @@ public interface HealthArticleMapper  {
   void updateById(HealthArticle healthArticle);
     @Delete("DELETE FROM o_health_articles WHERE article_id=#{articleId}")
   void deleteById(Integer articleId);
+
+    @Select("SELECT * FROM o_health_articles WHERE doctor_id=#{doctorId}")
+  @Results(
+      {
+          @Result(column = "article_id", property = "articleId"),
+          @Result(column = "doctor_id", property = "doctorId"),
+          @Result(column = "title", property = "title"),
+          @Result(column = "content", property = "content"),
+          @Result(column = "publish_date", property = "publishDate"),
+          @Result(column = "type", property = "type"),
+          @Result(column ="status", property = "status"),
+      }
+  )
+  List<HealthArticle> selectByDoctorId(String doctorId);
 }
 

@@ -67,5 +67,10 @@ public class HealthArticleServiceImpl implements HealthArticleService {
     }
   }
 
+  @Override
+  public List<HealthArticle> getByDoctorId(String doctorId) {
+    return healthArticleMapper.selectByDoctorId(doctorId);
+  }
+
 }
 
