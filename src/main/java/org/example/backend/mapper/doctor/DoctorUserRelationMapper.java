@@ -46,6 +46,16 @@ public interface DoctorUserRelationMapper {
   })
   List<User> selectRecentPatients(@Param("doctorId") String doctorId, @Param("relationStatus") String relationStatus);
 
+  //查询d_doctors_users表中relationStatus为pending的关系，并按时间顺序从近到远返回关系
+  @Select("SELECT * FROM d_doctors_users WHERE doctor_id = #{doctorId} AND relation_status = #{relationStatus} ORDER BY created_at DESC LIMIT 5")
+  @Results({
+      @Result(column = "doctor_id", property = "doctorId"),
+      @Result(column = "user_id", property = "userId"),
+      @Result(column = "relation_id", property = "relationId"),
+      @Result(column = "relation_status", property = "relationStatus"),
+  })
+  List<DoctorUserRelation> selectPendingPatients(@Param("doctorId") String doctorId, @Param("relationStatus") String relationStatus);
+
   @Insert("INSERT INTO d_doctors_users(doctor_id, user_id, relation_status, created_at) "
       + "VALUES(#{doctorId}, #{userId}, #{relationStatus}, #{createdAt})")
   @Options(useGeneratedKeys = true, keyProperty = "relationId")

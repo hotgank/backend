@@ -93,4 +93,16 @@ public class DoctorUserRelationServiceImpl implements DoctorUserRelationService 
       return false;
     }
   }
+
+  @Override
+  public List<DoctorUserRelation> selectPendingPatients(String doctorId, String relationStatus) {
+    try {
+      List<DoctorUserRelation> pendingPatients = doctorUserRelationMapper.selectPendingPatients(doctorId, relationStatus);
+      logger.info("获取待绑定患者成功");
+      return pendingPatients;
+    } catch (Exception e) {
+      logger.error("获取待绑定患者失败", e);
+      return Collections.emptyList();
+    }
+  }
 }
