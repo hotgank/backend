@@ -10,12 +10,25 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.doctor.DoctorUserRelation;
-import org.example.backend.entity.user.Child;
 import org.example.backend.entity.user.User;
 
 @Mapper
 public interface DoctorUserRelationMapper {
+  @Select("SELECT * FROM d_doctors WHERE doctor_id IN "
+  +"(SELECT doctor_id FROM d_doctors_users WHERE user_id = #{userId})")
+  @Results({
+      @Result(column = "doctor_id", property = "doctorId"),
+      @Result(column = "username", property = "username"),
+      @Result(column = "email", property = "email"),
+      @Result(column = "phone", property = "phone"),
+      @Result(column = "avatar_url", property = "avatarUrl"),
+      @Result(column = "registration_date", property = "registrationDate"),
+  })
+  List<Doctor> selectDoctorsByUserId(@Param("userId") String userId);
+
+
   @Select("SELECT * FROM u_users WHERE user_id IN "
       + "(SELECT user_id FROM d_doctors_users WHERE doctor_id = #{doctorId} AND relation_status = #{relationStatus} ORDER BY created_at)")
   @Results({

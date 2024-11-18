@@ -3,6 +3,7 @@ package org.example.backend.controller.doctor;
 import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.doctor.DoctorUserRelation;
 import org.example.backend.service.doctor.DoctorUserRelationService;
 import org.example.backend.util.JsonParser;
@@ -20,6 +21,13 @@ public class DoctorUserRelationController {
   @Autowired
   private JsonParser jsonParser;
 
+  @GetMapping("/selectMyDoctors")
+  public ResponseEntity<String> selectMyDoctors(HttpServletRequest request) {
+    String userId = (String) request.getAttribute("userId");
+    // 调用服务层来查询医生信息
+    List<Doctor> doctors = doctorUserRelationService.selectMyDoctors(userId);
+    return ResponseEntity.ok(jsonParser.toJsonFromEntityList(doctors));
+  }
   @GetMapping("/selectMyPatients")
   public ResponseEntity<String> selectMyPatients(HttpServletRequest request) {
     String doctorId = (String) request.getAttribute("userId");
