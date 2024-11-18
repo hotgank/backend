@@ -20,4 +20,6 @@ public interface DoctorUserRelationService {
   boolean deleteDoctorUserRelation(DoctorUserRelation relation);
 
   List<DoctorUserRelation> selectPendingPatients(String doctorId, String relationStatus);
+
+  DoctorUserRelation selectDoctorUserRelationByIDs(String doctorId, String userId);
 }

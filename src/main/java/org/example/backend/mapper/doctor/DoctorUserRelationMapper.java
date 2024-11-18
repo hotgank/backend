@@ -81,4 +81,13 @@ public interface DoctorUserRelationMapper {
 
   @Delete("DELETE FROM d_doctors_users WHERE doctor_id = #{doctorId} AND user_id = #{userId}")
   int deleteDoctorUserRelation(DoctorUserRelation relation);
+
+  @Select("SELECT * FROM d_doctors_users WHERE doctor_id = #{doctorId} AND user_id = #{userId}")
+  @Results({
+      @Result(column = "doctor_id", property = "doctorId"),
+      @Result(column = "user_id", property = "userId"),
+      @Result(column = "relation_id", property = "relationId"),
+      @Result(column = "relation_status", property = "relationStatus"),
+  })
+  DoctorUserRelation selectDoctorUserRelation(@Param("doctorId") String doctorId, @Param("userId") String userId);
 }

@@ -64,6 +64,16 @@ public class DoctorUserRelationController {
   public ResponseEntity<String> addDoctorUserRelation(@RequestBody DoctorUserRelation relation, HttpServletRequest request) {
     // 调用服务层来添加医患信息到数据库
     relation.setUserId((String) request.getAttribute("userId"));
+    DoctorUserRelation doctorUserRelation = doctorUserRelationService.selectDoctorUserRelationByIDs(relation.getDoctorId(), relation.getUserId());
+    if(doctorUserRelation != null) {
+      if(doctorUserRelation.getRelationStatus().equals("pending")) {
+        return ResponseEntity.status(500).body("You had sent a pending invitation already");
+      }else if(doctorUserRelation.getRelationStatus().equals("approved")) {
+        return ResponseEntity.status(500).body("You have been bound with this doctor already");
+      }else {
+        return ResponseEntity.status(500).body("You had been rejected already");
+      }
+    }
     int result = doctorUserRelationService.createDoctorUserRelation(relation);
 
     if (result > 0) {
@@ -109,7 +119,7 @@ public class DoctorUserRelationController {
     } else {
       return ResponseEntity.status(500).body("Failed to delete doctor child relation");
     }
-  }
+}
 
   //获取待审核列表
   @GetMapping("/selectPending")

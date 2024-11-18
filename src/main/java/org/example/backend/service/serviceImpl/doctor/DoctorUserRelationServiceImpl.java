@@ -117,4 +117,9 @@ public class DoctorUserRelationServiceImpl implements DoctorUserRelationService 
       return Collections.emptyList();
     }
   }
+
+  @Override
+  public DoctorUserRelation selectDoctorUserRelationByIDs(String doctorId, String userId) {
+    return doctorUserRelationMapper.selectDoctorUserRelation(doctorId, userId);
+  }
 }
