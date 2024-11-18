@@ -9,4 +9,5 @@ public interface HealthArticleService {
   boolean createHealthArticle(HealthArticle healthArticle);
   boolean updateHealthArticle(HealthArticle healthArticle);
   boolean deleteHealthArticle(Integer articleId);
+  List<HealthArticle> getByDoctorId(String doctorId);
 }

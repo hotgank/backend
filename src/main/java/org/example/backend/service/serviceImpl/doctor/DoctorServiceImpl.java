@@ -1,7 +1,13 @@
 package org.example.backend.service.serviceImpl.doctor;
 
 import jakarta.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.UUID;
 import org.example.backend.entity.doctor.Doctor;
@@ -12,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -154,6 +162,48 @@ public class DoctorServiceImpl implements DoctorService {
   public String loginByEmail(String email, String password) {
     String passwordMD5 = encryptionUtil.encryptMD5(password);
     return doctorMapper.selectDoctorIdByEmailAndPassword(email,passwordMD5);
+  }
+
+  @Override
+  public String loginByUsername(String username, String password) {
+    String passwordMD5 = encryptionUtil.encryptMD5(password);
+    return doctorMapper.selectDoctorIdByUsernameAndPassword(username,passwordMD5);
+  }
+
+  @Override
+  public String isUsernameExist(String username) {
+    String doctorId = doctorMapper.isUsernameExist(username);
+    if (doctorId != null) {
+      return doctorId;
+    }
+    return null;
+  }
+
+  @Override
+  public String isEmailExist(String email) {
+    String doctorId = doctorMapper.isEmailExist(email);
+    if (doctorId != null) {
+      return doctorId;
+    }
+    return null;
+  }
+
+  @Override
+  public String getAvatarBase64(String doctorId) {
+    String folder = System.getProperty("user.dir") + File.separator + "uploads" +File.separator + "doctor_avatars" + File.separator;
+    String fileName = doctorId + ".jpg";
+    Path path = Paths.get(folder + fileName);
+    try {
+      // 读取文件内容为字节数组
+      byte[] imageBytes = Files.readAllBytes(path);
+
+      // 编码为Base64字符串
+      String base64Image = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
+
+      return base64Image;
+    } catch (IOException e) {
+      return null;
+    }
   }
 
   @Override

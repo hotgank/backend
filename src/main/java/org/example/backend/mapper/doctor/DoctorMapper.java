@@ -17,6 +17,7 @@ public interface DoctorMapper{
   @Results({
       @Result(column = "doctor_id", property = "doctorId"),
       @Result(column = "name", property = "name"),
+      @Result(column = "username", property = "username"),
       @Result(column = "password", property = "password"),
       @Result(column = "phone", property = "phone"),
       @Result(column = "email", property = "email"),
@@ -38,6 +39,7 @@ public interface DoctorMapper{
   @Results({
       @Result(column = "doctor_id", property = "doctorId"),
       @Result(column = "name", property = "name"),
+      @Result(column = "username", property = "username"),
       @Result(column = "password", property = "password"),
       @Result(column = "phone", property = "phone"),
       @Result(column = "email", property = "email"),
@@ -55,16 +57,17 @@ public interface DoctorMapper{
   })
   Doctor selectById(String doctorId);
 
-  @Insert("INSERT INTO d_doctors(doctor_id, name, password, phone, email, "
+  @Insert("INSERT INTO d_doctors(doctor_id, name, username,password, phone, email, "
       + "birthdate, gender, position, workplace, qualification, experience, rating, "
       + "avatar_url, registration_date, last_login, status) "
-      + "VALUES (#{doctorId}, #{name}, #{password}, #{phone}, #{email}, "
+      + "VALUES (#{doctorId}, #{name}, #{username} ,#{password}, #{phone}, #{email}, "
       + "#{birthdate}, #{gender}, #{position}, #{workplace}, #{qualification}, #{experience}, "
       + "#{rating}, #{avatarUrl}, #{registrationDate}, #{lastLogin}, #{status})")
   void insertDoctor(Doctor doctor);
 
   @Update("UPDATE d_doctors "
       + "SET name = #{name}, "
+      + "username = #{username}, "
       + "password = #{password}, "
       + "phone = #{phone}, "
       + "email = #{email}, "
@@ -87,4 +90,13 @@ public interface DoctorMapper{
   // 新增方法：根据邮箱和密码查询 doctor_id
   @Select("SELECT doctor_id FROM d_doctors WHERE email = #{email} AND password = #{password}")
   String selectDoctorIdByEmailAndPassword(@Param("email") String email, @Param("password") String password);
+
+  @Select("SELECT doctor_id FROM d_doctors WHERE username = #{username} AND password = #{password}")
+  String selectDoctorIdByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
+
+  @Select("SELECT doctor_id FROM d_doctors WHERE username = #{username}")
+  String isUsernameExist(@Param("username") String username);
+
+  @Select("SELECT doctor_id FROM d_doctors WHERE email = #{email}")
+  String isEmailExist(@Param("email") String email);
 }

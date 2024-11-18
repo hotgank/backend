@@ -2,10 +2,10 @@ package org.example.backend.entity.doctor;
 
 import java.time.LocalDateTime;
 
-public class DoctorChildRelation {
+public class DoctorUserRelation {
   private int relationId;
   private String doctorId; // Foreign key: Doctor ID
-  private String childId;  // Foreign key: Child ID
+  private String userId;  // Foreign key: Child ID
   private String relationStatus;
   private LocalDateTime createdAt;
 
@@ -17,8 +17,8 @@ public class DoctorChildRelation {
     return doctorId;
   }
 
-  public String getChildId() {
-    return childId;
+  public String getUserId() {
+    return userId;
   }
 
   public String getRelationStatus() {
@@ -37,8 +37,8 @@ public class DoctorChildRelation {
     this.doctorId = doctorId;
   }
 
-  public void setChildId(String childId) {
-    this.childId = childId;
+  public void setUserId(String userId) {
+    this.userId = userId;
   }
 
   public void setRelationStatus(String relationStatus) {
@@ -52,10 +52,10 @@ public class DoctorChildRelation {
 
   @Override
   public String toString() {
-    return "DoctorChildRelation{" +
+    return "DoctorUserRelation{" +
         "relationId=" + relationId +
         ", doctorId='" + doctorId + '\'' +
-        ", childId='" + childId + '\'' +
+        ", userId='" + userId + '\'' +
         ", relationType='" + relationStatus + '\'' +
         ", createdAt=" + createdAt +
         '}';
