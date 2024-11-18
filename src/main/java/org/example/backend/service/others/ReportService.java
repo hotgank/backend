@@ -20,4 +20,6 @@ public interface ReportService {
     boolean deleteByReportId(int reportId);
 
     List<Report> selectAll();
+
+    List<Report> selectByUserId(String userId);
 }

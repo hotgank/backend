@@ -108,4 +108,15 @@ public class ReportServiceImpl implements ReportService {
     }
   }
 
+  @Override
+  public List<Report> selectByUserId(String userId) {
+    try {
+      return reportMapper.selectByUserId(userId);
+    }catch (Exception e) {
+      // 记录异常日志
+      logger.error("获取用户报告失败, userId: {}", userId, e);
+      return null;
+    }
+  }
+
 }

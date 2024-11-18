@@ -78,4 +78,15 @@ public interface ReportMapper {
             @Result(column = "comment", property = "comment"),
     })
     List<Report> selectAll();
+
+    @Select("SELECT * FROM r_reports WHERE child_id IN (SELECT child_id FROM u_parents_children WHERE user_id = #{userId}) ORDER BY created_at DESC")
+    @Results({
+            @Result(column = "report_id", property = "reportId"),
+            @Result(column = "child_id", property = "childId"),
+            @Result(column = "created_at", property = "createdAt"),
+            @Result(column = "report_type", property = "reportType"),
+            @Result(column = "doctor_id", property = "doctorId"),
+            @Result(column= "url", property = "url"),
+    })
+    List<Report> selectByUserId(@Param("userId") String userId);
 }

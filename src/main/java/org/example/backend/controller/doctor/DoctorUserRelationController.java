@@ -6,7 +6,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.doctor.DoctorUserRelation;
 import org.example.backend.entity.others.DoctorWithStatus;
+import org.example.backend.entity.others.Report;
 import org.example.backend.service.doctor.DoctorUserRelationService;
+import org.example.backend.service.others.ReportService;
 import org.example.backend.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,9 @@ public class DoctorUserRelationController {
 
   @Autowired
   private JsonParser jsonParser;
+
+  @Autowired
+  private ReportService reportService;
 
   @GetMapping("/selectApplication")
   public ResponseEntity<String> selectApplication(HttpServletRequest request) {
@@ -42,7 +47,14 @@ public class DoctorUserRelationController {
     String doctorId = (String) request.getAttribute("userId");
     // 调用服务层来查询患者信息
     List<User> relations = doctorUserRelationService.selectMyPatients(doctorId, "approved");
-    return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relations));
+    String json = jsonParser.toJsonFromEntityList(relations);
+    json = jsonParser.removeKeyFromJson(json, "password");
+    json = jsonParser.removeKeyFromJson(json, "email");
+    json = jsonParser.removeKeyFromJson(json, "phone");
+    json = jsonParser.removeKeyFromJson(json, "registrationDate");
+    json = jsonParser.removeKeyFromJson(json, "lastLogin");
+    json = jsonParser.removeKeyFromJson(json, "openid");
+    return ResponseEntity.ok(json);
   }
 
   @GetMapping("/selectPendingPatients")
@@ -50,7 +62,19 @@ public class DoctorUserRelationController {
     String doctorId = (String) request.getAttribute("userId");
     // 调用服务层来查询待绑定患者信息
     List<User> relations = doctorUserRelationService.selectMyPatients(doctorId, "pending");
-    return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relations));
+
+
+
+    String json = jsonParser.toJsonFromEntityList(relations);
+
+    json = jsonParser.removeKeyFromJson(json, "password");
+    json = jsonParser.removeKeyFromJson(json, "email");
+    json = jsonParser.removeKeyFromJson(json, "phone");
+    json = jsonParser.removeKeyFromJson(json, "registrationDate");
+    json = jsonParser.removeKeyFromJson(json, "lastLogin");
+    json = jsonParser.removeKeyFromJson(json, "openid");
+    json = jsonParser.removeKeyFromJson(json, "sessionKey");
+    return ResponseEntity.ok(json);
   }
 
   @GetMapping("/selectRecentPatients")
@@ -93,9 +117,16 @@ public class DoctorUserRelationController {
   }
 
   @PostMapping("/approve")
-  public ResponseEntity<String> approveDoctorUserRelation(@RequestBody DoctorUserRelation relation) {
+  public ResponseEntity<String> approveDoctorUserRelation(@RequestBody String jsonString, HttpServletRequest request) {
+    String doctorId = (String) request.getAttribute("userId");
+    String userId = jsonParser.parseJsonString(jsonString, "userId");
+    DoctorUserRelation relation = doctorUserRelationService.selectDoctorUserRelationByIDs(doctorId, userId);
+    if(relation == null){
+      return ResponseEntity.status(500).body("You have no permission to access this user's reports");
+    }
     relation.setRelationStatus("approved");
     // 调用服务层来通过医患信息到数据库
+    
     boolean success = doctorUserRelationService.updateDoctorUserRelation(relation);
 
     if (success) {
@@ -106,7 +137,13 @@ public class DoctorUserRelationController {
   }
 
   @PostMapping("/reject")
-  public ResponseEntity<String> rejectDoctorUserRelation(@RequestBody DoctorUserRelation relation) {
+  public ResponseEntity<String> rejectDoctorUserRelation(@RequestBody String jsonString, HttpServletRequest request) {
+    String doctorId = (String) request.getAttribute("userId");
+    String userId = jsonParser.parseJsonString(jsonString, "userId");
+    DoctorUserRelation relation = doctorUserRelationService.selectDoctorUserRelationByIDs(doctorId, userId);
+    if(relation == null){
+      return ResponseEntity.status(500).body("You have no permission to access this user's reports");
+    }
     relation.setRelationStatus("rejected");
     // 调用服务层来拒绝医患信息到数据库
     boolean success = doctorUserRelationService.updateDoctorUserRelation(relation);
@@ -138,4 +175,18 @@ public class DoctorUserRelationController {
     List<DoctorUserRelation> relations = doctorUserRelationService.selectPendingPatients(doctorId, "pending");
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relations));
   }
+
+  @PostMapping("/selectReports")
+  public ResponseEntity<String> selectReports(@RequestBody String jsonString,HttpServletRequest request) {
+    String doctorId = (String) request.getAttribute("userId");
+    String userId = jsonParser.parseJsonString(jsonString, "userId");
+    DoctorUserRelation relation = doctorUserRelationService.selectDoctorUserRelationByIDs(doctorId, userId);
+    if(relation == null){
+      return ResponseEntity.status(500).body("You have no permission to access this user's reports");
+    }
+    // 调用服务层来查询待审核信息
+    List<Report> reports = reportService.selectByUserId(userId);
+    return ResponseEntity.ok(jsonParser.toJsonFromEntityList(reports));
+  }
+
 }
