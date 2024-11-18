@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.doctor.DoctorUserRelation;
+import org.example.backend.entity.others.DoctorWithStatus;
 import org.example.backend.service.doctor.DoctorUserRelationService;
 import org.example.backend.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,14 @@ public class DoctorUserRelationController {
 
   @Autowired
   private JsonParser jsonParser;
+
+  @GetMapping("/selectApplication")
+  public ResponseEntity<String> selectApplication(HttpServletRequest request) {
+    String userId = (String) request.getAttribute("userId");
+    // 调用服务层来查询医生信息
+    List<DoctorWithStatus>    doctorWithStatuses= doctorUserRelationService.selectPendingDoctors(userId);
+    return ResponseEntity.ok(jsonParser.toJsonFromEntityList(doctorWithStatuses));
+  }
 
   @GetMapping("/selectMyDoctors")
   public ResponseEntity<String> selectMyDoctors(HttpServletRequest request) {

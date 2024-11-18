@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.doctor.DoctorUserRelation;
+import org.example.backend.entity.others.DoctorWithStatus;
 import org.example.backend.entity.user.User;
 import org.example.backend.mapper.doctor.DoctorUserRelationMapper;
 import org.example.backend.service.doctor.DoctorUserRelationService;
@@ -21,6 +22,17 @@ public class DoctorUserRelationServiceImpl implements DoctorUserRelationService 
 
   @Autowired
   private DoctorUserRelationMapper doctorUserRelationMapper;
+  @Override
+  public List<DoctorWithStatus> selectPendingDoctors(String userId) {
+    try {
+      List<DoctorWithStatus> pendingDoctors = doctorUserRelationMapper.selectApplications(userId);
+      logger.info("获取申请医生信息成功");
+      return pendingDoctors;
+    } catch (Exception e) {
+      logger.error("获取申请医生信息失败", e);
+      return Collections.emptyList();
+    }
+  }
 
   @Override  //用户查找我的医生
   public List<Doctor> selectMyDoctors(String userId) {

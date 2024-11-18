@@ -3,6 +3,7 @@ package org.example.backend.service.doctor;
 import java.util.List;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.doctor.DoctorUserRelation;
+import org.example.backend.entity.others.DoctorWithStatus;
 import org.example.backend.entity.user.User;
 
 public interface DoctorUserRelationService {
@@ -12,6 +13,8 @@ public interface DoctorUserRelationService {
   List<User> selectRecentPatients(String doctorId, String relationStatus);
 
   List<Doctor> selectMyDoctors(String userId);
+
+  List<DoctorWithStatus> selectPendingDoctors(String userId);
 
   int createDoctorUserRelation(DoctorUserRelation relation);
 

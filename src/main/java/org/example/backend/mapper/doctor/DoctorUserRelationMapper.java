@@ -12,10 +12,27 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.doctor.DoctorUserRelation;
+import org.example.backend.entity.others.DoctorWithStatus;
 import org.example.backend.entity.user.User;
 
 @Mapper
 public interface DoctorUserRelationMapper {
+   @Select("SELECT d.*, dur.relation_status FROM d_doctors d " +
+            "JOIN d_doctors_users dur ON d.doctor_id = dur.doctor_id " +
+            "WHERE dur.user_id = #{userId} ")
+    @Results({
+        @Result(column = "name", property = "doctor.name"),
+        @Result(column = "workplace", property = "doctor.workplace"),
+        @Result(column = "doctor_id", property = "doctor.doctorId"),
+        @Result(column = "username", property = "doctor.username"),
+        @Result(column = "email", property = "doctor.email"),
+        @Result(column = "phone", property = "doctor.phone"),
+        @Result(column = "avatar_url", property = "doctor.avatarUrl"),
+        @Result(column = "registration_date", property = "doctor.registrationDate"),
+        @Result(column = "relation_status", property = "relationStatus")
+    })
+  List<DoctorWithStatus>selectApplications(@Param("userId") String userId);
+
   @Select("SELECT * FROM d_doctors " +
         "WHERE doctor_id IN (SELECT doctor_id FROM d_doctors_users WHERE user_id = #{userId} AND relation_status = 'approved')")
 
