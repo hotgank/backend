@@ -90,4 +90,10 @@ public class AdminServiceImpl implements AdminService {
       return false;
     }
   }
+
+  @Override
+  public String loginByEmail(String email, String password) {
+    String passwordMD5 = encryptionUtil.encryptMD5(password);
+    return adminMapper.selectAdminIdByEmailAndPassword(email,passwordMD5);
+  }
 }

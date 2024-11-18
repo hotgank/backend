@@ -13,7 +13,7 @@ public interface UserService {
   boolean update(User user);
   boolean delete(String userId);
 
-  String register(User user);
+  boolean banAccount(String userId); boolean activeAccount(String userId); boolean editUsername(String userId, String username);String register(User user);
 
   //根据openid查询用户
   User selectByOpenId(String openid);

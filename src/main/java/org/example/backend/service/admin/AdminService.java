@@ -9,4 +9,6 @@ public interface AdminService {
   String insert(Admin admin);
   boolean update(Admin admin);
   boolean delete(String adminId);
+
+  String loginByEmail(String email, String password);
 }

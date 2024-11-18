@@ -108,6 +108,48 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public boolean banAccount(String userId) {
+    try {
+      User user = selectById(userId);
+      user.setStatus("disabled");
+      userMapper.updateUser(user);
+      logger.info("User with ID {} banned successfully", userId);
+      return true;
+    } catch (Exception e) {
+      logger.error("Error banning user with ID {}: {}", userId, e.getMessage(), e);
+      return false;
+    }
+  }
+
+  @Override
+  public boolean activeAccount(String userId) {
+    try {
+      User user = selectById(userId);
+      user.setStatus("active");
+      userMapper.updateUser(user);
+      logger.info("User with ID {} activated successfully", userId);
+      return true;
+    } catch (Exception e) {
+      logger.error("Error active user with ID {}: {}", userId, e.getMessage(), e);
+      return false;
+    }
+  }
+
+  @Override public boolean editUsername(String userId, String username) {
+    try {
+      User user = selectById(userId);
+      user.setUsername(username);
+      user.setStatus("active");
+      userMapper.updateUser(user);
+      logger.info("User with ID {} edited successfully", userId);
+      return true;
+    } catch (Exception e) {
+      logger.error("Error edit user with ID {}: {}", userId, e.getMessage(), e);
+      return false;
+    }
+  }
+
+  @Override
   public String register(User user){
     try {
       String userId = "U-" + UUID.randomUUID();

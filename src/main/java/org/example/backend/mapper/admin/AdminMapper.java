@@ -48,6 +48,9 @@ public interface AdminMapper{
   })
   Admin selectById(@Param("adminId") String adminId);
 
+  @Select("SELECT admin_id FROM a_admins WHERE email = #{email} AND password = #{password}")
+  String selectAdminIdByEmailAndPassword(@Param("email") String email, @Param("password") String password);
+
   @Insert("INSERT INTO a_admins(admin_id, admin_type, supervisor_id, unit_name, username, "
       + "password, email, phone, avatar_url, registration_date, last_login, status)"
       + "VALUES(#{adminId}, #{adminType}, #{supervisorId}, #{unitName}, #{username}, "
