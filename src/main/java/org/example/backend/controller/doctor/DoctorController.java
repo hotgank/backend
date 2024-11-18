@@ -49,7 +49,10 @@ public class DoctorController {
 
     // 调用服务层来查询所有医生信息
     List<Doctor> result = doctorService.selectAll();
-
+    for(Doctor doctor : result)
+    {
+      doctor.setAvatarUrl(doctorService.getAvatarBase64(doctor.getDoctorId()));
+    }
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(result));
   }
 
