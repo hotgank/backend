@@ -1,10 +1,13 @@
-package org.example.backend.controller.others;
+package org.example.backend.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,11 +18,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-@RestController
-public class FileController {
+@Component
+public class UrlUtil {
 
-    @GetMapping("/file")
-    public ResponseEntity<Resource> getFile(@RequestParam String url) {
+  private static final Logger logger = LoggerFactory.getLogger(UrlUtil.class);
+      public ResponseEntity<Resource> getFile( String url) {
         // 检查 URL 是否以 localhost:8080 开头
         if (!url.startsWith("http://localhost:8080/")) {
             return ResponseEntity.badRequest().body(null);
