@@ -16,8 +16,9 @@ import org.example.backend.entity.user.User;
 
 @Mapper
 public interface DoctorUserRelationMapper {
-  @Select("SELECT * FROM d_doctors WHERE doctor_id IN "
-  +"(SELECT doctor_id FROM d_doctors_users WHERE user_id = #{userId})")
+  @Select("SELECT * FROM d_doctors " +
+        "WHERE doctor_id IN (SELECT doctor_id FROM d_doctors_users WHERE user_id = #{userId} AND relation_status = 'approved')")
+
   @Results({
       @Result(column = "doctor_id", property = "doctorId"),
       @Result(column = "username", property = "username"),
