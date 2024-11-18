@@ -18,8 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -118,6 +116,40 @@ public class DoctorServiceImpl implements DoctorService {
       return false;
     }
   }
+
+
+  @Override
+  public boolean banAccount(String doctorId) {
+    try {
+      Doctor doctor = selectById(doctorId);
+      if (doctor == null) {
+        return false;
+      }
+      doctor.setStatus("disabled");
+      update(doctor);
+      return true;
+    } catch (Exception e) {
+      logger.error("Error banning doctor with ID {}: {}", doctorId, e.getMessage(), e);
+    }
+    return false;
+  }
+
+  @Override
+  public boolean activeAccount(String doctorId) {
+    try {
+      Doctor doctor = selectById(doctorId);
+      if (doctor == null) {
+        return false;
+      }
+      doctor.setStatus("active");
+      update(doctor);
+      return true;
+    } catch (Exception e) {
+      logger.error("Error active doctor with ID {}: {}", doctorId, e.getMessage(), e);
+    }
+    return false;
+  }
+
 
   @Override
   public boolean updatePassword(String doctorId, String newPassword) {

@@ -9,7 +9,7 @@ package org.example.backend.config;
  * public class SecurityConfig {
  *
  *   @Bean
- *   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+ *   public SecurityFilterChain(HttpSecurity http) throws Exception {
  *     http
  *         .csrf().disable()  // 禁用 CSRF 防护
  *         .authorizeHttpRequests((requests) -> requests
@@ -18,7 +18,6 @@ package org.example.backend.config;
  *         )
  *         .formLogin().disable()  // 禁用表单登录
  *         .httpBasic().disable(); // 禁用 HTTP 基本认证
- *
  *     return http.build();
  *   }
  * }
@@ -53,7 +52,6 @@ public class SecurityConfig {
             .requestMatchers("/api/DoctorLogin/**").permitAll()
             .requestMatchers("/api/AdminLogin/**").permitAll()
             .requestMatchers("/api/DoctorRegister/**").permitAll()
-            .requestMatchers("/api/admin/**").permitAll()
             .anyRequest().authenticated()  // 其他请求都需要认证
         )
         .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, redisUtil), UsernamePasswordAuthenticationFilter.class) // 添加自定义的 JWT 过滤器

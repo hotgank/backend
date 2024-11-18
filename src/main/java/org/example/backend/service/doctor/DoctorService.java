@@ -13,7 +13,7 @@ public interface DoctorService {
   boolean update(Doctor doctor);
   boolean delete(String doctorId);
 
-  boolean updatePassword(String doctorId, String newPassword);
+  boolean banAccount(String doctorId); boolean activeAccount(String doctorId);boolean updatePassword(String doctorId, String newPassword);
 
   String generateRegisterCode(String email);
 

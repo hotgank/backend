@@ -21,13 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-
 
 
 @RestController
@@ -44,7 +37,7 @@ public class DoctorController {
   @Autowired
   private ExcelReader excelReader;
 
-  @PostMapping("/selectAll")
+  @GetMapping("/selectAll")
   public ResponseEntity<String> selectAll() {
 
     // 调用服务层来查询所有医生信息
@@ -67,6 +60,32 @@ public class DoctorController {
     } else {
       return ResponseEntity.status(500).body("Failed to add doctor information");
     }
+  }
+
+  @PostMapping("/ban")
+  public ResponseEntity<String> banAccount(@RequestBody String doctorJson) {
+    String doctorId = jsonParser.parseJsonString(doctorJson, "doctorId");
+
+    // 调用服务层来禁用医生账户
+    boolean success = doctorService.banAccount(doctorId);
+
+    if (success) {
+      return ResponseEntity.ok("doctor account disabled successfully");
+    }
+    return ResponseEntity.status(500).body("Failed to ban doctor account");
+  }
+
+  @PostMapping("/active")
+  public ResponseEntity<String> activeAccount(@RequestBody String doctorJson) {
+    String doctorId = jsonParser.parseJsonString(doctorJson, "doctorId");
+
+    // 调用服务层来禁用医生账户
+    boolean success = doctorService.activeAccount(doctorId);
+
+    if (success) {
+      return ResponseEntity.ok("doctor account activated successfully");
+    }
+    return ResponseEntity.status(500).body("Failed to active doctor account");
   }
 
   // 处理添加医生信息的请求

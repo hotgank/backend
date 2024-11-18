@@ -49,6 +49,15 @@ public class UserController {
     }
   }
 
+  @GetMapping("/selectAll")
+  public ResponseEntity<String> selectAll() {
+
+    // 调用服务层来查询所有用户信息
+    List<User> allUsers = userService.selectAll();
+
+    return ResponseEntity.ok(jsonParser.toJsonFromEntityList(allUsers));
+  }
+
   @GetMapping("/selectById")
   public ResponseEntity<String> selectById(HttpServletRequest request) {
     String userId = (String) request.getAttribute("userId");
@@ -88,7 +97,46 @@ public class UserController {
     }
   }
 
-  @PostMapping("insertAll")
+  @PostMapping("/ban")
+  public ResponseEntity<String> banAccount(@RequestBody String userJson) {
+    String userId = jsonParser.parseJsonString(userJson, "userId");
+
+    // 调用服务层来禁用用户账户
+    boolean success = userService.banAccount(userId);
+
+    if (success) {
+      return ResponseEntity.ok("User account disabled successfully");
+    }
+    return ResponseEntity.status(500).body("Failed to ban user account");
+  }
+
+  @PostMapping("/active")
+  public ResponseEntity<String> activeAccount(@RequestBody String userJson) {
+    String userId = jsonParser.parseJsonString(userJson, "userId");
+
+    // 调用服务层来激活用户账户
+    boolean success = userService.activeAccount(userId);
+
+    if (success) {
+      return ResponseEntity.ok("User account activated successfully");
+    }
+    return ResponseEntity.status(500).body("Failed to active user account");
+  }
+
+  @PostMapping("/adminEdit")
+  public ResponseEntity<String> editUsername(@RequestBody String userJson) {
+    String userId = jsonParser.parseJsonString(userJson, "userId");
+    String username = jsonParser.parseJsonString(userJson, "username");
+    // 调用服务层来修改用户名
+    boolean success = userService.editUsername(userId, username);
+    if (success) {
+      return ResponseEntity.ok("User username updated successfully");
+    } else {
+      return ResponseEntity.status(500).body("Failed to update username");
+    }
+  }
+
+  @PostMapping("/insertAll")
   public ResponseEntity<String> insertAll(@RequestBody String urlJson) {
     String url = jsonParser.parseJsonString(urlJson, "url");
     List<User> users = excelReader.readExcel(url, User.class);
