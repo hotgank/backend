@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.example.backend.dto.UserGetDoctorDTO;
 import org.example.backend.entity.doctor.Doctor;
 
 @Mapper
@@ -99,4 +100,26 @@ public interface DoctorMapper{
 
   @Select("SELECT doctor_id FROM d_doctors WHERE email = #{email}")
   String isEmailExist(@Param("email") String email);
+
+  //获取qualification为"已认证"的所有医生,并且status为"active"
+  @Select("SELECT doctor_id, name, username, phone, email, gender, position, workplace, qualification, experience, rating, avatar_url, status, birthdate "
+      + "FROM d_doctors "
+      + "WHERE qualification = '已认证' AND status = 'active'")
+  @Results({
+      @Result(column = "doctor_id", property = "doctorId"),
+      @Result(column = "name", property = "name"),
+      @Result(column = "username", property = "username"),
+      @Result(column = "phone", property = "phone"),
+      @Result(column = "email", property = "email"),
+      @Result(column = "gender", property = "gender"),
+      @Result(column = "position", property = "position"),
+      @Result(column = "workplace", property = "workplace"),
+      @Result(column = "qualification", property = "qualification"),
+      @Result(column = "experience", property = "experience"),
+      @Result(column = "rating", property = "rating"),
+      @Result(column = "avatar_url", property = "avatarUrl"),
+      @Result(column = "status", property = "status"),
+      @Result(column = "birthdate", property = "birthdate")
+  })
+  List<UserGetDoctorDTO> selectAllQualifiedDoctors();
 }

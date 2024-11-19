@@ -107,4 +107,14 @@ public interface DoctorUserRelationMapper {
       @Result(column = "relation_status", property = "relationStatus"),
   })
   DoctorUserRelation selectDoctorUserRelation(@Param("doctorId") String doctorId, @Param("userId") String userId);
+
+  //根据userId查询d_doctors_users表中的记录
+  @Select("SELECT * FROM d_doctors_users WHERE user_id = #{userId}")
+  @Results({
+      @Result(column = "doctor_id", property = "doctorId"),
+      @Result(column = "user_id", property = "userId"),
+      @Result(column = "relation_id", property = "relationId"),
+      @Result(column = "relation_status", property = "relationStatus"),
+  })
+  List<DoctorUserRelation> selectDoctorUserRelationsByUserId(@Param("userId") String userId);
 }
