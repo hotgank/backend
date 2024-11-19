@@ -1,11 +1,17 @@
 package org.example.backend.service.serviceImpl.others;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.example.backend.dto.userHistoryReportDTO;
 import org.example.backend.entity.others.Report;
+import org.example.backend.entity.user.Child;
+import org.example.backend.entity.user.ParentChildRelation;
 import org.example.backend.mapper.others.ReportMapper;
 import org.example.backend.service.others.ReportService;
+import org.example.backend.service.user.ChildService;
+import org.example.backend.service.user.ParentChildRelationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +25,46 @@ public class ReportServiceImpl implements ReportService {
   @Autowired
   private ReportMapper reportMapper;
 
+  @Autowired
+  private ParentChildRelationService parentChildRelationService;
+
+  @Autowired
+  private ChildService childService;
+
+  @Override
+  public List<userHistoryReportDTO> selectUserHistoryReport(String userId) {
+    List<ParentChildRelation> childRelations = parentChildRelationService.getRelationsByUserId(userId);
+
+    // Step 2: 遍历孩子，获取每个孩子的详细信息和报告
+    List<userHistoryReportDTO> allReports = new ArrayList<>();
+    for (ParentChildRelation relation : childRelations) {
+        // 获取孩子基本信息
+        Child child = childService.selectById(relation.getChildId());
+
+        // 获取该孩子的所有报告
+        List<Report> reports = this.selectByChildId(relation.getChildId());
+
+        // 整合数据
+        for (Report report : reports) {
+            userHistoryReportDTO reportDTO = new userHistoryReportDTO();
+            reportDTO.setId(report.getReportId());
+            reportDTO.setChildName(child.getName());
+            reportDTO.setReportType(report.getReportType());
+            reportDTO.setCreatedAt(report.getCreatedAt());
+            reportDTO.setState(report.getState());
+            reportDTO.setResult(report.getResult());
+            reportDTO.setComment(report.getComment());
+            reportDTO.setAnalyse(report.getAnalyse());
+            reportDTO.setUrl(report.getUrl());
+            allReports.add(reportDTO);
+        }
+    }
+
+    // Step 3: 按创建时间降序排序
+    allReports.sort((r1, r2) -> r2.getCreatedAt().compareTo(r1.getCreatedAt()));
+
+    return allReports;
+  }
   @Override
   public Report selectByReportId(int reportId) {
     try {
@@ -104,6 +150,17 @@ public class ReportServiceImpl implements ReportService {
     catch (Exception e) {
       // 记录异常日志
       logger.error("获取所有报告失败", e);
+      return null;
+    }
+  }
+
+  @Override
+  public List<Report> selectByUserId(String userId) {
+    try {
+      return reportMapper.selectByUserId(userId);
+    }catch (Exception e) {
+      // 记录异常日志
+      logger.error("获取用户报告失败, userId: {}", userId, e);
       return null;
     }
   }

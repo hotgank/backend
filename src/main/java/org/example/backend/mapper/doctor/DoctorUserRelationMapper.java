@@ -10,12 +10,43 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.doctor.DoctorUserRelation;
-import org.example.backend.entity.user.Child;
+import org.example.backend.entity.others.DoctorWithStatus;
 import org.example.backend.entity.user.User;
 
 @Mapper
 public interface DoctorUserRelationMapper {
+   @Select("SELECT d.*, dur.relation_status FROM d_doctors d " +
+            "JOIN d_doctors_users dur ON d.doctor_id = dur.doctor_id " +
+            "WHERE dur.user_id = #{userId} ")
+    @Results({
+        @Result(column = "name", property = "doctor.name"),
+        @Result(column = "workplace", property = "doctor.workplace"),
+        @Result(column = "doctor_id", property = "doctor.doctorId"),
+        @Result(column = "username", property = "doctor.username"),
+        @Result(column = "email", property = "doctor.email"),
+        @Result(column = "phone", property = "doctor.phone"),
+        @Result(column = "avatar_url", property = "doctor.avatarUrl"),
+        @Result(column = "registration_date", property = "doctor.registrationDate"),
+        @Result(column = "relation_status", property = "relationStatus")
+    })
+  List<DoctorWithStatus>selectApplications(@Param("userId") String userId);
+
+  @Select("SELECT * FROM d_doctors " +
+        "WHERE doctor_id IN (SELECT doctor_id FROM d_doctors_users WHERE user_id = #{userId} AND relation_status = 'approved')")
+
+  @Results({
+      @Result(column = "doctor_id", property = "doctorId"),
+      @Result(column = "username", property = "username"),
+      @Result(column = "email", property = "email"),
+      @Result(column = "phone", property = "phone"),
+      @Result(column = "avatar_url", property = "avatarUrl"),
+      @Result(column = "registration_date", property = "registrationDate"),
+  })
+  List<Doctor> selectDoctorsByUserId(@Param("userId") String userId);
+
+
   @Select("SELECT * FROM u_users WHERE user_id IN "
       + "(SELECT user_id FROM d_doctors_users WHERE doctor_id = #{doctorId} AND relation_status = #{relationStatus} ORDER BY created_at)")
   @Results({
@@ -67,4 +98,13 @@ public interface DoctorUserRelationMapper {
 
   @Delete("DELETE FROM d_doctors_users WHERE doctor_id = #{doctorId} AND user_id = #{userId}")
   int deleteDoctorUserRelation(DoctorUserRelation relation);
+
+  @Select("SELECT * FROM d_doctors_users WHERE doctor_id = #{doctorId} AND user_id = #{userId}")
+  @Results({
+      @Result(column = "doctor_id", property = "doctorId"),
+      @Result(column = "user_id", property = "userId"),
+      @Result(column = "relation_id", property = "relationId"),
+      @Result(column = "relation_status", property = "relationStatus"),
+  })
+  DoctorUserRelation selectDoctorUserRelation(@Param("doctorId") String doctorId, @Param("userId") String userId);
 }

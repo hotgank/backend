@@ -4,8 +4,9 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
+import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.doctor.DoctorUserRelation;
-import org.example.backend.entity.user.Child;
+import org.example.backend.entity.others.DoctorWithStatus;
 import org.example.backend.entity.user.User;
 import org.example.backend.mapper.doctor.DoctorUserRelationMapper;
 import org.example.backend.service.doctor.DoctorUserRelationService;
@@ -21,6 +22,29 @@ public class DoctorUserRelationServiceImpl implements DoctorUserRelationService 
 
   @Autowired
   private DoctorUserRelationMapper doctorUserRelationMapper;
+  @Override
+  public List<DoctorWithStatus> selectPendingDoctors(String userId) {
+    try {
+      List<DoctorWithStatus> pendingDoctors = doctorUserRelationMapper.selectApplications(userId);
+      logger.info("获取申请医生信息成功");
+      return pendingDoctors;
+    } catch (Exception e) {
+      logger.error("获取申请医生信息失败", e);
+      return Collections.emptyList();
+    }
+  }
+
+  @Override  //用户查找我的医生
+  public List<Doctor> selectMyDoctors(String userId) {
+    try {
+      List<Doctor> doctors = doctorUserRelationMapper.selectDoctorsByUserId(userId);
+      logger.info("获取医生成功");
+      return doctors;
+    } catch (Exception e) {
+      logger.error("获取医生失败", e);
+      return Collections.emptyList();
+    }
+  }
 
   @Override
   public List<User> selectMyPatients(String doctorId, String relationStatus) {
@@ -104,5 +128,10 @@ public class DoctorUserRelationServiceImpl implements DoctorUserRelationService 
       logger.error("获取待绑定患者失败", e);
       return Collections.emptyList();
     }
+  }
+
+  @Override
+  public DoctorUserRelation selectDoctorUserRelationByIDs(String doctorId, String userId) {
+    return doctorUserRelationMapper.selectDoctorUserRelation(doctorId, userId);
   }
 }
