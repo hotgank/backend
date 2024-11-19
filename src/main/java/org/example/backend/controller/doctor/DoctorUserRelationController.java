@@ -1,5 +1,6 @@
 package org.example.backend.controller.doctor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.example.backend.entity.user.User;
+import org.example.backend.dto.MessageHandle;
 
 @RestController
 @RequestMapping("api/doctor/relation")
@@ -48,12 +50,39 @@ public class DoctorUserRelationController {
     List<Doctor> doctors = doctorUserRelationService.selectMyDoctors(userId);
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(doctors));
   }
-  @GetMapping("/selectMyPatients")
+  @GetMapping("/selectMyPatientsAndRelationId")
+  public ResponseEntity<String> selectMyPatientsAndRelationId(HttpServletRequest request) {
+    String doctorId = (String) request.getAttribute("userId");
+    // 调用服务层来查询患者信息
+    List<User> relations = doctorUserRelationService.selectMyPatients(doctorId, "approved");
+    List<MessageHandle> messages = new ArrayList<>();
+    for (User user : relations){
+      messages.add(new MessageHandle(user,doctorUserRelationService.selectDoctorUserRelationByIDs(doctorId, user.getUserId()).getRelationId() ));
+    }
+
+    String json = jsonParser.toJsonFromEntityList(messages);
+
+    json = jsonParser.removeKeyFromJson(json, "password");
+    json = jsonParser.removeKeyFromJson(json, "email");
+    json = jsonParser.removeKeyFromJson(json, "phone");
+    json = jsonParser.removeKeyFromJson(json, "registrationDate");
+    json = jsonParser.removeKeyFromJson(json, "lastLogin");
+    json = jsonParser.removeKeyFromJson(json, "openid");
+    return ResponseEntity.ok(json);
+  }
+
+    @GetMapping("/selectMyPatients")
   public ResponseEntity<String> selectMyPatients(HttpServletRequest request) {
     String doctorId = (String) request.getAttribute("userId");
     // 调用服务层来查询患者信息
     List<User> relations = doctorUserRelationService.selectMyPatients(doctorId, "approved");
-    String json = jsonParser.toJsonFromEntityList(relations);
+    List<MessageHandle> messages = new ArrayList<>();
+    for (User user : relations){
+      messages.add(new MessageHandle(user,doctorUserRelationService.selectDoctorUserRelationByIDs(doctorId, user.getUserId()).getRelationId() ));
+    }
+
+    String json = jsonParser.toJsonFromEntityList(messages);
+
     json = jsonParser.removeKeyFromJson(json, "password");
     json = jsonParser.removeKeyFromJson(json, "email");
     json = jsonParser.removeKeyFromJson(json, "phone");
@@ -211,7 +240,6 @@ public class DoctorUserRelationController {
           String doctorId = (String) request.getAttribute("userId");
           String jsonString = jsonParser.toJsonFromEntityList(doctorUserRelationService.getRelationsByDoctorId(doctorId));
           jsonString = jsonParser.removeKeyFromJson(jsonString, "doctorId");
-          jsonString = jsonParser.removeKeyFromJson(jsonString, "userId");
          return ResponseEntity.ok(jsonString);
     }
 
@@ -219,7 +247,6 @@ public class DoctorUserRelationController {
     public ResponseEntity<String> getRelationsByUserId(HttpServletRequest request){
         String userId = (String) request.getAttribute("userId");
     String jsonString = jsonParser.toJsonFromEntityList(doctorUserRelationService.getRelationsByDoctorId(userId));
-          jsonString = jsonParser.removeKeyFromJson(jsonString, "doctorId");
           jsonString = jsonParser.removeKeyFromJson(jsonString, "userId");
          return ResponseEntity.ok(jsonString);
     }
