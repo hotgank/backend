@@ -41,4 +41,6 @@ public interface DoctorUserRelationService {
      * @return 用户-医生关系的列表
      */
     public List<DoctorUserRelation> getRelationsByUserId(String userId);
+
+    List<DoctorUserRelation> selectRemoveBindingRelations(String doctorId);
 }

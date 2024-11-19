@@ -133,4 +133,14 @@ public interface DoctorUserRelationMapper {
       @Result(column = "relation_status", property = "relationStatus"),
   })
   List<DoctorUserRelation> selectDoctorUserRelationsByUserId(@Param("userId") String userId);
+
+  //根据医生ID查询状态为removeBinding的关联关系
+  @Select("SELECT * FROM d_doctors_users WHERE doctor_id = #{doctorId} AND relation_status = 'removeBinding'")
+  @Results({
+      @Result(column = "doctor_id", property = "doctorId"),
+      @Result(column = "user_id", property = "userId"),
+      @Result(column = "relation_id", property = "relationId"),
+      @Result(column = "relation_status", property = "relationStatus"),
+  })
+  List<DoctorUserRelation> selectRemoveBindingRelations(@Param( "doctorId") String doctorId);
 }
