@@ -66,14 +66,14 @@ public class MessageController {
     public ResponseEntity<Message> sendMessage(@RequestBody SendMessageRequest request,
         HttpServletRequest httpServletRequest){
       String Id = (String) httpServletRequest.getAttribute("userId");
-      log.info("Id: " + Id);
       int relationId = request.getRelationId();
       DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
-      log.info("relation: " + relation);
       if(relation == null){
         return ResponseEntity.status(500).body(null);
       }
-      log.info("relationId: " + relationId);
+      if(!relation.getRelationStatus().equals("approved")){
+        return ResponseEntity.status(500).body(null);
+      }
       if (relation.getDoctorId().equals(Id)){
         request.setSenderType("doctor");
       } else if (relation.getUserId().equals(Id)) {
