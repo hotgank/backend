@@ -3,7 +3,12 @@ package org.example.backend.service.serviceImpl.user;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
+import org.example.backend.dto.UserGetDoctorDTO;
+import org.example.backend.entity.doctor.Doctor;
+import org.example.backend.entity.doctor.DoctorUserRelation;
 import org.example.backend.entity.user.User;
+import org.example.backend.mapper.doctor.DoctorMapper;
+import org.example.backend.mapper.doctor.DoctorUserRelationMapper;
 import org.example.backend.mapper.user.UserMapper;
 import org.example.backend.service.user.UserService;
 import org.example.backend.util.EncryptionUtil;
@@ -24,6 +29,12 @@ public class UserServiceImpl implements UserService {
 
   @Autowired
   private EncryptionUtil encryptionUtil;
+
+  @Autowired
+  private DoctorMapper doctorMapper;
+
+  @Autowired
+  private DoctorUserRelationMapper doctorUserRelationMapper;
 
   @Override
   public User selectById(String userId) {
@@ -175,6 +186,30 @@ public class UserServiceImpl implements UserService {
       // 记录异常日志
       logger.error("获取用户失败，openid: {}", openid, e);
       return null;
+    }
+  }
+
+  //用户获取所有已认证医生
+  @Override
+  public List<UserGetDoctorDTO> selectAllQualifiedDoctors(String userId) {
+    try {
+      //根据userId获取所有关系表数据
+      List<DoctorUserRelation> relations = doctorUserRelationMapper.selectDoctorUserRelationsByUserId(userId);
+      List<UserGetDoctorDTO> userGetDoctorDTO = doctorMapper.selectAllQualifiedDoctors();
+      //遍历userGetDoctorDTO,和relations进行匹配，如果匹配上，则设置isMyDoctor为1，否则为0
+      for (UserGetDoctorDTO userGetDoctorDTO1 : userGetDoctorDTO) {
+        for (DoctorUserRelation relation : relations) {
+          if (userGetDoctorDTO1.getDoctorId().equals(relation.getDoctorId())) {
+            userGetDoctorDTO1.setSituation(relation.getRelationStatus());
+          }
+        }
+      }
+
+      return userGetDoctorDTO;
+    } catch (Exception e) {
+      // 记录异常日志
+      logger.error("获取医生列表失败", e);
+      return Collections.emptyList();
     }
   }
 }
