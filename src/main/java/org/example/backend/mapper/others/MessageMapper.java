@@ -7,22 +7,23 @@ import org.example.backend.entity.others.Message;
 
 @Mapper
 public interface MessageMapper {
-//  @Select("SELECT * FROM c_messages WHERE consultation_id = #{consultationId} ORDER BY timestamp DESC")
-//  @Results({
-//      @Result(column = "message_id", property = "messageId"),
-//      @Result(column = "consultation_id", property = "consultationId"),
-//      @Result(column = "sender_type", property = "senderType"),
-//      @Result(column = "message_text", property = "messageText"),
-//      @Result(column = "timestamp", property = "timestamp"),
-//      @Result(column = "message_type", property = "messageType"),
-//      @Result(column = "url", property = "url"),
-//  })
-//  List <Message> selectById(@Param("consultationId") Integer consultationId);
-//
-//  @Insert("INSERT INTO c_messages (consultation_id, sender_type, message_text, timestamp, message_type, url)"
-//      + "VALUES (#{consultationId}, #{senderType}, #{messageText}, #{timestamp}, #{messageType}, #{url})")
-//  @Options(useGeneratedKeys = true, keyProperty = "messageId")
-//  int insert(Message message);
+  @Select("SELECT * FROM c_messages WHERE relation_id = #{relationId} ORDER BY message_seq DESC")
+  @Results({
+      @Result(column = "message_id", property = "messageId"),
+      @Result(column = "relation_id", property = "relationId"),
+      @Result(column = "message_seq", property = "messageSeq"),
+      @Result(column = "sender_type", property = "senderType"),
+      @Result(column = "message_text", property = "messageText"),
+      @Result(column = "timestamp", property = "timestamp"),
+      @Result(column = "message_type", property = "messageType"),
+      @Result(column = "url", property = "url"),
+  })
+  List<Message> selectByRelationId(@Param("relationId") Integer relationId);
+
+  @Insert("INSERT INTO c_messages (relation_id, message_seq, sender_type, message_text, timestamp, message_type, url)"
+      + " VALUES (#{relationId}, #{messageSeq}, #{senderType}, #{messageText}, #{timestamp}, #{messageType}, #{url})")
+  @Options(useGeneratedKeys = true, keyProperty = "messageId")
+  int insert(Message message);
 
       /**
      * 根据关系 ID 获取最后 30 条消息
