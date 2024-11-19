@@ -108,19 +108,33 @@ public interface DoctorUserRelationMapper {
   })
   DoctorUserRelation selectDoctorUserRelation(@Param("doctorId") String doctorId, @Param("userId") String userId);
 
-      /**
-     * 根据医生 ID 查询所有的医生-用户关系
-     * @param doctorId 医生的唯一标识
-     * @return 医生-用户关系的列表
-     */
+    // 根据医生ID查询医生用户关系
     @Select("SELECT * FROM d_doctors_users WHERE doctor_id = #{doctorId}")
+    @Results({
+        @Result(column = "doctor_id", property = "doctorId"),
+        @Result(column = "user_id", property = "userId"),
+        @Result(column = "relation_id", property = "relationId"),
+        @Result(column = "relation_status", property = "relationStatus"),
+    })
     List<DoctorUserRelation> findRelationsByDoctorId(@Param("doctorId") String doctorId);
 
-    /**
-     * 根据用户 ID 查询所有的医生-用户关系
-     * @param userId 用户的唯一标识
-     * @return 用户-医生关系的列表
-     */
+    // 根据用户ID查询医生用户关系
     @Select("SELECT * FROM d_doctors_users WHERE user_id = #{userId}")
+    @Results({
+        @Result(column = "doctor_id", property = "doctorId"),
+        @Result(column = "user_id", property = "userId"),
+        @Result(column = "relation_id", property = "relationId"),
+        @Result(column = "relation_status", property = "relationStatus"),
+    })
     List<DoctorUserRelation> findRelationsByUserId(@Param("userId") String userId);
+
+    // 根据关系ID查询关系
+    @Select("SELECT * FROM d_doctors_users WHERE relation_id = #{relationId}")
+    @Results({
+        @Result(column = "doctor_id", property = "doctorId"),
+        @Result(column = "user_id", property = "userId"),
+        @Result(column = "relation_id", property = "relationId"),
+        @Result(column = "relation_status", property = "relationStatus"),
+    })
+    DoctorUserRelation findRelationById(@Param("relationId") Integer relationId);
 }

@@ -40,47 +40,38 @@ public class MessageServiceImpl implements MessageService {
 
   @Override
   public int insertMessage(Message message) {
-//    try {
-//      message.setTimestamp(LocalDateTime.now());
-//      messageMapper.insert(message);
-//      return message.getMessageId();
-//    }
-//    catch (Exception e) {
-//      // 记录异常日志
-//      logger.error("插入消息失败, consultationId: {}", message.getConsultationId(), e);
-//      return 0;
-//    }
-    return 0;
+    return messageMapper.insert(message);
   }
 
 
 
-    /**
-     * 获取最后 30 条消息
-     * @param relationId 医生-用户关系的唯一标识
-     * @return 消息列表
-     */
     public List<Message> getLast30Messages(Integer relationId) {
         return messageMapper.findLast30Messages(relationId);
     }
 
-    /**
-     * 获取某条消息序号之后的所有消息
-     * @param relationId 医生-用户关系的唯一标识
-     * @param lastSeq 最后获取到的消息序号
-     * @return 消息列表
-     */
-    public List<Message> getMessagesAfter(Integer relationId, Integer lastSeq) {
-        return messageMapper.findMessagesAfter(relationId, lastSeq);
+    public List<Message> getMessagesAfterSeq(Integer relationId, Integer messageSeq) {
+        return messageMapper.findMessagesAfterSeq(relationId, messageSeq);
     }
 
-    /**
-     * 获取某条消息序号之前的 15 条消息
-     * @param relationId 医生-用户关系的唯一标识
-     * @param firstSeq 最早的消息序号
-     * @return 消息列表
-     */
-    public List<Message> getMessagesBefore(Integer relationId, Integer firstSeq) {
-        return messageMapper.findMessagesBefore(relationId, firstSeq);
+    public List<Message> getMessagesBeforeSeq(Integer relationId, Integer messageSeq) {
+        return messageMapper.findMessagesBeforeSeq(relationId, messageSeq);
+    }
+
+    public Message sendMessage(Integer relationId, String senderType, String messageText, String messageType, String url) {
+        Message message = new Message();
+        message.setRelationId(relationId);
+        message.setSenderType(senderType);
+        message.setMessageText(messageText);
+        message.setTimestamp(LocalDateTime.now());
+        message.setMessageType(messageType);
+        message.setUrl(url);
+
+        // 插入消息
+        int rowsInserted = messageMapper.insertMessage(message);
+        if (rowsInserted > 0) {
+            return message;
+        } else {
+            throw new RuntimeException("Failed to send message.");
+        }
     }
 }
