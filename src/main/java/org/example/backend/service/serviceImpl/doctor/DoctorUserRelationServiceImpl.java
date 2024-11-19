@@ -134,4 +134,23 @@ public class DoctorUserRelationServiceImpl implements DoctorUserRelationService 
   public DoctorUserRelation selectDoctorUserRelationByIDs(String doctorId, String userId) {
     return doctorUserRelationMapper.selectDoctorUserRelation(doctorId, userId);
   }
+
+
+    /**
+     * 根据医生 ID 获取医生-用户关系
+     * @param doctorId 医生的唯一标识
+     * @return 医生-用户关系的列表
+     */
+    public List<DoctorUserRelation> getRelationsByDoctorId(String doctorId) {
+        return doctorUserRelationMapper.findRelationsByDoctorId(doctorId);
+    }
+
+    /**
+     * 根据用户 ID 获取用户-医生关系
+     * @param userId 用户的唯一标识
+     * @return 用户-医生关系的列表
+     */
+    public List<DoctorUserRelation> getRelationsByUserId(String userId) {
+        return doctorUserRelationMapper.findRelationsByUserId(userId);
+    }
 }

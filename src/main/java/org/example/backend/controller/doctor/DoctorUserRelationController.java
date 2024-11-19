@@ -6,11 +6,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.doctor.DoctorUserRelation;
 import org.example.backend.entity.others.DoctorWithStatus;
+import org.example.backend.entity.others.Message;
 import org.example.backend.entity.others.Report;
 import org.example.backend.service.doctor.DoctorUserRelationService;
+import org.example.backend.service.others.MessageService;
 import org.example.backend.service.others.ReportService;
 import org.example.backend.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.example.backend.entity.user.User;
@@ -26,6 +29,9 @@ public class DoctorUserRelationController {
 
   @Autowired
   private ReportService reportService;
+
+  @Autowired
+  private MessageService messageService;
 
   @GetMapping("/selectApplication")
   public ResponseEntity<String> selectApplication(HttpServletRequest request) {
@@ -188,5 +194,77 @@ public class DoctorUserRelationController {
     List<Report> reports = reportService.selectByUserId(userId);
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(reports));
   }
+
+      /**
+     * 根据医生 ID 查询所有医生-用户关系
+     * @param doctorId 医生的唯一标识
+     * @return 医生-用户关系的列表
+     */
+    @GetMapping("/doctor/{doctorId}")
+    public ResponseEntity<?> getUserRelationsByDoctorId(@PathVariable String doctorId) {
+        List<DoctorUserRelation> relations = doctorUserRelationService.getRelationsByDoctorId(doctorId);
+        if (relations.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No relations found for this doctor.");
+        }
+        return ResponseEntity.ok(relations);
+    }
+
+    /**
+     * 根据用户 ID 查询所有用户-医生关系
+     * @param userId 用户的唯一标识
+     * @return 用户-医生关系的列表
+     */
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getUserRelationsByUserId(@PathVariable String userId) {
+        List<DoctorUserRelation> relations = doctorUserRelationService.getRelationsByUserId(userId);
+        if (relations.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No relations found for this user.");
+        }
+        return ResponseEntity.ok(relations);
+    }
+
+    /**
+     * 获取最后 30 条消息
+     * @param relationId 医生-用户关系的唯一标识
+     * @return 消息列表
+     */
+    @GetMapping("/{relationId}/messages/last30")
+    public ResponseEntity<?> getLast30Messages(@PathVariable Integer relationId) {
+        List<Message> messages = messageService.getLast30Messages(relationId);
+        if (messages.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No messages found.");
+        }
+        return ResponseEntity.ok(messages);
+    }
+
+    /**
+     * 获取某条消息序号之后的所有消息
+     * @param relationId 医生-用户关系的唯一标识
+     * @param lastSeq 最后获取到的消息序号
+     * @return 消息列表
+     */
+    @GetMapping("/{relationId}/messages/after/{lastSeq}")
+    public ResponseEntity<?> getMessagesAfter(@PathVariable Integer relationId, @PathVariable Integer lastSeq) {
+        List<Message> messages = messageService.getMessagesAfter(relationId, lastSeq);
+        if (messages.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No messages found.");
+        }
+        return ResponseEntity.ok(messages);
+    }
+
+    /**
+     * 获取某条消息序号之前的 15 条消息
+     * @param relationId 医生-用户关系的唯一标识
+     * @param firstSeq 最早的消息序号
+     * @return 消息列表
+     */
+    @GetMapping("/{relationId}/messages/before/{firstSeq}")
+    public ResponseEntity<?> getMessagesBefore(@PathVariable Integer relationId, @PathVariable Integer firstSeq) {
+        List<Message> messages = messageService.getMessagesBefore(relationId, firstSeq);
+        if (messages.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No messages found.");
+        }
+        return ResponseEntity.ok(messages);
+    }
 
 }

@@ -107,4 +107,20 @@ public interface DoctorUserRelationMapper {
       @Result(column = "relation_status", property = "relationStatus"),
   })
   DoctorUserRelation selectDoctorUserRelation(@Param("doctorId") String doctorId, @Param("userId") String userId);
+
+      /**
+     * 根据医生 ID 查询所有的医生-用户关系
+     * @param doctorId 医生的唯一标识
+     * @return 医生-用户关系的列表
+     */
+    @Select("SELECT * FROM d_doctors_users WHERE doctor_id = #{doctorId}")
+    List<DoctorUserRelation> findRelationsByDoctorId(@Param("doctorId") String doctorId);
+
+    /**
+     * 根据用户 ID 查询所有的医生-用户关系
+     * @param userId 用户的唯一标识
+     * @return 用户-医生关系的列表
+     */
+    @Select("SELECT * FROM d_doctors_users WHERE user_id = #{userId}")
+    List<DoctorUserRelation> findRelationsByUserId(@Param("userId") String userId);
 }

@@ -3,80 +3,96 @@ package org.example.backend.entity.others;
 import java.time.LocalDateTime;
 
 public class Message {
-  private int messageId;
-  private int consultationId;  // Foreign key: Consultation ID
-  private String senderType;   // enum ('doctor', 'user')
-  private String messageText;
-  private LocalDateTime timestamp;
-  private String messageType;  // enum ('text', 'image', 'video', 'file')
-  private String url;          // Image or file URL
+    private Integer relationId;   // 医生-用户关系的唯一标识
+    private Integer messageSeq;   // 消息序号
+    private String senderType;    // 发送者类型（doctor 或 user）
+    private String messageText;   // 消息内容
+    private LocalDateTime timestamp; // 消息时间戳
+    private String messageType;   // 消息类型（text、image、video、file 等）
+    private String url;           // 消息附件的 URL
 
-  public int getMessageId() {
-    return messageId;
-  }
+    public Message() {}
 
-  public int getConsultationId() {
-    return consultationId;
-  }
+    // Getter for relationId
+    public Integer getRelationId() {
+        return relationId;
+    }
 
-  public String getSenderType() {
-    return senderType;
-  }
+    // Setter for relationId
+    public void setRelationId(Integer relationId) {
+        this.relationId = relationId;
+    }
 
-  public String getMessageText() {
-    return messageText;
-  }
+    // Getter for messageSeq
+    public Integer getMessageSeq() {
+        return messageSeq;
+    }
 
-  public LocalDateTime getTimestamp() {
-    return timestamp;
-  }
+    // Setter for messageSeq
+    public void setMessageSeq(Integer messageSeq) {
+        this.messageSeq = messageSeq;
+    }
 
-  public String getMessageType() {
-    return messageType;
-  }
+    // Getter for senderType
+    public String getSenderType() {
+        return senderType;
+    }
 
-  public String getUrl() {
-    return url;
-  }
+    // Setter for senderType
+    public void setSenderType(String senderType) {
+        this.senderType = senderType;
+    }
 
-  public void setMessageId(int messageId) {
-    this.messageId = messageId;
-  }
+    // Getter for messageText
+    public String getMessageText() {
+        return messageText;
+    }
 
-  public void setConsultationId(int consultationId) {
-    this.consultationId = consultationId;
-  }
+    // Setter for messageText
+    public void setMessageText(String messageText) {
+        this.messageText = messageText;
+    }
 
-  public void setSenderType(String senderType) {
-    this.senderType = senderType;
-  }
+    // Getter for timestamp
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
 
-  public void setMessageText(String messageText) {
-    this.messageText = messageText;
-  }
+    // Setter for timestamp
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
 
-  public void setTimestamp(LocalDateTime timestamp) {
-    this.timestamp = timestamp;
-  }
+    // Getter for messageType
+    public String getMessageType() {
+        return messageType;
+    }
 
-  public void setMessageType(String messageType) {
-    this.messageType = messageType;
-  }
+    // Setter for messageType
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
+    }
 
-  public void setUrl(String url) {
-    this.url = url;
-  }
-  // getters and setters
-  @Override
-  public String toString() {
-    return "Message{" +
-        "messageId=" + messageId +
-        ", consultationId=" + consultationId +
-        ", senderType='" + senderType + '\'' +
-        ", messageText='" + messageText + '\'' +
-        ", timestamp=" + timestamp +
-        ", messageType='" + messageType + '\'' +
-        ", url='" + url + '\'' +
-        '}';
-  }
+    // Getter for url
+    public String getUrl() {
+        return url;
+    }
+
+    // Setter for url
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "relationId=" + relationId +
+                ", messageSeq=" + messageSeq +
+                ", senderType='" + senderType + '\'' +
+                ", messageText='" + messageText + '\'' +
+                ", timestamp=" + timestamp +
+                ", messageType='" + messageType + '\'' +
+                ", url='" + url + '\'' +
+                '}';
+    }
 }

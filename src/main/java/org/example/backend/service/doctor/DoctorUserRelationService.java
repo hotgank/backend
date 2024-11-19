@@ -25,4 +25,20 @@ public interface DoctorUserRelationService {
   List<DoctorUserRelation> selectPendingPatients(String doctorId, String relationStatus);
 
   DoctorUserRelation selectDoctorUserRelationByIDs(String doctorId, String userId);
+
+
+
+    /**
+     * 根据医生 ID 获取医生-用户关系
+     * @param doctorId 医生的唯一标识
+     * @return 医生-用户关系的列表
+     */
+    public List<DoctorUserRelation> getRelationsByDoctorId(String doctorId);
+
+    /**
+     * 根据用户 ID 获取用户-医生关系
+     * @param userId 用户的唯一标识
+     * @return 用户-医生关系的列表
+     */
+    public List<DoctorUserRelation> getRelationsByUserId(String userId);
 }
