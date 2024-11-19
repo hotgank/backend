@@ -4,11 +4,11 @@ import java.util.List;
 import org.example.backend.entity.others.Message;
 
 public interface MessageService {
-//  List<Message> selectMessagesById(String doctorId, String userId);
-//
-//    int insertMessage(Message message);
-//
-//
+  List<Message> selectMessagesById(String doctorId, String userId);
+
+    int insertMessage(Message message);
+
+
 
     /**
      * 获取最后 30 条消息

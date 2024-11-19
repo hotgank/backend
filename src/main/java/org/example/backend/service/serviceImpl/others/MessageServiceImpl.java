@@ -24,8 +24,8 @@ public class MessageServiceImpl implements MessageService {
   @Autowired
   private ConsultationService consultationService;
 
-//  @Override
-//  public List<Message> selectMessagesById(String doctorId, String userId) {
+
+  public List<Message> selectMessagesById(String doctorId, String userId) {
 //    try {
 //      Consultation consultation = consultationService.selectConsultationByDoctorIdAndUserId(doctorId, userId);
 //      Integer consultationId = consultation.getConsultationId();
@@ -35,10 +35,11 @@ public class MessageServiceImpl implements MessageService {
 //      logger.error("获取咨询信息失败, doctorId: {}, userId: {}", doctorId, userId, e);
 //      return Collections.emptyList();
 //    }
-//  }
-//
-//  @Override
-//  public int insertMessage(Message message) {
+    return null;
+  }
+
+  @Override
+  public int insertMessage(Message message) {
 //    try {
 //      message.setTimestamp(LocalDateTime.now());
 //      messageMapper.insert(message);
@@ -49,7 +50,8 @@ public class MessageServiceImpl implements MessageService {
 //      logger.error("插入消息失败, consultationId: {}", message.getConsultationId(), e);
 //      return 0;
 //    }
-//  }
+    return 0;
+  }
 
 
 
