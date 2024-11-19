@@ -32,5 +32,9 @@ public interface DoctorUserRelationService {
 
     public List<DoctorUserRelation> getRelationsByUserId(String userId);
 
+
     public DoctorUserRelation getRelationById(Integer relationId);
+
+    List<DoctorUserRelation> selectRemoveBindingRelations(String doctorId);
+
 }

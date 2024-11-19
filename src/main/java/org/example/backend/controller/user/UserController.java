@@ -1,7 +1,10 @@
 package org.example.backend.controller.user;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import org.example.backend.dto.UserGetDoctorDTO;
 import org.example.backend.entity.user.User;
 import org.example.backend.service.user.UserService;
 import org.example.backend.util.ExcelReader;
@@ -159,5 +162,13 @@ public class UserController {
     } else {
       return ResponseEntity.status(500).body("Failed to add user information");
     }
+  }
+
+  //获取所有已认证的医生
+  @PostMapping("/selectAllQualifiedDoctors")
+  public ResponseEntity<String> selectAllQualifiedDoctors(HttpServletRequest request) {
+    String userId = (String) request.getAttribute("userId");
+    List<UserGetDoctorDTO> allQualifiedDoctors = userService.selectAllQualifiedDoctors(userId);
+    return ResponseEntity.ok(jsonParser.toJsonFromEntityList(allQualifiedDoctors));
   }
 }
