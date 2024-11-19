@@ -103,6 +103,11 @@ public class DoctorUserRelationController {
   public ResponseEntity<String> addDoctorUserRelation(@RequestBody DoctorUserRelation relation, HttpServletRequest request) {
     // 调用服务层来添加医患信息到数据库
     relation.setUserId((String) request.getAttribute("userId"));
+    //根据userId查找用户医生关系的数量，如果大于5，则返回错误
+    List<DoctorUserRelation> relations = doctorUserRelationService.getRelationsByUserId(relation.getUserId());
+    if(relations.size() >= 5) {
+      return ResponseEntity.status(500).body("You have reached the maximum number of doctors");
+    }
     DoctorUserRelation doctorUserRelation = doctorUserRelationService.selectDoctorUserRelationByIDs(relation.getDoctorId(), relation.getUserId());
     if(doctorUserRelation != null) {
       if(doctorUserRelation.getRelationStatus().equals("pending")) {
