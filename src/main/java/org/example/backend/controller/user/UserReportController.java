@@ -1,10 +1,13 @@
 package org.example.backend.controller.user;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.example.backend.dto.userHistoryReportDTO;
 import org.example.backend.entity.others.Report;
 import org.example.backend.service.others.ReportService;
 import org.example.backend.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +24,16 @@ public class UserReportController {
     @Autowired
     private JsonParser jsonParser;
 
+    @GetMapping("/selectAll")
+    public ResponseEntity<String> selectAll(HttpServletRequest request) {
+        String userId = (String) request.getAttribute("userId");
+        List<userHistoryReportDTO> reports = reportService.selectUserHistoryReport(userId);
+        if(reports != null){
+            return ResponseEntity.ok(jsonParser.toJsonFromEntityList(reports));
+        }else{
+            return ResponseEntity.status(500).body(null);
+        }
+    }
     @PostMapping("/selectByChildId")
     public ResponseEntity<String> selectByChildId(@RequestBody String childIdJson) {
         String childId = jsonParser.parseJsonString(childIdJson, "childId");
