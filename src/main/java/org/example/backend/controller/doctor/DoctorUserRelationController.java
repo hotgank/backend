@@ -317,5 +317,11 @@ public class DoctorUserRelationController {
       return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relationList));
   }
 
+  @PostMapping("/selectRelationIdByDoctorId")
+  public ResponseEntity<String> selectRelationIdByDoctorId(String doctorId , HttpServletRequest request) {
+      String userId = (String) request.getAttribute("userId");
+      DoctorUserRelation relation = doctorUserRelationService.selectDoctorUserRelationByIDs(doctorId, userId);
+      return ResponseEntity.ok(jsonParser.toJsonFromEntity(relation.getRelationId()));
+  }
 
 }
