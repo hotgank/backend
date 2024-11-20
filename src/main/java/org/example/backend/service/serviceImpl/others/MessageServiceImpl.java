@@ -24,30 +24,54 @@ public class MessageServiceImpl implements MessageService {
   @Autowired
   private ConsultationService consultationService;
 
-  @Override
+
   public List<Message> selectMessagesById(String doctorId, String userId) {
-    try {
-      Consultation consultation = consultationService.selectConsultationByDoctorIdAndUserId(doctorId, userId);
-      Integer consultationId = consultation.getConsultationId();
-      return messageMapper.selectById(consultationId);
-    } catch (Exception e) {
-      // 记录异常日志
-      logger.error("获取咨询信息失败, doctorId: {}, userId: {}", doctorId, userId, e);
-      return Collections.emptyList();
-    }
+//    try {
+//      Consultation consultation = consultationService.selectConsultationByDoctorIdAndUserId(doctorId, userId);
+//      Integer consultationId = consultation.getConsultationId();
+//      return messageMapper.selectById(consultationId);
+//    } catch (Exception e) {
+//      // 记录异常日志
+//      logger.error("获取咨询信息失败, doctorId: {}, userId: {}", doctorId, userId, e);
+//      return Collections.emptyList();
+//    }
+    return null;
   }
 
   @Override
   public int insertMessage(Message message) {
-    try {
-      message.setTimestamp(LocalDateTime.now());
-      messageMapper.insert(message);
-      return message.getMessageId();
-    }
-    catch (Exception e) {
-      // 记录异常日志
-      logger.error("插入消息失败, consultationId: {}", message.getConsultationId(), e);
-      return 0;
-    }
+    return messageMapper.insert(message);
   }
+
+
+
+    public List<Message> getLast30Messages(Integer relationId) {
+        return messageMapper.findLast30Messages(relationId);
+    }
+
+    public List<Message> getMessagesAfterSeq(Integer relationId, Integer messageSeq) {
+        return messageMapper.findMessagesAfterSeq(relationId, messageSeq);
+    }
+
+    public List<Message> getMessagesBeforeSeq(Integer relationId, Integer messageSeq) {
+        return messageMapper.findMessagesBeforeSeq(relationId, messageSeq);
+    }
+
+    public Message sendMessage(Integer relationId, String senderType, String messageText, String messageType, String url) {
+        Message message = new Message();
+        message.setRelationId(relationId);
+        message.setSenderType(senderType);
+        message.setMessageText(messageText);
+        message.setTimestamp(LocalDateTime.now());
+        message.setMessageType(messageType);
+        message.setUrl(url);
+
+        // 插入消息
+        int rowsInserted = messageMapper.insertMessage(message);
+        if (rowsInserted > 0) {
+            return message;
+        } else {
+            throw new RuntimeException("Failed to send message.");
+        }
+    }
 }

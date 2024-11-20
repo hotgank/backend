@@ -25,4 +25,16 @@ public interface DoctorUserRelationService {
   List<DoctorUserRelation> selectPendingPatients(String doctorId, String relationStatus);
 
   DoctorUserRelation selectDoctorUserRelationByIDs(String doctorId, String userId);
+
+
+
+    public List<DoctorUserRelation> getRelationsByDoctorId(String doctorId);
+
+    public List<DoctorUserRelation> getRelationsByUserId(String userId);
+
+
+    public DoctorUserRelation getRelationById(Integer relationId);
+
+    List<DoctorUserRelation> selectRemoveBindingRelations(String doctorId);
+
 }

@@ -1,6 +1,7 @@
 package org.example.backend.service.user;
 
 import java.util.List;
+import org.example.backend.dto.UserGetDoctorDTO;
 import org.example.backend.entity.user.User;
 
 public interface UserService {
@@ -17,4 +18,7 @@ public interface UserService {
 
   //根据openid查询用户
   User selectByOpenId(String openid);
+
+  //用户获取已认证的医生列表
+  List<UserGetDoctorDTO> selectAllQualifiedDoctors(String userId);
 }

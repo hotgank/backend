@@ -134,4 +134,29 @@ public class DoctorUserRelationServiceImpl implements DoctorUserRelationService 
   public DoctorUserRelation selectDoctorUserRelationByIDs(String doctorId, String userId) {
     return doctorUserRelationMapper.selectDoctorUserRelation(doctorId, userId);
   }
+
+@Override
+     public List<DoctorUserRelation> getRelationsByDoctorId(String doctorId) {
+        return doctorUserRelationMapper.findRelationsByDoctorId(doctorId);
+    }
+@Override
+    public List<DoctorUserRelation> getRelationsByUserId(String userId) {
+        return doctorUserRelationMapper.findRelationsByUserId(userId);
+    }
+
+@Override
+    public DoctorUserRelation getRelationById(Integer relationId) {
+  return doctorUserRelationMapper.findRelationById(relationId);
+}
+
+    @Override
+    public List<DoctorUserRelation> selectRemoveBindingRelations(String doctorId) {
+      try {
+        return doctorUserRelationMapper.selectRemoveBindingRelations(doctorId);
+      } catch (Exception e) {
+        logger.error("Error selecting remove binding relations: {}", e.getMessage(), e);
+        return Collections.emptyList();
+      }
+
+    }
 }
