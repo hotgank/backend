@@ -7,8 +7,18 @@ public interface AdminService {
   Admin selectById(String adminId);
   List<Admin> selectAll();
   String insert(Admin admin);
+
   boolean update(Admin admin);
+
+  boolean updateMyEmailAndPhone(String adminId, String email, String phone);
+
+  boolean updateMyPassword(String adminId, String password);
+
   boolean delete(String adminId);
 
-  String loginByEmail(String email, String password);
+  String verifyByUsernameAndPassword(String username, String password);
+
+  String verifyByEmailAndPassword(String email, String password);
+
+  boolean verifyByIdAndPassword(String adminId, String password);
 }

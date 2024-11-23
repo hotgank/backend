@@ -34,14 +34,46 @@ public class AdminLoginController {
   @Autowired
   private JsonParser jsonParser;
 
-  @PostMapping("/login")
-  public ResponseEntity<String> login(@RequestBody Map<String, String> body) {
+  @PostMapping("/loginByEmail")
+  public ResponseEntity<String> loginByEmail(@RequestBody Map<String, String> body) {
     String email = body.get("email");
     String password = body.get("password");
     log.info("Received login request for email: {}", email);
 
     // 查询数据库，查找是否有该邮箱的用户
-    String adminId = adminService.loginByEmail(email, password);
+    String adminId = adminService.verifyByEmailAndPassword(email, password);
+    if (adminId == null) {
+      return ResponseEntity.badRequest().body("邮箱或密码错误");
+    }
+
+    // 生成 JWT token
+    String jwtToken = jwtUtil.generateToken(adminId);
+
+    // 将 token 存储到 Redis（如果需要）
+    redisUtil.storeTokenInRedis(adminId, jwtToken);
+
+    // 获取医生的详细信息
+    Admin admin = adminService.selectById(adminId);
+    admin.setLastLogin(LocalDateTime.now());
+    admin.setStatus("active");
+    adminService.update(admin);
+    admin.setAdminId(null);
+    admin.setPassword(null);
+    // 构建响应体
+    String response = "{\"token\":\"" + jwtToken + "\",\"admin\":" + jsonParser.toJsonFromEntity(admin) + "}";
+
+    // 返回 JWT token 和医生的详细信息
+    return ResponseEntity.ok(response);
+  }
+
+  @PostMapping("/loginByUsername")
+  public ResponseEntity<String> loginByUsername(@RequestBody Map<String, String> body) {
+    String username = body.get("username");
+    String password = body.get("password");
+    log.info("Received login request for username: {}", username);
+
+    // 查询数据库，查找是否有该邮箱的用户
+    String adminId = adminService.verifyByUsernameAndPassword(username, password);
     if (adminId == null) {
       return ResponseEntity.badRequest().body("账号或密码错误");
     }

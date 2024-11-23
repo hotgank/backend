@@ -38,6 +38,28 @@ public class DoctorServiceImpl implements DoctorService {
   private EncryptionUtil encryptionUtil;
 
   @Override
+  public int selectDoctorCount() {
+    try {
+      return doctorMapper.selectDoctorCount();
+    } catch (Exception e) {
+      // 记录异常日志
+      logger.error("获取医生数量失败", e);
+      return 0;
+    }
+  }
+
+  @Override
+  public int selectUnqualifiedDoctorCount() {
+    try {
+      return doctorMapper.selectUnqualifiedDoctorCount();
+    } catch (Exception e) {
+      // 记录异常日志
+      logger.error("获取未通过审核医生数量失败", e);
+      return 0;
+    }
+  }
+
+  @Override
   public Doctor selectById(String doctorId) {
     try {
       return doctorMapper.selectById(doctorId);
