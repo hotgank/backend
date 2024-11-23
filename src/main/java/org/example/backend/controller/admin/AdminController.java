@@ -1,12 +1,23 @@
 package org.example.backend.controller.admin;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
+
 import org.example.backend.entity.admin.Admin;
 import org.example.backend.service.admin.AdminService;
 import org.example.backend.util.JsonParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +28,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
+
+  private static final Logger log = LoggerFactory.getLogger(AdminController.class);
+
   @Autowired
   private AdminService adminService;
 
@@ -120,4 +134,101 @@ public class AdminController {
       return ResponseEntity.status(500).body("Failed to delete admin information");
     }
   }
+
+  @GetMapping("/information")
+  public ResponseEntity<String> getInformation(HttpServletRequest request) {
+    try {
+      //从请求中获取用户ID
+      String userId = (String) request.getAttribute("userId");
+      Admin admin = adminService.selectById(userId);
+      String result = jsonParser.removeKeyFromJson(jsonParser.removeKeyFromJson(
+              jsonParser.toJsonFromEntity(admin), "adminId"), "password");
+      result = jsonParser.removeKeyFromJson(result, "avatarUrl");
+      result = jsonParser.removeKeyFromJson(result, "status");
+
+      return ResponseEntity.ok(result);
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body("Failed");
+    }
+  }
+
+  @PostMapping("/upload_avatar_base64")
+  public ResponseEntity<String> uploadAvatarBase64(@RequestBody String base64Image, HttpServletRequest request) {
+    String adminId = (String) request.getAttribute("userId");
+
+    // 解析 JSON 字符串
+    base64Image = jsonParser.parseJsonString(base64Image, "base64Image");
+
+    // 检查 Base64 数据的格式
+    if (base64Image == null || !base64Image.startsWith("data:image")) {
+      return new ResponseEntity<>("Invalid image format", HttpStatus.BAD_REQUEST);
+    }
+
+    // 提取 Base64 字符串中的数据部分
+    String[] base64Parts = base64Image.split(",", 2);
+    if (base64Parts.length != 2) {
+      return new ResponseEntity<>("Invalid Base64 data", HttpStatus.BAD_REQUEST);
+    }
+
+    String base64Data = base64Parts[1];
+
+    // 额外的检查：确保 Base64 数据的长度是 4 的倍数
+    if (base64Data.length() % 4 != 0) {
+      return new ResponseEntity<>("Base64 data length is not a multiple of 4", HttpStatus.BAD_REQUEST);
+    }
+
+    try {
+      // 解码 Base64 字符串为字节数组
+      byte[] imageBytes = Base64.getDecoder().decode(base64Data);
+
+      // 构建文件保存路径
+      String folder = System.getProperty("user.dir") + File.separator + "uploads" + File.separator + "admin_avatars" + File.separator;
+      String fileName = adminId + ".jpg";
+
+      // 确保文件夹存在
+      File directory = new File(folder);
+      if (!directory.exists()) {
+        directory.mkdirs();
+      }
+
+      // 保存文件
+      Path path = Paths.get(folder + fileName);
+      Files.write(path, imageBytes);
+
+      // 返回图片的 URL
+      String imageUrl = "http://localhost:8080/admin_avatars/" + fileName;
+      Admin admin = adminService.selectById(adminId);
+      admin.setAvatarUrl(imageUrl);
+
+      if (!adminService.update(admin)) {
+        return ResponseEntity.status(500).body("Failed to upload avatar");
+      }
+
+      return ResponseEntity.ok("Successfully uploaded");
+    } catch (IllegalArgumentException | IOException e) {
+      log.error("Error occurred while uploading Base64 image", e);
+      return new ResponseEntity<>("Error occurred while uploading image", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @GetMapping("/get_avatar_base64")
+  public ResponseEntity<String> getAvatarBase64(HttpServletRequest request) {
+    String adminId = (String) request.getAttribute("userId");
+    String folder = System.getProperty("user.dir") + File.separator + "uploads" +File.separator + "admin_avatars" + File.separator;
+    String fileName = adminId + ".jpg";
+    Path path = Paths.get(folder + fileName);
+    log.info(folder+fileName);
+    try {
+      // 读取文件内容为字节数组
+      byte[] imageBytes = Files.readAllBytes(path);
+
+      // 编码为Base64字符串
+      String base64Image = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
+
+      return ResponseEntity.ok("{\"base64Image\": \""+base64Image+"\"}");
+    } catch (IOException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+  }
+
 }
