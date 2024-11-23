@@ -1,8 +1,6 @@
 package org.example.backend.controller.user;
 
 import jakarta.servlet.http.HttpServletRequest;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.example.backend.dto.UserGetDoctorDTO;
 import org.example.backend.entity.user.User;
@@ -47,6 +45,17 @@ public class UserController {
           +"\",\"phone\":\""+selectedUser.getPhone()
           +"\",\"avatarUrl\":\""+selectedUser.getAvatarUrl()
           +"\",\"openid\":\""+selectedUser.getOpenid()+"\"}");
+    } else {
+      return ResponseEntity.status(500).body("Failed to Get user information");
+    }
+  }
+
+  @GetMapping("/selectUserCount")
+  public ResponseEntity<String> selectUserCount(HttpServletRequest request) {
+    String adminId = (String) request.getAttribute("userId");
+    if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
+      int userCount = userService.selectUserCount();
+      return ResponseEntity.ok("{\"userCount\":\"" + userCount+ "\"}");
     } else {
       return ResponseEntity.status(500).body("Failed to Get user information");
     }

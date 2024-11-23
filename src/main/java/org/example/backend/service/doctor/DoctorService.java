@@ -4,6 +4,9 @@ import java.util.List;
 import org.example.backend.entity.doctor.Doctor;
 
 public interface DoctorService {
+
+  int selectUnqualifiedDoctorCount();
+
   Doctor selectById(String doctorId);
   List<Doctor> selectAll();
   String insert(Doctor doctor);
@@ -32,4 +35,6 @@ public interface DoctorService {
   String isEmailExist(String email);
 
   String getAvatarBase64(String doctorId);
+
+  int selectDoctorCount();
 }

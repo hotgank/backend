@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
 import org.example.backend.dto.UserGetDoctorDTO;
-import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.doctor.DoctorUserRelation;
 import org.example.backend.entity.user.User;
 import org.example.backend.mapper.doctor.DoctorMapper;
@@ -35,6 +34,17 @@ public class UserServiceImpl implements UserService {
 
   @Autowired
   private DoctorUserRelationMapper doctorUserRelationMapper;
+
+  @Override
+  public int selectUserCount() {
+    try {
+      return userMapper.selectUserCount();
+    } catch (Exception e) {
+      // 记录异常日志
+      logger.error("获取用户数量失败", e);
+      return 0;
+    }
+  }
 
   @Override
   public User selectById(String userId) {

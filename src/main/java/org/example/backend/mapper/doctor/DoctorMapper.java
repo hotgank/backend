@@ -14,6 +14,13 @@ import org.example.backend.entity.doctor.Doctor;
 
 @Mapper
 public interface DoctorMapper{
+
+  @Select("SELECT COUNT(*) FROM d_doctors")
+  int selectDoctorCount();
+
+  @Select("SELECT COUNT(*) FROM d_doctors WHERE qualification IS NULL")
+  int selectUnqualifiedDoctorCount();
+
   @Select("SELECT * FROM d_doctors")
   @Results({
       @Result(column = "doctor_id", property = "doctorId"),
@@ -122,4 +129,7 @@ public interface DoctorMapper{
       @Result(column = "birthdate", property = "birthdate")
   })
   List<UserGetDoctorDTO> selectAllQualifiedDoctors();
+
+
+
 }
