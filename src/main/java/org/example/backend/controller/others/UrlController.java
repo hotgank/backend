@@ -23,4 +23,11 @@ public class UrlController {
         }
         return urlUtil.getFile(url);
     }
+    @GetMapping("/base64")
+    public ResponseEntity<String> getImageAsBase64(@RequestParam String url) {
+        if (!url.startsWith("http://localhost:8080/")) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        return urlUtil.getImageAsBase64(url);
+    }
 }

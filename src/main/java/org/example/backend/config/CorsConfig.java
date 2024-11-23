@@ -16,7 +16,7 @@ public class CorsConfig {
 
     // 设置允许的域名
     config.addAllowedOrigin("http://localhost:5173");
-
+    config.addAllowedOriginPattern("*");
     // 是否允许携带Cookie
     config.setAllowCredentials(true);
 

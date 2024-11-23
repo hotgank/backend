@@ -191,6 +191,9 @@ public class DoctorController {
     String doctorId = (String) request.getAttribute("userId");
     String name = jsonParser.parseJsonString(doctorJson, "name");
     String username = jsonParser.parseJsonString(doctorJson, "username");
+    if (doctorService.isUsernameExist(username) != null) {
+      return ResponseEntity.status(400).body("Username already exists");
+    }
     String phone = jsonParser.parseJsonString(doctorJson, "phone");
     String birthdateStr = jsonParser.parseJsonString(doctorJson, "birthdate");
     Date date = new Date(Long.parseLong(birthdateStr));

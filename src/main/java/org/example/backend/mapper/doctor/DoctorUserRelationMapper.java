@@ -28,6 +28,9 @@ public interface DoctorUserRelationMapper {
         @Result(column = "email", property = "doctor.email"),
         @Result(column = "phone", property = "doctor.phone"),
         @Result(column = "avatar_url", property = "doctor.avatarUrl"),
+        @Result(column = "rating", property = "doctor.rating"),
+        @Result(column = "experience", property = "doctor.experience"),
+        @Result(column = "position", property = "doctor.position"),
         @Result(column = "registration_date", property = "doctor.registrationDate"),
         @Result(column = "relation_status", property = "relationStatus")
     })

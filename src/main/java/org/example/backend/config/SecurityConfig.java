@@ -47,6 +47,7 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
         .csrf().disable()  // 禁用 CSRF 防护
+        .cors().and()  // 启用 CORS 支持
         .authorizeHttpRequests((requests) -> requests
             .requestMatchers("/api/userLogin/**").permitAll() // 允许登录相关的请求
             .requestMatchers("/api/DoctorLogin/**").permitAll()

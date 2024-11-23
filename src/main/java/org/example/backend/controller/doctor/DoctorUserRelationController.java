@@ -317,5 +317,20 @@ public class DoctorUserRelationController {
       return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relationList));
   }
 
+  @PostMapping("/selectRelationIdByDoctorId")
+public ResponseEntity<String> selectRelationIdByDoctorId(@RequestBody String doctorJson, HttpServletRequest request) {
+    String doctorId = jsonParser.parseJsonString(doctorJson, "doctorId");
+    String userId = (String) request.getAttribute("userId");
+    DoctorUserRelation relation = doctorUserRelationService.selectDoctorUserRelationByIDs(doctorId, userId);
+
+    if (relation == null) {
+        // 处理 relation 为空的情况，返回友好错误信息
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("No relation found for doctorId: " + doctorId + " and userId: " + userId);
+    }
+
+    // 如果 relation 不为空，返回其 ID
+    return ResponseEntity.ok(jsonParser.toJsonFromEntity(relation.getRelationId()));
+}
 
 }
