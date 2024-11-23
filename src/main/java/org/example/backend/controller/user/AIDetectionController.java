@@ -73,7 +73,7 @@ public class AIDetectionController {
     Map<String, String> myBody = new HashMap<>();
 
     // 将imageUrl转换为服务器上的文件路径
-    String baseDirectory = System.getProperty("user.dir") + File.separator + "AIDetectionImage" + File.separator;
+    String baseDirectory = System.getProperty("user.dir") + File.separator + "uploads" + File.separator + "images" + File.separator;
     String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
     String imgFile = baseDirectory + fileName;
 
