@@ -27,6 +27,7 @@ public class UrlUtil {
   public ResponseEntity<Resource> getFile(String url) {
     // 检查 URL 是否以 localhost:8080 开头
     if (!url.startsWith("http://localhost:8080/")) {
+      logger.warn("Invalid URL: {}", url);
       return ResponseEntity.badRequest().body(null);
     }
     logger.info("Received URL: {}", url);
