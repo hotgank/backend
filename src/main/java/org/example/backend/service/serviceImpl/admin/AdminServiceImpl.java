@@ -3,6 +3,7 @@ package org.example.backend.service.serviceImpl.admin;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
+import org.apache.commons.math3.util.Pair;
 import org.example.backend.entity.admin.Admin;
 import org.example.backend.mapper.admin.AdminMapper;
 import org.example.backend.service.admin.AdminService;
@@ -19,11 +20,9 @@ public class AdminServiceImpl implements AdminService {
 
   private static final Logger logger = LoggerFactory.getLogger(AdminServiceImpl.class);
 
-  @Autowired
-  private AdminMapper adminMapper;
+  @Autowired private AdminMapper adminMapper;
 
-  @Autowired
-  private EncryptionUtil encryptionUtil;
+  @Autowired private EncryptionUtil encryptionUtil;
 
   @Override
   public Admin selectById(String adminId) {
@@ -80,6 +79,36 @@ public class AdminServiceImpl implements AdminService {
   }
 
   @Override
+  public boolean updateMyEmailAndPhone(String adminId, String email, String phone) {
+    try {
+      Admin admin = selectById(adminId);
+      admin.setEmail(email);
+      admin.setPhone(phone);
+      adminMapper.updateAdmin(admin);
+      logger.info("Admin email and phone with ID {} updated successfully", admin.getAdminId());
+      return true;
+    } catch (Exception e) {
+      logger.error("Error updating admin with ID {}: {}", adminId, e.getMessage(), e);
+      return false;
+    }
+  }
+
+  @Override
+  public boolean updateMyPassword(String adminId, String password) {
+    try {
+      Admin admin = selectById(adminId);
+      password = encryptionUtil.encryptMD5(password);
+      admin.setPassword(password);
+      adminMapper.updateAdmin(admin);
+      logger.info("Admin password with ID {} updated successfully", admin.getAdminId());
+      return true;
+    } catch (Exception e) {
+      logger.error("Error updating admin with ID {}: {}", adminId, e.getMessage(), e);
+      return false;
+    }
+  }
+
+  @Override
   public boolean delete(String adminId) {
     try {
       adminMapper.deleteAdmin(adminId);
@@ -92,8 +121,32 @@ public class AdminServiceImpl implements AdminService {
   }
 
   @Override
-  public String loginByEmail(String email, String password) {
-    String passwordMD5 = encryptionUtil.encryptMD5(password);
-    return adminMapper.selectAdminIdByEmailAndPassword(email,passwordMD5);
+  public String verifyByUsernameAndPassword(String username, String password) {
+    Pair<String, String> adminDetails = adminMapper.selectAdminIdByUsername(username);
+    if (adminDetails == null) {
+      return null;
+    }
+    if (encryptionUtil.verifyMD5(password, adminDetails.getSecond())) {
+      return adminDetails.getFirst();
+    }
+    return null;
+  }
+
+  @Override
+  public String verifyByEmailAndPassword(String email, String password) {
+    Pair<String, String> adminDetails = adminMapper.selectAdminIdByEmail(email);
+    if (adminDetails == null) {
+      return null;
+    }
+    if (encryptionUtil.verifyMD5(password, adminDetails.getSecond())) {
+      return adminDetails.getFirst();
+    }
+    return null;
+  }
+
+  @Override
+  public boolean verifyByIdAndPassword(String adminId, String password) {
+    Admin admin = adminMapper.selectById(adminId);
+    return encryptionUtil.verifyMD5(password, admin.getPassword());
   }
 }

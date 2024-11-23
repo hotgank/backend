@@ -5,6 +5,9 @@ import org.example.backend.dto.UserGetDoctorDTO;
 import org.example.backend.entity.user.User;
 
 public interface UserService {
+
+  int selectUserCount();
+
   User selectById(String userId);
   List<User> selectAll();
   String insert(User user);

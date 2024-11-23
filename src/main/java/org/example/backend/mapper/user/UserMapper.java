@@ -12,6 +12,11 @@ import org.example.backend.entity.user.User;
 
 @Mapper
 public interface UserMapper {
+
+  // 查询用户总数
+  @Select("SELECT COUNT(*) FROM u_users")
+  int selectUserCount();
+
   // 查询所有用户信息
   @Select("SELECT * FROM u_users")
   @Results({
