@@ -6,9 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.io.InputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,14 +21,14 @@ public class ExcelReader {
   /**
    * 读取Excel文件中的数据，并将每行数据转换为指定类型的对象
    *
-   * @param fileUrl Excel文件的URL地址
+   * @param fileUrl Excel文件的路径
    * @param clazz   指定类型T的Class对象，用于创建实体对象
    * @return 包含转换后的对象的列表
    */
   public <T> List<T> readExcel(String fileUrl, Class<T> clazz) {
     List<T> entityList = new ArrayList<>();
-    try (InputStream inputStream = new URL(fileUrl).openStream();
-        Workbook workbook = new XSSFWorkbook(inputStream)) {
+    try (FileInputStream inputStream = new FileInputStream(fileUrl);
+         Workbook workbook = new XSSFWorkbook(inputStream)) {
 
       Sheet sheet = workbook.getSheetAt(0);
 

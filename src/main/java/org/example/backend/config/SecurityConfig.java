@@ -53,8 +53,6 @@ public class SecurityConfig {
             .requestMatchers("/api/DoctorLogin/**").permitAll()
             .requestMatchers("/api/AdminLogin/**").permitAll()
             .requestMatchers("/api/DoctorRegister/**").permitAll()
-            .requestMatchers("/api/DoctorRegister/**").permitAll()
-            //.requestMatchers("/**").permitAll()
             .anyRequest().authenticated()  // 其他请求都需要认证
         )
         .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, redisUtil), UsernamePasswordAuthenticationFilter.class) // 添加自定义的 JWT 过滤器
