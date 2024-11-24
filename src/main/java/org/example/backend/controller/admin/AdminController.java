@@ -70,8 +70,8 @@ public class AdminController {
     }
   }
 
-  @PostMapping("/add")
-  public ResponseEntity<String> addAdmin(@RequestBody Admin admin) {
+  @PostMapping("/create")
+  public ResponseEntity<String> createAdmin(@RequestBody Admin admin) {
     // 调用服务层来添加管理员信息到数据库
     String result = adminService.insert(admin);
 
@@ -120,6 +120,44 @@ public class AdminController {
       return ResponseEntity.status(400).body("Password not equals");
     }
 
+  }
+
+  @PostMapping("/edit")
+  public ResponseEntity<String> editAdmin(@RequestBody Admin admin) {
+    // 调用服务层来更新管理员信息
+    boolean success = adminService.update(admin);
+
+    if (success) {
+      return ResponseEntity.ok("Admin information updated successfully");
+    } else {
+      return ResponseEntity.status(500).body("Failed to update admin information");
+    }
+  }
+
+  @PostMapping("/activate")
+  public ResponseEntity<String> activateAdmin(@RequestBody String adminIdJson) {
+    String adminId = jsonParser.parseJsonString(adminIdJson, "adminId");
+    // 调用服务层来删除管理员信息
+    boolean success = adminService.activateAdmin(adminId);
+
+    if (success) {
+      return ResponseEntity.ok("Admin information activated successfully");
+    } else {
+      return ResponseEntity.status(500).body("Failed to activate admin information");
+    }
+  }
+
+  @PostMapping("/ban")
+  public ResponseEntity<String> banAdmin(@RequestBody String adminIdJson) {
+    String adminId = jsonParser.parseJsonString(adminIdJson, "adminId");
+    // 调用服务层来删除管理员信息
+    boolean success = adminService.banAdmin(adminId);
+
+    if (success) {
+      return ResponseEntity.ok("Admin information banned successfully");
+    } else {
+      return ResponseEntity.status(500).body("Failed to ban admin information");
+    }
   }
 
   @PostMapping("/delete")

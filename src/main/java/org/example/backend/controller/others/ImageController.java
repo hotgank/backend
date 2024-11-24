@@ -1,6 +1,5 @@
-package org.example.backend.controller.user;
+package org.example.backend.controller.others;
 
-import org.example.backend.service.serviceImpl.others.MessageServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

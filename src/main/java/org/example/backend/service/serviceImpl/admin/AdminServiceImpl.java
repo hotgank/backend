@@ -51,8 +51,6 @@ public class AdminServiceImpl implements AdminService {
     try {
       String adminId = "A-" + UUID.randomUUID();
       admin.setAdminId(adminId);
-      String username = encryptionUtil.encryptMD5(admin.getUsername());
-      admin.setUsername(username);
       String password = encryptionUtil.encryptMD5(admin.getPassword());
       admin.setPassword(password);
       admin.setRegistrationDate(LocalDateTime.now());
@@ -104,6 +102,34 @@ public class AdminServiceImpl implements AdminService {
       return true;
     } catch (Exception e) {
       logger.error("Error updating admin with ID {}: {}", adminId, e.getMessage(), e);
+      return false;
+    }
+  }
+
+  @Override
+  public boolean activateAdmin(String adminId){
+    try {
+      Admin admin = selectById(adminId);
+      admin.setStatus("active");
+      adminMapper.updateAdmin(admin);
+      logger.info("Admin with ID {} activated successfully", admin.getAdminId());
+      return true;
+    } catch (Exception e) {
+      logger.error("Error activating admin with ID {}: {}", adminId, e.getMessage(), e);
+      return false;
+    }
+  }
+
+  @Override
+  public boolean banAdmin(String adminId){
+    try {
+      Admin admin = selectById(adminId);
+      admin.setStatus("disabled");
+      adminMapper.updateAdmin(admin);
+      logger.info("Admin with ID {} banned successfully", admin.getAdminId());
+      return true;
+    } catch (Exception e) {
+      logger.error("Error banning admin with ID {}: {}", adminId, e.getMessage(), e);
       return false;
     }
   }
