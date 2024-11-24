@@ -23,8 +23,8 @@ public class ImageController {
   // 上传图片并返回图片的URL
   @PostMapping("/upload")
   public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
-    // 构建一个文件夹路径字符串，用于保存上传的图片,根目录下的AIDetectionImage文件夹
-    String folder = System.getProperty("user.dir") + File.separator + "AIDetectionImage" + File.separator;
+    // 构建一个文件夹路径字符串，用于保存上传的图片,根目录下的uploads/images文件夹
+    String folder = System.getProperty("user.dir") + File.separator + "uploads" + File.separator + "images" + File.separator;
     String fileName = file.getOriginalFilename();
     if (fileName == null) {
       return new ResponseEntity<>("File name is missing", HttpStatus.BAD_REQUEST);
@@ -55,7 +55,7 @@ public class ImageController {
   // 根据文件名删除图片
   @DeleteMapping("/delete/{filename}")
   public ResponseEntity<String> deleteImage(@PathVariable("filename") String filename) {
-    String folder = System.getProperty("user.dir") + File.separator + "AIDetectionImage" + File.separator;
+    String folder = System.getProperty("user.dir") + File.separator + "uploads" + File.separator + "imagea" + File.separator;
     File file = new File(folder + filename);
 
     if (file.exists()) {
