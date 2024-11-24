@@ -64,7 +64,10 @@ public class HealthArticleController {
     jsonString = jsonParser.removeKeyFromJson(jsonString, "phone");
     jsonString = jsonParser.removeKeyFromJson(jsonString, "email");
     jsonString = jsonString.substring(0,jsonString.length()-1);
+    if(doctorService.getAvatarBase64(doctorId)!=null)
     return ResponseEntity.ok(jsonString+",\"avatar\":\"" + doctorService.getAvatarBase64(doctorId)+"\"}");
+    else
+      return ResponseEntity.ok(jsonString+",\"avatar\":null}");
   }
 
   @GetMapping("/myArticles")
