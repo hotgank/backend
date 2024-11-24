@@ -22,6 +22,8 @@ public class DoctorReportController {
     @Autowired
     private JsonParser jsonParser;
 
+    private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger(DoctorReportController.class);
+
     @PostMapping("/selectByChildId")
     public ResponseEntity<String> selectByChildId(HttpServletRequest request) {
         String childId = (String) request.getAttribute("userId");
@@ -34,8 +36,11 @@ public class DoctorReportController {
     }
 
     @PostMapping("/comment")
-    public ResponseEntity<String> comment(@RequestBody Report report) {
-        boolean success = reportService.updateReport(report);
+    public ResponseEntity<String> comment(@RequestBody Report report, HttpServletRequest request) {
+        String doctorId = (String) request.getAttribute("userId");
+        logger.info("doctorId: " + doctorId);
+        logger.info("report: " + report);
+        boolean success = reportService.doctorEditReport(report.getReportId(), report.getComment(), doctorId);
         if(success){
             return ResponseEntity.ok("Comment successfully");
         }else{

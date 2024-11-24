@@ -46,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
       // 从 Redis 中获取对应的 token
       String tokenFromRedis = redisUtil.getTokenFromRedis(userIdFromToken);
-      //System.out.println("tokenFromRedis: " + tokenFromRedis);
+      System.out.println("tokenFromRedis: " + tokenFromRedis);
 
       // 比较 Redis 中存储的 token 和请求中的 token 是否一致
       if (tokenFromRedis != null && tokenFromRedis.equals(token) && jwtUtil.validateToken(token)) {
