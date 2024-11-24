@@ -2,7 +2,7 @@ package org.example.backend.dto;
 
 import java.time.LocalDateTime;
 
-public class userHistoryReportDTO {
+public class UserHistoryReportDTO {
     private int id;
     private String childName;
     private String reportType;

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.example.backend.dto.userHistoryReportDTO;
+import org.example.backend.dto.UserHistoryReportDTO;
 import org.example.backend.entity.others.Report;
 import org.example.backend.entity.user.Child;
 import org.example.backend.entity.user.ParentChildRelation;
@@ -32,11 +32,11 @@ public class ReportServiceImpl implements ReportService {
   private ChildService childService;
 
   @Override
-  public List<userHistoryReportDTO> selectUserHistoryReport(String userId) {
+  public List<UserHistoryReportDTO> selectUserHistoryReport(String userId) {
     List<ParentChildRelation> childRelations = parentChildRelationService.getRelationsByUserId(userId);
 
     // Step 2: 遍历孩子，获取每个孩子的详细信息和报告
-    List<userHistoryReportDTO> allReports = new ArrayList<>();
+    List<UserHistoryReportDTO> allReports = new ArrayList<>();
     for (ParentChildRelation relation : childRelations) {
         // 获取孩子基本信息
         Child child = childService.selectById(relation.getChildId());
@@ -46,7 +46,7 @@ public class ReportServiceImpl implements ReportService {
 
         // 整合数据
         for (Report report : reports) {
-            userHistoryReportDTO reportDTO = new userHistoryReportDTO();
+            UserHistoryReportDTO reportDTO = new UserHistoryReportDTO();
             reportDTO.setId(report.getReportId());
             reportDTO.setChildName(child.getName());
             reportDTO.setReportType(report.getReportType());
