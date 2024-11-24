@@ -25,6 +25,7 @@ public class MessageServiceImpl implements MessageService {
   private ConsultationService consultationService;
 
 
+
   public List<Message> selectMessagesById(String doctorId, String userId) {
 //    try {
 //      Consultation consultation = consultationService.selectConsultationByDoctorIdAndUserId(doctorId, userId);
@@ -38,6 +39,10 @@ public class MessageServiceImpl implements MessageService {
     return null;
   }
 
+  @Override
+  public Message getLastMessage( Integer relationId) {
+    return messageMapper.getLastMessage(relationId);
+  }
   @Override
   public int insertMessage(Message message) {
     return messageMapper.insert(message);

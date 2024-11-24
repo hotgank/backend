@@ -1,9 +1,11 @@
 package org.example.backend.controller.others;
 
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,12 +14,77 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping("/api/image")
 public class ImageController {
 
   private static final Logger logger = LoggerFactory.getLogger(ImageController.class);
+
+ @PostMapping("/uploadChatImage/{relationId}")
+public ResponseEntity<String> uploadChatImage(
+        @PathVariable("relationId") int relationId, // 从路径中获取 int 类型的 relationId
+        @RequestParam("file") MultipartFile file) {
+
+    // 检查 relationId 是否为有效值（可根据业务逻辑调整，例如不能小于等于 0）
+    if (relationId <= 0) {
+        return ResponseEntity.badRequest().body("Invalid Relation ID");
+    }
+
+    // 定义上传文件夹路径：upload/chat/{relationId}
+    String folder = System.getProperty("user.dir") + File.separator + "uploads"
+                    + File.separator + "chat" + File.separator + relationId + File.separator;
+
+    // 获取原始文件名并清理文件名
+    String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+    if (fileName == null || fileName.isEmpty()) {
+        return ResponseEntity.badRequest().body("File name is missing");
+    }
+
+    // 检查文件名是否包含不安全的路径
+    if (fileName.contains("..")) {
+        return ResponseEntity.badRequest().body("File name contains invalid path sequence");
+    }
+
+    // 检查文件类型是否为图片
+    String contentType = file.getContentType();
+    if (contentType == null || !contentType.startsWith("image/")) {
+        return ResponseEntity.badRequest().body("Only image files are allowed");
+    }
+
+    try {
+        // 确保文件夹存在
+        File directory = new File(folder);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        // 生成唯一文件名
+        String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
+
+        // 文件完整保存路径
+        Path path = Paths.get(folder + uniqueFileName);
+
+        // 保存文件到指定路径
+        byte[] bytes = file.getBytes();
+        Files.write(path, bytes);
+
+        // 生成图片的访问 URL
+        String serverUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                              .path("/chat/" + relationId + "/")
+                              .toUriString();
+        String imageUrl = serverUrl + uniqueFileName;
+
+        // 返回图片 URL
+        return ResponseEntity.ok("{\"imageUrl\":\"" + imageUrl + "\"}");
+    } catch (IOException e) {
+        // 处理文件保存异常
+        logger.error("Error occurred while uploading image: {}", fileName, e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                             .body("Error occurred while uploading image: " + e.getMessage());
+    }
+}
 
   // 上传图片并返回图片的URL
   @PostMapping("/upload")

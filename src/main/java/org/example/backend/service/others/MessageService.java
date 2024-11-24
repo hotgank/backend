@@ -9,6 +9,7 @@ public interface MessageService {
     int insertMessage(Message message);
 
 
+    public Message getLastMessage( Integer relationId);
 
     public List<Message> getLast30Messages(Integer relationId);
 
