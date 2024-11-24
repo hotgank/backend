@@ -213,7 +213,7 @@ public class DoctorController {
     String doctorId = (String) request.getAttribute("userId");
     String name = jsonParser.parseJsonString(doctorJson, "name");
     String username = jsonParser.parseJsonString(doctorJson, "username");
-    if (doctorService.isUsernameExist(username) != null) {
+    if (doctorService.isUsernameExist(doctorId, username) != null) {
       return ResponseEntity.status(400).body("Username already exists");
     }
     String phone = jsonParser.parseJsonString(doctorJson, "phone");

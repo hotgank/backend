@@ -7,9 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
+
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.mapper.doctor.DoctorMapper;
 import org.example.backend.service.doctor.DoctorService;
@@ -20,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -228,6 +226,15 @@ public class DoctorServiceImpl implements DoctorService {
   public String isUsernameExist(String username) {
     String doctorId = doctorMapper.isUsernameExist(username);
     if (doctorId != null) {
+      return doctorId;
+    }
+    return null;
+  }
+
+  @Override
+  public String isUsernameExist(String doctorId, String username) {
+    String selecteDoctorId = doctorMapper.isUsernameExist(username);
+    if (!Objects.equals(doctorId, selecteDoctorId)) {
       return doctorId;
     }
     return null;
