@@ -40,6 +40,7 @@ public interface MessageMapper {
         @Result(column = "message_text", property = "messageText"),
         @Result(column = "timestamp", property = "timestamp"),
         @Result(column = "message_type", property ="messageType"),
+        @Result(column = "url", property = "url"),
     })
     List<Message> findLast30Messages(@Param("relationId") Integer relationId);
 
@@ -58,6 +59,7 @@ public interface MessageMapper {
         @Result(column = "message_text", property = "messageText"),
         @Result(column = "timestamp", property = "timestamp"),
         @Result(column = "message_type", property ="messageType"),
+        @Result(column = "url", property = "url"),
     })
     List<Message> findMessagesAfterSeq(@Param("relationId") Integer relationId, @Param("messageSeq") Integer messageSeq);
 
@@ -77,6 +79,7 @@ public interface MessageMapper {
         @Result(column = "message_text", property = "messageText"),
         @Result(column = "timestamp", property = "timestamp"),
         @Result(column = "message_type", property ="messageType"),
+        @Result(column = "url", property = "url"),
     })
     List<Message> findMessagesBeforeSeq(@Param("relationId") Integer relationId, @Param("messageSeq") Integer messageSeq);
 
