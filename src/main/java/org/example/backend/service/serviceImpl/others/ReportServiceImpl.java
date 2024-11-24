@@ -181,11 +181,29 @@ public class ReportServiceImpl implements ReportService {
       String doctorName = doctor.getName();
       String doctorPosition = doctor.getPosition();
       String doctorWorkplace = doctor.getWorkplace();
-      comment =comment + "--------" + doctorWorkplace + "-" + doctorPosition + "-" + doctorName;
+      //构造医生信息字符串
+      String doctorInfo = "-----" + doctorName + "，" + doctorPosition + "，" + doctorWorkplace;
+      //如果评论不为空，检查医生信息，如果医生信息为空，则添加；如果医生信息不为空，则覆盖更新
+      if (comment != null){
+        //看comment是否有"-----"
+        if (comment.contains("-----")){
+          //如果有且医生信息符合，则不添加，否则覆盖添加
+          if (!comment.contains(doctorInfo)){
+            //覆盖"-----"以及之后的内容
+            comment = comment.replaceFirst("-----.*", doctorInfo);
+          }
+        }
+        else {
+          comment = comment + doctorInfo;
+        }
+      }
       report.setComment(comment);
       report.setDoctorId(doctorId);
       report.setCreatedAt(LocalDateTime.now());
-      report.setReportType(report.getReportType()+"评估报告");
+      //如果报告类型不是以"评估报告"结尾，则添加"评估报告"
+      if (!report.getReportType().endsWith("评估报告")) {
+        report.setReportType(report.getReportType() + "评估报告");
+      }
       reportMapper.update(report);
       return true;
     }
