@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.example.backend.dto.DoctorGetReportDTO;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.doctor.DoctorUserRelation;
 import org.example.backend.entity.others.DoctorWithStatus;
@@ -231,7 +232,7 @@ public class DoctorUserRelationController {
       return ResponseEntity.status(500).body("You have no permission to access this user's reports");
     }
     // 调用服务层来查询待审核信息
-    List<Report> reports = reportService.selectByUserId(userId);
+    List<DoctorGetReportDTO> reports = reportService.DoctorGetReportByUserId(userId);
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(reports));
   }
 

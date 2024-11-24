@@ -4,11 +4,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.example.backend.dto.DoctorGetReportDTO;
 import org.example.backend.dto.UserHistoryReportDTO;
+import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.others.Report;
 import org.example.backend.entity.user.Child;
 import org.example.backend.entity.user.ParentChildRelation;
 import org.example.backend.mapper.others.ReportMapper;
+import org.example.backend.service.doctor.DoctorService;
 import org.example.backend.service.others.ReportService;
 import org.example.backend.service.user.ChildService;
 import org.example.backend.service.user.ParentChildRelationService;
@@ -30,6 +33,9 @@ public class ReportServiceImpl implements ReportService {
 
   @Autowired
   private ChildService childService;
+
+  @Autowired
+  private DoctorService doctorService;
 
   @Override
   public List<UserHistoryReportDTO> selectUserHistoryReport(String userId) {
@@ -165,4 +171,40 @@ public class ReportServiceImpl implements ReportService {
     }
   }
 
+  @Override
+  public boolean doctorEditReport(int reportId, String comment, String doctorId) {
+    try {
+      //根据reportId获取报告
+      Report report = selectByReportId(reportId);
+      //获取报告的医生id，查询医生信息
+      Doctor doctor = doctorService.selectById(doctorId);
+      String doctorName = doctor.getName();
+      String doctorPosition = doctor.getPosition();
+      String doctorWorkplace = doctor.getWorkplace();
+      comment =comment + "--------" + doctorWorkplace + "-" + doctorPosition + "-" + doctorName;
+      report.setComment(comment);
+      report.setDoctorId(doctorId);
+      report.setCreatedAt(LocalDateTime.now());
+      report.setReportType(report.getReportType()+"评估报告");
+      reportMapper.update(report);
+      return true;
+    }
+    catch (Exception e) {
+      // 记录异常日志
+      logger.error("医生编辑报告失败, reportId: {}", reportId, e);
+      return false;
+    }
+  }
+
+  @Override
+  public List<DoctorGetReportDTO> DoctorGetReportByUserId(String userId) {
+    try {
+      return reportMapper.selectUserHistoryReport(userId);
+    }
+    catch (Exception e) {
+      // 记录异常日志
+      logger.error("获取用户报告失败, userId: {}", userId, e);
+      return null;
+    }
+  }
 }
