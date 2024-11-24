@@ -14,6 +14,10 @@ public interface AdminService {
 
   boolean updateMyPassword(String adminId, String password);
 
+    boolean activateAdmin(String adminId);
+
+  boolean banAdmin(String adminId);
+
   boolean delete(String adminId);
 
   String verifyByUsernameAndPassword(String username, String password);

@@ -1,6 +1,6 @@
 package org.example.backend.service.others;
 
-import org.example.backend.dto.userHistoryReportDTO;
+import org.example.backend.dto.UserHistoryReportDTO;
 import org.example.backend.entity.others.Report;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public interface ReportService {
 
     List<Report> selectByChildId(String childId);
 
-    List<userHistoryReportDTO> selectUserHistoryReport(String userId);
+    List<UserHistoryReportDTO> selectUserHistoryReport(String userId);
 
     int insertReport(Report report);
 

@@ -46,4 +46,14 @@ public class UrlController {
       logger.info("getReportImage: " + url);
         return urlUtil.getFile(url);
     }
+
+    @GetMapping("/getLicenseImage")
+    public ResponseEntity<Resource> getLicenseImage(@RequestParam String url) {
+        System.out.println(url);
+        if (!url.startsWith("http://localhost:8080/")) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        logger.info("getLicenseImage: " + url);
+        return urlUtil.getFile(url);
+    }
 }

@@ -1,7 +1,7 @@
 package org.example.backend.controller.user;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.example.backend.dto.userHistoryReportDTO;
+import org.example.backend.dto.UserHistoryReportDTO;
 import org.example.backend.entity.others.Report;
 import org.example.backend.service.others.ReportService;
 import org.example.backend.util.JsonParser;
@@ -27,7 +27,7 @@ public class UserReportController {
     @GetMapping("/selectAll")
     public ResponseEntity<String> selectAll(HttpServletRequest request) {
         String userId = (String) request.getAttribute("userId");
-        List<userHistoryReportDTO> reports = reportService.selectUserHistoryReport(userId);
+        List<UserHistoryReportDTO> reports = reportService.selectUserHistoryReport(userId);
         if(reports != null){
             return ResponseEntity.ok(jsonParser.toJsonFromEntityList(reports));
         }else{
