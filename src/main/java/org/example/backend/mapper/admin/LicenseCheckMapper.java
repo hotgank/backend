@@ -10,7 +10,7 @@ import java.util.List;
 public interface LicenseCheckMapper {
     @Select("SELECT audit_id, a_license_check.doctor_id, name, gender, position, workplace, url " +
             "FROM a_license_check, d_doctors WHERE a_license_check.doctor_id = d_doctors.doctor_id " +
-            "AND a_license_check.status = 'pending' ORDER BY created_at")
+            "AND a_license_check.status = '未认证' ORDER BY created_at")
     @Results({
             @Result(column = "audit_id", property = "auditId"),
             @Result(column = "doctor_id", property = "doctorId"),
@@ -21,6 +21,20 @@ public interface LicenseCheckMapper {
             @Result(column = "url", property = "url")
     })
     List<AdminGetDoctorLicenseDTO> adminSelectAll();
+
+    @Select("SELECT audit_id, a_license_check.doctor_id, name, gender, position, workplace, url " +
+            "FROM a_license_check, d_doctors WHERE a_license_check.doctor_id = d_doctors.doctor_id " +
+            "AND a_license_check.status = '未认证' ORDER BY created_at DESC LIMIT 5")
+    @Results({
+            @Result(column = "audit_id", property = "auditId"),
+            @Result(column = "doctor_id", property = "doctorId"),
+            @Result(column = "name", property = "name"),
+            @Result(column = "gender", property = "gender"),
+            @Result(column = "position", property = "position"),
+            @Result(column = "workplace", property = "workplace"),
+            @Result(column = "url", property = "url")
+    })
+    List<AdminGetDoctorLicenseDTO> adminSelectRecent();
 
     @Select("SELECT audit_id, doctor_id, admin_id, status, created_at, url, updated_at, comment FROM a_license_check " +
             "WHERE audit_id = #{auditId}")

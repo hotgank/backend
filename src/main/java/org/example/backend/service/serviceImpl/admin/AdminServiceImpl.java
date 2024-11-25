@@ -3,7 +3,7 @@ package org.example.backend.service.serviceImpl.admin;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
-import org.apache.commons.math3.util.Pair;
+
 import org.example.backend.entity.admin.Admin;
 import org.example.backend.mapper.admin.AdminMapper;
 import org.example.backend.service.admin.AdminService;
@@ -148,24 +148,30 @@ public class AdminServiceImpl implements AdminService {
 
   @Override
   public String verifyByUsernameAndPassword(String username, String password) {
-    Pair<String, String> adminDetails = adminMapper.selectAdminIdByUsername(username);
+    Admin adminDetails = adminMapper.selectAdminIdByUsername(username);
     if (adminDetails == null) {
       return null;
     }
-    if (encryptionUtil.verifyMD5(password, adminDetails.getSecond())) {
-      return adminDetails.getFirst();
+    if(adminDetails.getStatus().equals("disabled")){
+      return "disabled";
+    }
+    if (encryptionUtil.verifyMD5(password, adminDetails.getPassword())) {
+      return adminDetails.getAdminId();
     }
     return null;
   }
 
   @Override
   public String verifyByEmailAndPassword(String email, String password) {
-    Pair<String, String> adminDetails = adminMapper.selectAdminIdByEmail(email);
+    Admin adminDetails = adminMapper.selectAdminIdByEmail(email);
     if (adminDetails == null) {
       return null;
     }
-    if (encryptionUtil.verifyMD5(password, adminDetails.getSecond())) {
-      return adminDetails.getFirst();
+    if(adminDetails.getStatus().equals("disabled")){
+      return "disabled";
+    }
+    if (encryptionUtil.verifyMD5(password, adminDetails.getPassword())) {
+      return adminDetails.getAdminId();
     }
     return null;
   }
@@ -175,4 +181,5 @@ public class AdminServiceImpl implements AdminService {
     Admin admin = adminMapper.selectById(adminId);
     return encryptionUtil.verifyMD5(password, admin.getPassword());
   }
+
 }

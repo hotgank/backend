@@ -1,11 +1,8 @@
 package org.example.backend.controller.doctor;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.Map;
 import org.example.backend.entity.doctor.Doctor;
-import org.example.backend.entity.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +43,8 @@ public class DoctorLoginController {
     String doctorId = doctorService.loginByEmail(email, password);
     if (doctorId == null|| doctorId.isEmpty()) {
       return ResponseEntity.badRequest().body("账号或密码错误");
+    }else if (doctorId.equals("disabled")){
+      return ResponseEntity.badRequest().body("账号已封禁");
     }
 
     // 生成 JWT token
@@ -81,6 +80,8 @@ public class DoctorLoginController {
     String doctorId = doctorService.loginByUsername(username, password);
     if (doctorId == null|| doctorId.isEmpty()) {
       return ResponseEntity.badRequest().body("账号或密码错误");
+    }else if (doctorId.equals("disabled")){
+      return ResponseEntity.badRequest().body("账号已封禁");
     }
 
     // 生成 JWT token
