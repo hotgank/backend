@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/doctorlicense")
-public class DoctorLicenseCheck {
+public class DoctorLicenseCheckController {
   private static final Logger log = LoggerFactory.getLogger(DoctorController.class);
     @Autowired private DoctorDataService doctorDataService;
     @Autowired private MultipartFileUtil multipartFileUtil;
