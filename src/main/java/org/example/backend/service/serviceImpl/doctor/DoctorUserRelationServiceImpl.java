@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
+import org.example.backend.dto.DoctorGetUserBindingDTO;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.doctor.DoctorUserRelation;
 import org.example.backend.entity.others.DoctorWithStatus;
@@ -119,9 +120,9 @@ public class DoctorUserRelationServiceImpl implements DoctorUserRelationService 
   }
 
   @Override
-  public List<DoctorUserRelation> selectPendingPatients(String doctorId, String relationStatus) {
+  public List<DoctorGetUserBindingDTO> selectPendingPatients(String doctorId, String relationStatus) {
     try {
-      List<DoctorUserRelation> pendingPatients = doctorUserRelationMapper.selectPendingPatients(doctorId, relationStatus);
+      List<DoctorGetUserBindingDTO> pendingPatients = doctorUserRelationMapper.selectPendingPatients(doctorId, relationStatus);
       logger.info("获取待绑定患者成功");
       return pendingPatients;
     } catch (Exception e) {
@@ -150,7 +151,7 @@ public class DoctorUserRelationServiceImpl implements DoctorUserRelationService 
 }
 
     @Override
-    public List<DoctorUserRelation> selectRemoveBindingRelations(String doctorId) {
+    public List<DoctorGetUserBindingDTO> selectRemoveBindingRelations(String doctorId) {
       try {
         return doctorUserRelationMapper.selectRemoveBindingRelations(doctorId);
       } catch (Exception e) {
