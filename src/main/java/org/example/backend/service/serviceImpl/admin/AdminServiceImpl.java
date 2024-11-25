@@ -148,7 +148,7 @@ public class AdminServiceImpl implements AdminService {
 
   @Override
   public String verifyByUsernameAndPassword(String username, String password) {
-    Admin adminDetails = adminMapper.selectAdminIdByUsername(username);
+    Admin adminDetails = adminMapper.selectAdminByUsername(username);
     if (adminDetails == null) {
       return null;
     }
@@ -163,7 +163,7 @@ public class AdminServiceImpl implements AdminService {
 
   @Override
   public String verifyByEmailAndPassword(String email, String password) {
-    Admin adminDetails = adminMapper.selectAdminIdByEmail(email);
+    Admin adminDetails = adminMapper.selectAdminByEmail(email);
     if (adminDetails == null) {
       return null;
     }

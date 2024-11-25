@@ -63,9 +63,9 @@ public interface AdminMapper{
           @Result(column = "last_login", property = "lastLogin"),
           @Result(column = "status", property = "status")
   })
-  Admin selectAdminIdByEmail(@Param("email") String email);
+  Admin selectAdminByEmail(@Param("email") String email);
 
-  @Select("SELECT admin_id, password FROM a_admins WHERE username = #{username}")
+  @Select("SELECT * FROM a_admins WHERE username = #{username}")
   @Results({
           @Result(column = "admin_id", property = "adminId"),
           @Result(column = "admin_type", property = "adminType"),
@@ -80,7 +80,7 @@ public interface AdminMapper{
           @Result(column = "last_login", property = "lastLogin"),
           @Result(column = "status", property = "status")
   })
-  Admin selectAdminIdByUsername(@Param("username") String username);
+  Admin selectAdminByUsername(@Param("username") String username);
 
   @Insert("INSERT INTO a_admins(admin_id, admin_type, supervisor_id, unit_name, username, "
       + "password, email, phone, avatar_url, registration_date, last_login, status)"
