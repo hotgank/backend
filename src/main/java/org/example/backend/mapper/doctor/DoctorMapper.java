@@ -95,12 +95,49 @@ public interface DoctorMapper{
   @Delete("DELETE FROM d_doctors WHERE doctor_id = #{doctorId}")
   void deleteDoctor(@Param("doctorId") String doctorId);
 
-  // 新增方法：根据邮箱和密码查询 doctor_id
-  @Select("SELECT doctor_id FROM d_doctors WHERE email = #{email} AND password = #{password}")
-  String selectDoctorIdByEmailAndPassword(@Param("email") String email, @Param("password") String password);
+  @Select("SELECT * FROM d_doctors WHERE email = #{email}")
+  @Results({
+          @Result(column = "doctor_id", property = "doctorId"),
+          @Result(column = "name", property = "name"),
+          @Result(column = "username", property = "username"),
+          @Result(column = "password", property = "password"),
+          @Result(column = "phone", property = "phone"),
+          @Result(column = "email", property = "email"),
+          @Result(column = "age", property = "age"),
+          @Result(column = "gender", property = "gender"),
+          @Result(column = "position", property = "position"),
+          @Result(column = "workplace", property = "workplace"),
+          @Result(column = "qualification", property = "qualification"),
+          @Result(column = "experience", property = "experience"),
+          @Result(column = "rating", property = "rating"),
+          @Result(column = "avatar_url", property = "avatarUrl"),
+          @Result(column = "registration_date", property = "registrationDate"),
+          @Result(column = "last_login", property = "lastLogin"),
+          @Result(column = "status", property = "status")
+  })
+  Doctor selectDoctorByEmail(@Param("email") String email);
 
-  @Select("SELECT doctor_id FROM d_doctors WHERE username = #{username} AND password = #{password}")
-  String selectDoctorIdByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
+  @Select("SELECT * FROM d_doctors WHERE username = #{username}")
+  @Results({
+          @Result(column = "doctor_id", property = "doctorId"),
+          @Result(column = "name", property = "name"),
+          @Result(column = "username", property = "username"),
+          @Result(column = "password", property = "password"),
+          @Result(column = "phone", property = "phone"),
+          @Result(column = "email", property = "email"),
+          @Result(column = "age", property = "age"),
+          @Result(column = "gender", property = "gender"),
+          @Result(column = "position", property = "position"),
+          @Result(column = "workplace", property = "workplace"),
+          @Result(column = "qualification", property = "qualification"),
+          @Result(column = "experience", property = "experience"),
+          @Result(column = "rating", property = "rating"),
+          @Result(column = "avatar_url", property = "avatarUrl"),
+          @Result(column = "registration_date", property = "registrationDate"),
+          @Result(column = "last_login", property = "lastLogin"),
+          @Result(column = "status", property = "status")
+  })
+  Doctor selectDoctorByUsername(@Param("username") String username);
 
   @Select("SELECT doctor_id FROM d_doctors WHERE username = #{username}")
   String isUsernameExist(@Param("username") String username);

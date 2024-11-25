@@ -212,14 +212,30 @@ public class DoctorServiceImpl implements DoctorService {
 
   @Override
   public String loginByEmail(String email, String password) {
-    String passwordMD5 = encryptionUtil.encryptMD5(password);
-    return doctorMapper.selectDoctorIdByEmailAndPassword(email,passwordMD5);
+    Doctor doctor = doctorMapper.selectDoctorByEmail(email);
+    if(doctor == null){
+      return null;
+    }else if(Objects.equals(doctor.getStatus(), "disabled")){
+      return "disabled";
+    }
+    if (encryptionUtil.verifyMD5(password, doctor.getPassword())) {
+      return doctor.getDoctorId();
+    }
+    return null;
   }
 
   @Override
   public String loginByUsername(String username, String password) {
-    String passwordMD5 = encryptionUtil.encryptMD5(password);
-    return doctorMapper.selectDoctorIdByUsernameAndPassword(username,passwordMD5);
+    Doctor doctor = doctorMapper.selectDoctorByUsername(username);
+    if(doctor == null){
+      return null;
+    }else if(Objects.equals(doctor.getStatus(), "disabled")){
+      return "disabled";
+    }
+    if (encryptionUtil.verifyMD5(password, doctor.getPassword())) {
+      return doctor.getDoctorId();
+    }
+    return null;
   }
 
   @Override
@@ -233,8 +249,8 @@ public class DoctorServiceImpl implements DoctorService {
 
   @Override
   public String isUsernameExist(String doctorId, String username) {
-    String selecteDoctorId = doctorMapper.isUsernameExist(username);
-    if (!Objects.equals(doctorId, selecteDoctorId)) {
+    String selectedDoctorId = doctorMapper.isUsernameExist(username);
+    if (!Objects.equals(doctorId, selectedDoctorId)) {
       return doctorId;
     }
     return null;

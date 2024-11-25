@@ -7,7 +7,10 @@ import java.util.List;
 public interface VerifyDoctorQualificationService {
     List<AdminGetDoctorLicenseDTO> selectAll();
 
-    boolean approve(String auditId, String adminId);
+
+    List<AdminGetDoctorLicenseDTO> selectRecent();
+
+    boolean approve(String auditId, String adminId, String position);
 
     boolean reject(String auditId, String adminId, String comment);
 }

@@ -30,13 +30,27 @@ public class verifyDoctorQualificationController {
         }
     }
 
+    @GetMapping("/selectRecent")
+    public ResponseEntity <?> selectRecent(HttpServletRequest request){
+        try{
+            String adminId = (String) request.getAttribute("userId");
+            if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
+                return ResponseEntity.ok(jsonParser.toJsonFromEntityList(verifyDoctorQualificationService.selectRecent()));
+            }
+            return ResponseEntity.status(400).body(null);
+        }catch (Exception e){
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
     @PostMapping("/approve")
     public ResponseEntity <?> approve(@RequestBody String auditIdJson, HttpServletRequest request){
         try {
             String adminId = (String) request.getAttribute("userId");
             if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
                 String auditId = jsonParser.parseJsonString(auditIdJson, "auditId");
-                return ResponseEntity.ok(verifyDoctorQualificationService.approve(auditId, adminId));
+                String position = jsonParser.parseJsonString(auditIdJson, "position");
+                return ResponseEntity.ok(verifyDoctorQualificationService.approve(auditId, adminId, position));
             } else {
                 return ResponseEntity.status(400).body(null);
             }
