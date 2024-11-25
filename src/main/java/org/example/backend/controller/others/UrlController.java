@@ -36,8 +36,10 @@ public class UrlController {
     public ResponseEntity<String> getImageAsBase64(@RequestParam String url) {
         if (!url.startsWith("http://localhost:8080/")) {
             return ResponseEntity.badRequest().body(null);
-        }
+        }// 使用工具类获取 Base64 编码
+
         return urlUtil.getImageAsBase64(url);
+
     }
 
     @PostMapping("/getReportImage")
