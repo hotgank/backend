@@ -12,6 +12,7 @@ import org.example.backend.entity.others.Message;
 import org.example.backend.service.others.MessageService;
 import org.example.backend.service.doctor.DoctorUserRelationService;
 import org.example.backend.util.UrlUtil;
+import org.example.backend.util.MultipartFileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("api/messages")
@@ -35,6 +38,14 @@ public class MessageController {
 
   @Autowired
   private DoctorUserRelationService doctorUserRelationService;
+
+  @Autowired
+  private MultipartFileUtil multipartFileUtil;
+
+  // 支持的文件类型（根据 MIME 类型或文件扩展名）
+  private static final List<String> IMAGE_TYPES = List.of("image/jpeg", "image/png", "image/gif");
+  private static final List<String> VIDEO_TYPES = List.of("video/mp4", "video/avi", "video/mpeg");
+  private static final List<String> TEXT_TYPES = List.of("text/plain", "application/json");
 
     @GetMapping("/lastMessage")
 public ResponseEntity<List<LastMessage>> getLastMessage(HttpServletRequest httpServletRequest) {
@@ -128,10 +139,78 @@ public ResponseEntity<List<LastMessage>> getLastMessage(HttpServletRequest httpS
                 request.getRelationId(),
                 request.getSenderType(),
                 request.getMessageText(),
-                request.getMessageType(),
+                "text",
                 request.getUrl()
         );
         return ResponseEntity.ok(message);
     }
+  @PostMapping("/sendFile")
+  public ResponseEntity<Message> sendFile(int relationId,
+      String messageText,
+      MultipartFile file,
+      HttpServletRequest httpServletRequest) {
+    // 获取当前用户的 ID
+    String userId = (String) httpServletRequest.getAttribute("userId");
+
+log.info("relationId: " + relationId);
+    // 获取医生-用户关系
+    DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
+    if (relation == null) {
+      return ResponseEntity.status(500).body(null);  // 如果没有找到关系，返回 500 错误
+    }
+
+    // 校验关系状态
+    if (!relation.getRelationStatus().equals("approved")) {
+      return ResponseEntity.status(500).body(null);  // 如果关系没有通过审批，返回 500 错误
+    }
+
+    // 设置消息发送者类型
+    String senderType = null;
+    if (relation.getDoctorId().equals(userId)) {
+      senderType = "doctor";  // 如果是医生发送消息
+    } else if (relation.getUserId().equals(userId)) {
+      senderType = "user";  // 如果是用户发送消息
+    } else {
+      return ResponseEntity.status(500).body(null);  // 如果发送者不在关系中，返回 500 错误
+    }
+
+    // 判断文件类型并设置 message_type
+    String messageType = determineMessageType(file);
+
+    // 处理文件上传并获取文件 URL
+    String fileUrl = multipartFileUtil.saveMutipartFile(file, "MessageFiles/" + relationId + "/");
+    if (fileUrl == null) {
+      return ResponseEntity.status(400).body(null);  // 如果文件上传失败，返回 400 错误
+    }
+
+    // 创建消息记录
+    Message message = messageService.sendMessage(
+        relationId,
+        senderType,
+        messageText,  // 文本消息内容
+        messageType,                // 自动推断的消息类型
+        fileUrl                     // 文件 URL
+    );
+
+    // 返回成功响应
+    return ResponseEntity.ok(message);
+  }
+
+  // 判断文件类型（根据 MIME 类型或扩展名）
+  private String determineMessageType(MultipartFile file) {
+    String contentType = file.getContentType();
+    if (contentType != null) {
+      if (IMAGE_TYPES.contains(contentType)) {
+        return "image";  // 图片
+      } else if (VIDEO_TYPES.contains(contentType)) {
+        return "video";  // 视频
+      } else if (TEXT_TYPES.contains(contentType)) {
+        return "text";  // 文本
+      }
+    }
+    return "file";  // 默认是文件类型
+  }
+
+
 }
 
