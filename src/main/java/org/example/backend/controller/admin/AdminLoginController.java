@@ -44,6 +44,8 @@ public class AdminLoginController {
     String adminId = adminService.verifyByEmailAndPassword(email, password);
     if (adminId == null) {
       return ResponseEntity.badRequest().body("邮箱或密码错误");
+    }else if (adminId.equals("disabled")){
+      return ResponseEntity.badRequest().body("账号已封禁");
     }
 
     // 生成 JWT token
@@ -76,6 +78,8 @@ public class AdminLoginController {
     String adminId = adminService.verifyByUsernameAndPassword(username, password);
     if (adminId == null) {
       return ResponseEntity.badRequest().body("账号或密码错误");
+    }else if (adminId.equals("disabled")){
+      return ResponseEntity.badRequest().body("账号已封禁");
     }
 
     // 生成 JWT token

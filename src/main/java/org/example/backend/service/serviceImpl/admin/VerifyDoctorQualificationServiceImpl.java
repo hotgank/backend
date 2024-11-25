@@ -2,7 +2,9 @@ package org.example.backend.service.serviceImpl.admin;
 
 import org.example.backend.dto.AdminGetDoctorLicenseDTO;
 import org.example.backend.entity.admin.LicenseCheck;
+import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.mapper.admin.LicenseCheckMapper;
+import org.example.backend.mapper.doctor.DoctorMapper;
 import org.example.backend.service.admin.VerifyDoctorQualificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,9 @@ public class VerifyDoctorQualificationServiceImpl implements VerifyDoctorQualifi
     @Autowired
     LicenseCheckMapper licenseCheckMapper;
 
+    @Autowired
+    DoctorMapper doctorMapper;
+
     @Override
     public List<AdminGetDoctorLicenseDTO> selectAll() {
         try {
@@ -33,11 +38,32 @@ public class VerifyDoctorQualificationServiceImpl implements VerifyDoctorQualifi
     }
 
     @Override
-    public boolean approve(String auditId, String adminId) {
+    public List<AdminGetDoctorLicenseDTO> selectRecent() {
+        try {
+            return licenseCheckMapper.adminSelectRecent();
+        }
+        catch (Exception e) {
+            // 记录异常日志
+            logger.error("获取所有审核信息失败", e);
+            return null;
+        }
+    }
+
+    @Override
+    public boolean approve(String auditId, String adminId, String position) {
         try {
             LicenseCheck licenseCheck = licenseCheckMapper.selectById(auditId);
+            Doctor doctor = doctorMapper.selectById(licenseCheck.getDoctorId());
+            if(doctor != null){
+                doctor.setPosition(position);
+                doctor.setQualification("已认证");
+                doctorMapper.updateDoctor(doctor);
+            }else{
+                logger.error("审核通过失败");
+                return false;
+            }
             licenseCheck.setAdminId(adminId);
-            licenseCheck.setStatus("approved");
+            licenseCheck.setStatus("认证通过");
             licenseCheck.setUpdatedAt(LocalDateTime.now());
             licenseCheck.setComment("");
             return licenseCheckMapper.update(licenseCheck);
@@ -54,7 +80,7 @@ public class VerifyDoctorQualificationServiceImpl implements VerifyDoctorQualifi
         try {
             LicenseCheck licenseCheck = licenseCheckMapper.selectById(auditId);
             licenseCheck.setAdminId(adminId);
-            licenseCheck.setStatus("rejected");
+            licenseCheck.setStatus("已打回");
             licenseCheck.setUpdatedAt(LocalDateTime.now());
             licenseCheck.setComment(comment);
             return licenseCheckMapper.update(licenseCheck);
