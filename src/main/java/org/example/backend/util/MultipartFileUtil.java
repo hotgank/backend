@@ -59,4 +59,39 @@ public class MultipartFileUtil {
         }
     }
 
+    public String saveMutipartFile(MultipartFile file, String url) {
+        try {
+            // 指定文件保存路径
+            String uploadDir = "uploads/" + url;
+            File dir = new File(uploadDir);
+            if (!dir.exists()) {
+                boolean created = dir.mkdirs();
+                if (!created) {
+                    // 目录创建失败，抛出异常或记录日志
+                    throw new IOException("Failed to create directory: " + dir.getAbsolutePath());
+                } else {
+                    // 记录目录创建成功
+                    logger.info("Directory created successfully: {}", dir.getAbsolutePath());
+                }
+            }
+
+            // 生成UUID作为文件名
+            String uuid = UUID.randomUUID().toString();
+            String originalFilename = file.getOriginalFilename();
+            String fileExtension = "";
+            if (originalFilename != null && originalFilename.contains(".")) {
+                fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            }
+            String newFileName = uuid + fileExtension;
+
+            // 保存文件
+            Path filePath = Paths.get(uploadDir + newFileName);
+            Files.copy(file.getInputStream(), filePath);
+            return "http://localhost:8080/"+url+newFileName;
+        } catch (Exception e) {
+            logger.error("Error occurred while saving file: {}", e.getMessage(), e);
+            return null;
+        }
+    }
+
 }

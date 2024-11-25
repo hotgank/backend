@@ -39,4 +39,21 @@ public interface LicenseCheckMapper {
             "created_at = #{createdAt}, url = #{url}, updated_at = #{updatedAt}, comment = #{comment} " +
             "WHERE audit_id = #{auditId}")
     boolean update(LicenseCheck licenseCheck);
+
+    @Insert("INSERT INTO a_license_check (audit_id, doctor_id, admin_id, status, created_at, url, updated_at, comment) " +
+            "VALUES (#{auditId}, #{doctorId}, #{adminId}, #{status}, #{createdAt}, #{url}, #{updatedAt}, #{comment})")
+    boolean insert(LicenseCheck licenseCheck);
+
+    @Select("SELECT * FROM a_license_check WHERE doctor_id = #{doctorId}")
+    @Results({
+            @Result(column = "audit_id", property = "auditId"),
+            @Result(column = "doctor_id", property = "doctorId"),
+            @Result(column = "admin_id", property = "adminId"),
+            @Result(column = "status", property = "status"),
+            @Result(column = "created_at", property = "createdAt"),
+            @Result(column = "url", property = "url"),
+            @Result(column = "updated_at", property = "updatedAt"),
+    })
+    List<LicenseCheck> selectByDoctorId(@Param("doctorId") String doctorId);
+
 }
