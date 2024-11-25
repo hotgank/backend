@@ -1,6 +1,7 @@
 package org.example.backend.service.doctor;
 
 import java.util.List;
+import org.example.backend.dto.DoctorGetUserBindingDTO;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.doctor.DoctorUserRelation;
 import org.example.backend.entity.others.DoctorWithStatus;
@@ -22,7 +23,7 @@ public interface DoctorUserRelationService {
 
   boolean deleteDoctorUserRelation(DoctorUserRelation relation);
 
-  List<DoctorUserRelation> selectPendingPatients(String doctorId, String relationStatus);
+  List<DoctorGetUserBindingDTO> selectPendingPatients(String doctorId, String relationStatus);
 
   DoctorUserRelation selectDoctorUserRelationByIDs(String doctorId, String userId);
 
@@ -35,6 +36,6 @@ public interface DoctorUserRelationService {
 
     public DoctorUserRelation getRelationById(Integer relationId);
 
-    List<DoctorUserRelation> selectRemoveBindingRelations(String doctorId);
+    List<DoctorGetUserBindingDTO> selectRemoveBindingRelations(String doctorId);
 
 }

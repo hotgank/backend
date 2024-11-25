@@ -5,6 +5,7 @@ import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.backend.dto.DoctorGetReportDTO;
+import org.example.backend.dto.DoctorGetUserBindingDTO;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.doctor.DoctorUserRelation;
 import org.example.backend.entity.others.DoctorWithStatus;
@@ -219,7 +220,7 @@ public class DoctorUserRelationController {
   public ResponseEntity<String> selectPending(HttpServletRequest request) {
     String doctorId = (String) request.getAttribute("userId");
     // 调用服务层来查询待审核信息
-    List<DoctorUserRelation> relations = doctorUserRelationService.selectPendingPatients(doctorId, "pending");
+    List<DoctorGetUserBindingDTO> relations = doctorUserRelationService.selectPendingPatients(doctorId, "pending");
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relations));
   }
 
@@ -275,11 +276,11 @@ public class DoctorUserRelationController {
 
   //同意解除医生用户关系的申请，删除关系
   @PostMapping("/agreeRemoveBinding")
-  public ResponseEntity<String> agreeRemoveBinding(@RequestBody DoctorUserRelation relation, HttpServletRequest request) {
-      String userId = (String) request.getAttribute("userId");
-      relation.setUserId(userId);
+  public ResponseEntity<String> agreeRemoveBinding(@RequestBody String jsonString, HttpServletRequest request) {
+      String doctorId= (String) request.getAttribute("userId");
+      String userId = jsonParser.parseJsonString(jsonString, "userId");
       //先查询是否存在该关系且状态为removeBinding
-      DoctorUserRelation existRelation = doctorUserRelationService.selectDoctorUserRelationByIDs(relation.getDoctorId(), relation.getUserId());
+      DoctorUserRelation existRelation = doctorUserRelationService.selectDoctorUserRelationByIDs(doctorId, userId);
       if(existRelation == null || !existRelation.getRelationStatus().equals("removeBinding")){
           return ResponseEntity.status(500).body("You haveno permission to agree remove this doctor user relation");
       }
@@ -293,11 +294,11 @@ public class DoctorUserRelationController {
 
   //拒绝解除医生用户关系的申请
   @PostMapping("/rejectRemoveBinding")
-  public ResponseEntity<String> rejectRemoveBinding(@RequestBody DoctorUserRelation relation, HttpServletRequest request) {
-      String userId = (String) request.getAttribute("userId");
-      relation.setUserId(userId);
+  public ResponseEntity<String> rejectRemoveBinding(@RequestBody String jsonString, HttpServletRequest request) {
+    String doctorId= (String) request.getAttribute("userId");
+    String userId = jsonParser.parseJsonString(jsonString, "userId");
       //先查询是否存在该关系且状态为removeBinding
-      DoctorUserRelation existRelation = doctorUserRelationService.selectDoctorUserRelationByIDs(relation.getDoctorId(), relation.getUserId());
+      DoctorUserRelation existRelation = doctorUserRelationService.selectDoctorUserRelationByIDs( doctorId, userId);
       if( existRelation == null || !existRelation.getRelationStatus().equals("removeBinding")){
           return ResponseEntity.status(500).body("You haveno permission to reject remove this doctor user relation");
       }
@@ -311,10 +312,10 @@ public class DoctorUserRelationController {
   }
 
   //查询待处理的结束咨询申请
-  @PostMapping("/selectRemoveBinding")
+  @GetMapping("/selectRemoveBinding")
   public ResponseEntity<String> selectRemoveBinding(HttpServletRequest request) {
       String doctorId = (String) request.getAttribute("userId");
-      List<DoctorUserRelation> relationList = doctorUserRelationService.selectRemoveBindingRelations(doctorId);
+      List<DoctorGetUserBindingDTO> relationList = doctorUserRelationService.selectRemoveBindingRelations(doctorId);
       return ResponseEntity.ok(jsonParser.toJsonFromEntityList(relationList));
   }
 

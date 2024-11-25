@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.example.backend.dto.DoctorGetUserBindingDTO;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.doctor.DoctorUserRelation;
 import org.example.backend.entity.others.DoctorWithStatus;
@@ -80,15 +81,21 @@ public interface DoctorUserRelationMapper {
   })
   List<User> selectRecentPatients(@Param("doctorId") String doctorId, @Param("relationStatus") String relationStatus);
 
-  //查询d_doctors_users表中relationStatus为pending的关系，并按时间顺序从近到远返回关系
-  @Select("SELECT * FROM d_doctors_users WHERE doctor_id = #{doctorId} AND relation_status = #{relationStatus} ORDER BY created_at DESC LIMIT 5")
-  @Results({
+  //查询d_doctors_users表中relationStatus为pending的关系，再查询u_users表的username列，并按时间顺序从近到远返回关系，
+  @Select("SELECT d.doctor_id, d.user_id, d.relation_id, d.relation_status, u.username "
+          + "FROM d_doctors_users d "
+          + "JOIN u_users u ON d.user_id = u.user_id "
+          + "WHERE d.doctor_id = #{doctorId} AND d.relation_status = #{relationStatus} "
+          + "ORDER BY d.created_at DESC")
+@Results({
       @Result(column = "doctor_id", property = "doctorId"),
       @Result(column = "user_id", property = "userId"),
       @Result(column = "relation_id", property = "relationId"),
       @Result(column = "relation_status", property = "relationStatus"),
+      @Result(column = "username", property = "username"),
+      @Result(column = "created_at", property = "createdAt")
   })
-  List<DoctorUserRelation> selectPendingPatients(@Param("doctorId") String doctorId, @Param("relationStatus") String relationStatus);
+  List<DoctorGetUserBindingDTO> selectPendingPatients(@Param("doctorId") String doctorId, @Param("relationStatus") String relationStatus);
 
   @Insert("INSERT INTO d_doctors_users(doctor_id, user_id, relation_status, created_at) "
       + "VALUES(#{doctorId}, #{userId}, #{relationStatus}, #{createdAt})")
@@ -150,13 +157,18 @@ public interface DoctorUserRelationMapper {
   })
   List<DoctorUserRelation> selectDoctorUserRelationsByUserId(@Param("userId") String userId);
 
-  //根据医生ID查询状态为removeBinding的关联关系
-  @Select("SELECT * FROM d_doctors_users WHERE doctor_id = #{doctorId} AND relation_status = 'removeBinding'")
-  @Results({
+  //多表查询，根据医生ID查询状态为removeBinding的关联关系，然后再查询u_users表的username列
+  @Select("SELECT d_doctors_users.*, u_users.username "
+          + "FROM d_doctors_users "
+          + "JOIN u_users ON d_doctors_users.user_id = u_users.user_id "
+          + "WHERE d_doctors_users.doctor_id = #{doctorId} AND d_doctors_users.relation_status = 'removeBinding'")
+ @Results({
       @Result(column = "doctor_id", property = "doctorId"),
       @Result(column = "user_id", property = "userId"),
       @Result(column = "relation_id", property = "relationId"),
       @Result(column = "relation_status", property = "relationStatus"),
+      @Result(column = "created_at", property = "createdAt"),
+      @Result(column = "username", property = "username")
   })
-  List<DoctorUserRelation> selectRemoveBindingRelations(@Param( "doctorId") String doctorId);
+  List<DoctorGetUserBindingDTO> selectRemoveBindingRelations(@Param( "doctorId") String doctorId);
 }
