@@ -62,7 +62,7 @@ public class DoctorManageController {
 
   @PostMapping("/sendNewEmailCode")
   public ResponseEntity<String> sendRegisterCode(@RequestBody Map<String, String> body) {
-    String email = body.get("email");
+    String email = body.get("newEmail");
     logger.info("收到发送注册码请求，邮箱: {}", email);
 
     if (email == null || email.isEmpty()) {
