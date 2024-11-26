@@ -11,7 +11,7 @@ public interface MessageMapper {
 @Select("""
         SELECT * FROM c_messages 
         WHERE relation_id = #{relationId} 
-        ORDER BY message_seq DESC 
+        ORDER BY message_seq ASC 
         LIMIT 1
     """)
     @Results({
@@ -26,7 +26,7 @@ public interface MessageMapper {
     })
   Message getLastMessage(@Param("relationId") Integer relationId);
 
-  @Select("SELECT * FROM c_messages WHERE relation_id = #{relationId} ORDER BY message_seq DESC")
+  @Select("SELECT * FROM c_messages WHERE relation_id = #{relationId} ORDER BY message_seq ASC")
   @Results({
       @Result(column = "message_id", property = "messageId"),
       @Result(column = "relation_id", property = "relationId"),
@@ -48,7 +48,7 @@ public interface MessageMapper {
     @Select("""
         SELECT * FROM c_messages 
         WHERE relation_id = #{relationId} 
-        ORDER BY message_seq DESC 
+        ORDER BY message_seq ASC 
         LIMIT 30
     """)
     @Results({
@@ -87,7 +87,7 @@ public interface MessageMapper {
         SELECT * FROM c_messages 
         WHERE relation_id = #{relationId} 
           AND message_seq < #{messageSeq} 
-        ORDER BY message_seq DESC 
+        ORDER BY message_seq ASC
         LIMIT 15
     """)
     @Results({
