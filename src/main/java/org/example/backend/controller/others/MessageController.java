@@ -139,7 +139,7 @@ public ResponseEntity<List<LastMessage>> getLastMessage(HttpServletRequest httpS
                 request.getRelationId(),
                 request.getSenderType(),
                 request.getMessageText(),
-                "text",
+                request.getMessageType(),
                 request.getUrl()
         );
         return ResponseEntity.ok(message);

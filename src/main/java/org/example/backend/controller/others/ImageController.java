@@ -34,7 +34,7 @@ public ResponseEntity<String> uploadChatImage(
 
     // 定义上传文件夹路径：upload/chat/{relationId}
     String folder = System.getProperty("user.dir") + File.separator + "uploads"
-                    + File.separator + "chat" + File.separator + relationId + File.separator;
+                    + File.separator + "MessageFiles" + File.separator + relationId + File.separator;
 
     // 获取原始文件名并清理文件名
     String fileName = StringUtils.cleanPath(file.getOriginalFilename());
