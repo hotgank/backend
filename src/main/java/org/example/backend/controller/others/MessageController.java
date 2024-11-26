@@ -145,7 +145,7 @@ public ResponseEntity<List<LastMessage>> getLastMessage(HttpServletRequest httpS
         return ResponseEntity.ok(message);
     }
   @PostMapping("/sendFile")
-  public ResponseEntity<Message> sendFile(int relationId,
+  public ResponseEntity<Message> sendFile(Integer relationId,
       String messageText,
       MultipartFile file,
       HttpServletRequest httpServletRequest) {
