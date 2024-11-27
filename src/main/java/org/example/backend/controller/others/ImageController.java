@@ -72,7 +72,7 @@ public ResponseEntity<String> uploadChatImage(
 
         // 生成图片的访问 URL
         String serverUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                              .path("/chat/" + relationId + "/")
+                              .path("/MessageFiles/" + relationId + "/")
                               .toUriString();
         String imageUrl = serverUrl + uniqueFileName;
 
