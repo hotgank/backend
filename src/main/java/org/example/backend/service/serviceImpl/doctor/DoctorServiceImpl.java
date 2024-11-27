@@ -47,6 +47,11 @@ public class DoctorServiceImpl implements DoctorService {
   }
 
   @Override
+  public Doctor selectDoctorByEmail(String email) {
+    return doctorMapper.selectDoctorByEmail(email);
+  }
+
+  @Override
   public int selectUnqualifiedDoctorCount() {
     try {
       return doctorMapper.selectUnqualifiedDoctorCount();

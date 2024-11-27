@@ -39,4 +39,5 @@ public interface DoctorService {
   String getAvatarBase64(String doctorId);
 
   int selectDoctorCount();
+  Doctor selectDoctorByEmail(String email);
 }
