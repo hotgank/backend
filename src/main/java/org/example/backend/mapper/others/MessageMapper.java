@@ -11,7 +11,7 @@ public interface MessageMapper {
 @Select("""
         SELECT * FROM c_messages 
         WHERE relation_id = #{relationId} 
-        ORDER BY message_seq ASC 
+        ORDER BY message_seq DESC 
         LIMIT 1
     """)
     @Results({
