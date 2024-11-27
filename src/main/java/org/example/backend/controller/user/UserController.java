@@ -2,6 +2,7 @@ package org.example.backend.controller.user;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 import org.example.backend.dto.UserGetDoctorDTO;
 import org.example.backend.entity.user.User;
 import org.example.backend.service.user.UserService;
@@ -31,6 +32,22 @@ public class UserController {
 
   @Autowired
   private ExcelReader excelReader;
+
+  @PostMapping("/uploadUsername")
+  public ResponseEntity<String> uploadUsername(@RequestBody Map<String, String> payload, HttpServletRequest request) {
+    String userId = (String) request.getAttribute("userId");
+
+    // 从 JSON 请求体中获取 username 字段
+    String username = payload.get("username");
+    if (username == null || username.isEmpty()) {
+      return ResponseEntity.badRequest().body("Username is required");
+    }
+
+    // 更新用户名
+    userService.updateUsername(userId, username);
+
+    return ResponseEntity.ok("Successfully uploaded username");
+  }
 
   // 获取用户个人信息
   @GetMapping("/getUserInfo")

@@ -67,6 +67,11 @@ public interface UserMapper {
       + "WHERE user_id = #{userId}")
   void updateUser(User user);
 
+  @Update("UPDATE u_users SET avatar_url = #{avatarUrl} WHERE user_id = #{userId}")
+  void updateAvatarUrl(@Param("userId") String userId, @Param("avatarUrl") String avatarUrl);
+
+  @Update("UPDATE u_users SET username = #{username} WHERE user_id = #{userId}")
+  void updateUsername(@Param("userId") String userId, @Param("username") String username);
   // 删除用户
   @Insert("DELETE FROM u_users WHERE user_id = #{userId}")
   void deleteById(@Param("userId") String userId);
