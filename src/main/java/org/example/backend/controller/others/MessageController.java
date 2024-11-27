@@ -243,7 +243,7 @@ log.info("relationId: " + relationId);
   return ResponseEntity.ok("{\"DoctorUnread\": "+ DoctorUnread +", \"UserUnread\":"+ UserUnread +"}");
   }
 
-  @PostMapping("/getReadInfo")
+  @PostMapping("/getUnReadInfo")
   public ResponseEntity<String> startReadInfo(@RequestBody  String jsonString, HttpServletRequest httpServletRequest) {
     String userId = (String) httpServletRequest.getAttribute("userId");
     int relationId = jsonParser.parseJsonInt(jsonString, "relationId");
@@ -265,6 +265,27 @@ log.info("relationId: " + relationId);
     return ResponseEntity.ok("{\"DoctorUnread\": "+ DoctorUnread +", \"UserUnread\":"+ UserUnread +"}");
   }
 
-
+  //更新Redis中的已读消息的序列号
+  @PostMapping("/updateReadInfo")
+  public ResponseEntity<String> updateReadInfo(@RequestBody  String jsonString, HttpServletRequest httpServletRequest) {
+      String userId = (String) httpServletRequest.getAttribute("userId");
+      int relationId = jsonParser.parseJsonInt(jsonString, "relationId");
+      int ReadSeq = jsonParser.parseJsonInt(jsonString, "ReadSeq");
+      DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
+      if (relation == null) {
+          log.error("relationId: " + relationId + " not found");
+          return ResponseEntity.status(500).body(null);
+      }
+      String senderType = null;
+      if (relation.getDoctorId().equals(userId)) {
+          senderType = "doctor";
+      }else if (relation.getUserId().equals(userId)) {
+          senderType = "user";
+      }else {
+          return ResponseEntity.status(500).body(null);
+      }
+      redisUtil.setNoExpireKey(relationId+"_"+senderType, ReadSeq);
+      return ResponseEntity.ok("success");
+  }
 }
 
