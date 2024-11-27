@@ -243,6 +243,28 @@ log.info("relationId: " + relationId);
   return ResponseEntity.ok("{\"DoctorUnread\": "+ DoctorUnread +", \"UserUnread\":"+ UserUnread +"}");
   }
 
+  @PostMapping("/getReadInfo")
+  public ResponseEntity<String> startReadInfo(@RequestBody  String jsonString, HttpServletRequest httpServletRequest) {
+    String userId = (String) httpServletRequest.getAttribute("userId");
+    int relationId = jsonParser.parseJsonInt(jsonString, "relationId");
+    DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
+    if (relation == null) {
+      log.error("relationId: " + relationId + " not found");
+      return ResponseEntity.status(500).body(null);
+    }
+    String senderType = null;
+    if (relation.getDoctorId().equals(userId)) {
+      senderType = "doctor";
+    }else if (relation.getUserId().equals(userId)) {
+      senderType = "user";
+    }else {
+      return ResponseEntity.status(500).body(null);
+    }
+    int DoctorUnread = messageService.countUnreadMessages(relationId,redisUtil.getIntegerFromRedis(relationId+"_doctor"), "user");
+    int UserUnread = messageService.countUnreadMessages(relationId,redisUtil.getIntegerFromRedis(relationId+"_user"), "doctor");
+    return ResponseEntity.ok("{\"DoctorUnread\": "+ DoctorUnread +", \"UserUnread\":"+ UserUnread +"}");
+  }
+
 
 }
 
