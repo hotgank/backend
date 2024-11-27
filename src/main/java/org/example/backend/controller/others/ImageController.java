@@ -64,10 +64,11 @@ public class ImageController {
       Files.write(path, bytes);
 
       // 生成图片的访问 URL
-      String serverUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-          .path("/UserAvatar/")
-          .toUriString();
-      String imageUrl = serverUrl + uniqueFileName;
+//      String serverUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+//          .path("/UserAvatar/")
+//          .toUriString();
+//      String imageUrl = serverUrl + uniqueFileName;
+      String imageUrl = "http://localhost:8080/UserAvatar/" + uniqueFileName;
 
       // 更新用户头像信息
       userService.updateAvatarUrl(userId, imageUrl);
@@ -136,10 +137,9 @@ public ResponseEntity<String> uploadChatImage(
         Files.write(path, bytes);
 
         // 生成图片的访问 URL
-        String serverUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                              .path("/MessageFiles/" + relationId + "/")
-                              .toUriString();
-        String imageUrl = serverUrl + uniqueFileName;
+      String serverUrl = "http://localhost:8080/" + "MessageFiles/" + relationId + "/";
+
+      String imageUrl = serverUrl + uniqueFileName;
 
         // 返回图片 URL
         return ResponseEntity.ok("{\"imageUrl\":\"" + imageUrl + "\"}");
