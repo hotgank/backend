@@ -79,4 +79,9 @@ public class MessageServiceImpl implements MessageService {
             throw new RuntimeException("Failed to send message.");
         }
     }
+
+  @Override
+  public int countUnreadMessages(int relationId, int readSeg, String senderType) {
+    return messageMapper.countUnreadMessages(relationId, readSeg, senderType);
+  }
 }

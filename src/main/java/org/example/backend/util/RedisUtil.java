@@ -13,6 +13,10 @@ import java.util.concurrent.TimeUnit;
 public class RedisUtil {
   @Autowired
   private RedisTemplate<String, String> redisTemplate;
+
+  @Autowired
+  private RedisTemplate<String, Integer> integerRedisTemplate;
+
   public void storeTokenInRedis(String userId, String token) {
     redisTemplate.opsForValue().set(userId, token, 300, TimeUnit.MINUTES); // 5小时
   }
@@ -27,4 +31,15 @@ public class RedisUtil {
   public String getTokenFromRedis(String userId) {
     return redisTemplate.opsForValue().get(String.valueOf(userId));  // userId 转换成字符串
   }
+
+  public void setNoExpireKey(String key, Integer value) {
+    integerRedisTemplate.opsForValue().set(key, value);
+  }
+
+  // 从 Redis 中获取整数值
+  public Integer getIntegerFromRedis(String key) {
+    Integer value = integerRedisTemplate.opsForValue().get(key);
+    return value != null ? value : 0;
+  }
+
 }

@@ -13,6 +13,8 @@ import org.example.backend.service.others.MessageService;
 import org.example.backend.service.doctor.DoctorUserRelationService;
 import org.example.backend.util.UrlUtil;
 import org.example.backend.util.MultipartFileUtil;
+import org.example.backend.util.RedisUtil;
+import org.example.backend.util.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,12 @@ public class MessageController {
 
   @Autowired
   private MultipartFileUtil multipartFileUtil;
+
+  @Autowired
+  private RedisUtil redisUtil;
+
+  @Autowired
+  private JsonParser jsonParser;
 
   // 支持的文件类型（根据 MIME 类型或文件扩展名）
   private static final List<String> IMAGE_TYPES = List.of("image/jpeg", "image/png", "image/gif");
@@ -209,6 +217,30 @@ log.info("relationId: " + relationId);
       }
     }
     return "file";  // 默认是文件类型
+  }
+
+  @PostMapping("/getReadInfo")
+  public ResponseEntity<String> getReadInfo(@RequestBody  String jsonString, HttpServletRequest httpServletRequest) {
+    String userId = (String) httpServletRequest.getAttribute("userId");
+    int relationId = jsonParser.parseJsonInt(jsonString, "relationId");
+    int ReadSeq = jsonParser.parseJsonInt(jsonString, "ReadSeq");
+    DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
+    if (relation == null) {
+      log.error("relationId: " + relationId + " not found");
+      return ResponseEntity.status(500).body(null);
+    }
+    String senderType = null;
+    if (relation.getDoctorId().equals(userId)) {
+      senderType = "doctor";
+    }else if (relation.getUserId().equals(userId)) {
+      senderType = "user";
+    }else {
+      return ResponseEntity.status(500).body(null);
+    }
+    redisUtil.setNoExpireKey(relationId+"_"+senderType, ReadSeq);
+    int DoctorUnread = messageService.countUnreadMessages(relationId,redisUtil.getIntegerFromRedis(relationId+"_doctor"), "user");
+    int UserUnread = messageService.countUnreadMessages(relationId,redisUtil.getIntegerFromRedis(relationId+"_user"), "doctor");
+  return ResponseEntity.ok("{\"DoctorUnread\": "+ DoctorUnread +", \"UserUnread\":"+ UserUnread +"}");
   }
 
 

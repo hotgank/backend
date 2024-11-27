@@ -43,4 +43,11 @@ public class RedisConfig {
     template.setConnectionFactory(factory);
     return template;
   }
+
+  @Bean
+  public RedisTemplate<String, Integer> integerRedisTemplate(RedisConnectionFactory factory) {
+    RedisTemplate<String, Integer> template = new RedisTemplate<>();
+    template.setConnectionFactory(factory);
+    return template;
+  }
 }

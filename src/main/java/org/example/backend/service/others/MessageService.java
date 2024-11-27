@@ -18,4 +18,6 @@ public interface MessageService {
     public List<Message> getMessagesBeforeSeq(Integer relationId, Integer messageSeq);
 
     public Message sendMessage(Integer relationId, String senderType, String messageText, String messageType, String url);
+
+  public int countUnreadMessages(int relationId, int readSeg, String senderType);
 }

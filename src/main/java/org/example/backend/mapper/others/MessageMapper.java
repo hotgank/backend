@@ -110,5 +110,15 @@ public interface MessageMapper {
     @Options(useGeneratedKeys = true, keyProperty = "messageSeq")
     int insertMessage(Message message);
 
+  // 查询未读消息数量
+  @Select("SELECT COUNT(*) " +
+      "FROM c_messages " +
+      "WHERE relation_id = #{relationId} " +
+      "AND message_seq > #{readSeg} " +
+      "AND sender_type = #{senderType} ")
+  int countUnreadMessages(@Param("relationId") int relationId,
+      @Param("readSeg") int readSeg,
+      @Param("senderType") String senderType);
+
 
 }
