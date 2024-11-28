@@ -74,6 +74,7 @@ public class MessageServiceImpl implements MessageService {
         // 插入消息
         int rowsInserted = messageMapper.insertMessage(message);
         if (rowsInserted > 0) {
+            message.setMessageSeq(messageMapper.getLastMessage(relationId).getMessageSeq());
             return message;
         } else {
             throw new RuntimeException("Failed to send message.");
