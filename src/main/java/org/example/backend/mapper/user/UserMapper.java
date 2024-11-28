@@ -62,8 +62,7 @@ public interface UserMapper {
       + "phone = #{phone}, "
       + "registration_date = #{registrationDate}, "
       + "last_login = #{lastLogin}, "
-      + "status = #{status}, "
-      + "avatar_url = #{avatarUrl} "
+      + "status = #{status} "
       + "WHERE user_id = #{userId}")
   void updateUser(User user);
 
