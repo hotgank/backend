@@ -227,7 +227,7 @@ public class DoctorController {
     doctor.setPhone(phone);
     doctor.setGender(gender);
     doctor.setExperience(experience);
-    doctor.setbirthdate(date);
+    doctor.setBirthdate(date);
 
     if (doctorService.update(doctor)) {
       return ResponseEntity.ok("Data updated successfully");
