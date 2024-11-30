@@ -1,8 +1,14 @@
 package org.example.backend.controller.others;
 
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import org.example.backend.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -22,7 +28,67 @@ public class ImageController {
 
   private static final Logger logger = LoggerFactory.getLogger(ImageController.class);
 
- @PostMapping("/uploadChatImage/{relationId}")
+  @Autowired
+  private UserService userService;
+
+  @PostMapping("/uploadUserAvatar")
+  public ResponseEntity<Map<String, String>> uploadUserAvatar(@RequestParam("file") MultipartFile file,
+      HttpServletRequest request) {
+    String userId = (String) request.getAttribute("userId");
+
+    // 检查文件是否为空
+    if (file.isEmpty()) {
+      return ResponseEntity.badRequest().body(Collections.singletonMap("message", "File is empty"));
+    }
+
+    // 构建一个文件夹路径字符串，用于保存上传的图片,根目录下的uploads/UserAvatar文件夹
+    String folder = System.getProperty("user.dir") + File.separator + "uploads" + File.separator + "UserAvatar" + File.separator;
+    String fileName = file.getOriginalFilename();
+    if (fileName == null) {
+      return new ResponseEntity<>(Collections.singletonMap("message", "File name is missing"), HttpStatus.BAD_REQUEST);
+    }
+    try {
+      File directory = new File(folder);
+      if (!directory.exists()) {
+        directory.mkdirs();
+      }
+
+      // 生成唯一文件名
+      String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
+
+      // 文件完整保存路径
+      Path path = Paths.get(folder + uniqueFileName);
+
+      // 保存文件到指定路径
+      byte[] bytes = file.getBytes();
+      Files.write(path, bytes);
+
+      // 生成图片的访问 URL
+//      String serverUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+//          .path("/UserAvatar/")
+//          .toUriString();
+//      String imageUrl = serverUrl + uniqueFileName;
+      String imageUrl = "http://localhost:8080/UserAvatar/" + uniqueFileName;
+
+      // 更新用户头像信息
+      userService.updateAvatarUrl(userId, imageUrl);
+
+      // 返回 JSON 格式数据
+      Map<String, String> responseBody = new HashMap<>();
+      responseBody.put("message", "Upload user avatar successfully!");
+      responseBody.put("imageUrl", imageUrl);
+
+      return ResponseEntity.ok(responseBody);
+
+    } catch (IOException e) {
+      logger.error("Error occurred while uploading image", e);
+      return new ResponseEntity<>(
+          Collections.singletonMap("message", "Error occurred while uploading image"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+
+  @PostMapping("/uploadChatImage/{relationId}")
 public ResponseEntity<String> uploadChatImage(
         @PathVariable("relationId") int relationId, // 从路径中获取 int 类型的 relationId
         @RequestParam("file") MultipartFile file) {
@@ -71,10 +137,9 @@ public ResponseEntity<String> uploadChatImage(
         Files.write(path, bytes);
 
         // 生成图片的访问 URL
-        String serverUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                              .path("/MessageFiles/" + relationId + "/")
-                              .toUriString();
-        String imageUrl = serverUrl + uniqueFileName;
+      String serverUrl = "http://localhost:8080/" + "MessageFiles/" + relationId + "/";
+
+      String imageUrl = serverUrl + uniqueFileName;
 
         // 返回图片 URL
         return ResponseEntity.ok("{\"imageUrl\":\"" + imageUrl + "\"}");

@@ -79,8 +79,8 @@ public class UserLoginController {
       } else {
         // 如果微信用户存在，则更新用户信息
         user.setSessionKey(sessionKey);
-        user.setUsername(username);
-        user.setAvatarUrl(avatarUrl);
+//        user.setUsername(username);
+//        user.setAvatarUrl(avatarUrl);
         user.setPhone(phone);
         userService.update(user);
       }

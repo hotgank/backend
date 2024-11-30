@@ -36,6 +36,24 @@ public class UserServiceImpl implements UserService {
   private DoctorUserRelationMapper doctorUserRelationMapper;
 
   @Override
+  public void updateUsername(String userId, String username) {
+    try {
+      userMapper.updateUsername(userId, username);
+      logger.info("更新用户昵称成功");
+    } catch (Exception e) {
+      logger.error("更新用户昵称失败", e);
+    }
+  }
+  @Override
+  public void updateAvatarUrl(String userId, String avatarUrl) {
+    try {
+      userMapper.updateAvatarUrl(userId, avatarUrl);
+      logger.info("更新用户头像成功");
+    } catch (Exception e) {
+      logger.error("更新用户头像失败", e);
+    }
+  }
+  @Override
   public int selectUserCount() {
     try {
       return userMapper.selectUserCount();
