@@ -20,19 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/AdminLogin")
 public class AdminLoginController {
 
-  private static final Logger log = LoggerFactory.getLogger(
-      AdminLoginController.class);
-  @Autowired
-  private AdminService adminService;
+  private static final Logger log = LoggerFactory.getLogger(AdminLoginController.class);
+  @Autowired private AdminService adminService;
 
-  @Autowired
-  private JwtUtil jwtUtil;  // 假设你有一个 JwtUtil 来处理 JWT 生成
+  @Autowired private JwtUtil jwtUtil; // 假设你有一个 JwtUtil 来处理 JWT 生成
 
-  @Autowired
-  private RedisUtil redisUtil;  // 假设你有一个 RedisUtil 来存储 token
+  @Autowired private RedisUtil redisUtil; // 假设你有一个 RedisUtil 来存储 token
 
-  @Autowired
-  private JsonParser jsonParser;
+  @Autowired private JsonParser jsonParser;
 
   @PostMapping("/loginByEmail")
   public ResponseEntity<String> loginByEmail(@RequestBody Map<String, String> body) {
@@ -44,7 +39,7 @@ public class AdminLoginController {
     String adminId = adminService.verifyByEmailAndPassword(email, password);
     if (adminId == null) {
       return ResponseEntity.badRequest().body("邮箱或密码错误");
-    }else if (adminId.equals("disabled")){
+    } else if (adminId.equals("disabled")) {
       return ResponseEntity.badRequest().body("账号已封禁");
     }
 
@@ -62,7 +57,8 @@ public class AdminLoginController {
     admin.setAdminId(null);
     admin.setPassword(null);
     // 构建响应体
-    String response = "{\"token\":\"" + jwtToken + "\",\"admin\":" + jsonParser.toJsonFromEntity(admin) + "}";
+    String response =
+        "{\"token\":\"" + jwtToken + "\",\"admin\":" + jsonParser.toJsonFromEntity(admin) + "}";
 
     // 返回 JWT token 和医生的详细信息
     return ResponseEntity.ok(response);
@@ -78,7 +74,7 @@ public class AdminLoginController {
     String adminId = adminService.verifyByUsernameAndPassword(username, password);
     if (adminId == null) {
       return ResponseEntity.badRequest().body("账号或密码错误");
-    }else if (adminId.equals("disabled")){
+    } else if (adminId.equals("disabled")) {
       return ResponseEntity.badRequest().body("账号已封禁");
     }
 
@@ -96,10 +92,10 @@ public class AdminLoginController {
     admin.setAdminId(null);
     admin.setPassword(null);
     // 构建响应体
-    String response = "{\"token\":\"" + jwtToken + "\",\"admin\":" + jsonParser.toJsonFromEntity(admin) + "}";
+    String response =
+        "{\"token\":\"" + jwtToken + "\",\"admin\":" + jsonParser.toJsonFromEntity(admin) + "}";
 
     // 返回 JWT token 和医生的详细信息
     return ResponseEntity.ok(response);
   }
-
 }

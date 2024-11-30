@@ -77,6 +77,7 @@ public class Report {
   public void setUrl(String url) {
     this.url = url;
   }
+
   // getters and setters
 
   public String getDoctorId() {
@@ -89,22 +90,39 @@ public class Report {
 
   @Override
   public String toString() {
-    return "Report{" +
-        "reportId=" + reportId +
-        ", childId='" + childId + '\'' +
-        ", createdAt=" + createdAt +
-        ", reportType='" + reportType + '\'' +
-        ", result='" + result + '\'' +
-        ", analyse='" + analyse + '\'' +
-        ", comment='" + comment + '\'' +
-        ", doctorId='" + doctorId + '\'' +
-        ", url='" + url + '\'' +
-        '}';
+    return "Report{"
+        + "reportId="
+        + reportId
+        + ", childId='"
+        + childId
+        + '\''
+        + ", createdAt="
+        + createdAt
+        + ", reportType='"
+        + reportType
+        + '\''
+        + ", result='"
+        + result
+        + '\''
+        + ", analyse='"
+        + analyse
+        + '\''
+        + ", comment='"
+        + comment
+        + '\''
+        + ", doctorId='"
+        + doctorId
+        + '\''
+        + ", url='"
+        + url
+        + '\''
+        + '}';
   }
 
   public String getState() {
-	return state;
-}
+    return state;
+  }
+
   public void setState(String state) {
     this.state = state;
   }

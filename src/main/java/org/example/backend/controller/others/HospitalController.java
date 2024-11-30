@@ -13,19 +13,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/hospital")
 public class HospitalController {
-  @Autowired
-  private HospitalService hospitalService;
+  @Autowired private HospitalService hospitalService;
 
-  @Autowired
-  private JsonParser jsonParser;
+  @Autowired private JsonParser jsonParser;
 
   @GetMapping("/selectAll")
-  public ResponseEntity <String> selectAllHospitals() {
-    List <Hospital> hospitals = hospitalService.selectAllHospitals();
+  public ResponseEntity<String> selectAllHospitals() {
+    List<Hospital> hospitals = hospitalService.selectAllHospitals();
 
-    if(hospitals != null){
+    if (hospitals != null) {
       return ResponseEntity.ok(jsonParser.toJsonFromEntityList(hospitals));
-    }else{
+    } else {
       return ResponseEntity.status(500).body("Failed to find hospitals");
     }
   }

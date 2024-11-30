@@ -16,8 +16,7 @@ public class HealthArticleServiceImpl implements HealthArticleService {
 
   private static final Logger logger = LoggerFactory.getLogger(HealthArticleServiceImpl.class);
 
-  @Autowired
-  private HealthArticleMapper healthArticleMapper;
+  @Autowired private HealthArticleMapper healthArticleMapper;
 
   @Override
   public HealthArticle getById(Integer articleId) {
@@ -36,8 +35,11 @@ public class HealthArticleServiceImpl implements HealthArticleService {
       logger.info("Health article with ID {} created successfully", healthArticle.getArticleId());
       return true;
     } catch (Exception e) {
-      logger.error("Error creating health article with ID {}: {}", healthArticle.getArticleId(),
-          e.getMessage(), e);
+      logger.error(
+          "Error creating health article with ID {}: {}",
+          healthArticle.getArticleId(),
+          e.getMessage(),
+          e);
       return false;
     }
   }
@@ -49,8 +51,11 @@ public class HealthArticleServiceImpl implements HealthArticleService {
       logger.info("Health article with ID {} updated successfully", healthArticle.getArticleId());
       return true;
     } catch (Exception e) {
-      logger.error("Error updating health article with ID {}: {}", healthArticle.getArticleId(),
-          e.getMessage(), e);
+      logger.error(
+          "Error updating health article with ID {}: {}",
+          healthArticle.getArticleId(),
+          e.getMessage(),
+          e);
       return false;
     }
   }
@@ -71,6 +76,4 @@ public class HealthArticleServiceImpl implements HealthArticleService {
   public List<HealthArticle> getByDoctorId(String doctorId) {
     return healthArticleMapper.selectByDoctorId(doctorId);
   }
-
 }
-

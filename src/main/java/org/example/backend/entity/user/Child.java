@@ -67,18 +67,30 @@ public class Child {
   public void setWeight(int weight) {
     this.weight = weight;
   }
+
   // getters and setters
 
   @Override
   public String toString() {
-    return "Child{" +
-        "child_id='" + childId + '\'' +
-        ", name='" + name + '\'' +
-        ", school='" + school + '\'' +
-        ", gender='" + gender + '\'' +
-        ", birthdate=" + birthdate +
-        ", height=" + height +
-        ", weight=" + weight +
-        '}';
+    return "Child{"
+        + "child_id='"
+        + childId
+        + '\''
+        + ", name='"
+        + name
+        + '\''
+        + ", school='"
+        + school
+        + '\''
+        + ", gender='"
+        + gender
+        + '\''
+        + ", birthdate="
+        + birthdate
+        + ", height="
+        + height
+        + ", weight="
+        + weight
+        + '}';
   }
 }

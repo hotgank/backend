@@ -11,67 +11,69 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/verifyDoctor")
 public class VerifyDoctorQualificationController {
 
-    @Autowired
-    private JsonParser jsonParser;
+  @Autowired private JsonParser jsonParser;
 
-    @Autowired
-    private VerifyDoctorQualificationService verifyDoctorQualificationService;
+  @Autowired private VerifyDoctorQualificationService verifyDoctorQualificationService;
 
-    @GetMapping("/selectAll")
-    public ResponseEntity <?> selectAll(HttpServletRequest request){
-        try{
-            String adminId = (String) request.getAttribute("userId");
-            if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
-                return ResponseEntity.ok(jsonParser.toJsonFromEntityList(verifyDoctorQualificationService.selectAll()));
-            }
-            return ResponseEntity.status(400).body(null);
-        }catch (Exception e){
-            return ResponseEntity.status(500).body(null);
-        }
+  @GetMapping("/selectAll")
+  public ResponseEntity<?> selectAll(HttpServletRequest request) {
+    try {
+      String adminId = (String) request.getAttribute("userId");
+      if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
+        return ResponseEntity.ok(
+            jsonParser.toJsonFromEntityList(verifyDoctorQualificationService.selectAll()));
+      }
+      return ResponseEntity.status(400).body(null);
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body(null);
     }
+  }
 
-    @GetMapping("/selectRecent")
-    public ResponseEntity <?> selectRecent(HttpServletRequest request){
-        try{
-            String adminId = (String) request.getAttribute("userId");
-            if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
-                return ResponseEntity.ok(jsonParser.toJsonFromEntityList(verifyDoctorQualificationService.selectRecent()));
-            }
-            return ResponseEntity.status(400).body(null);
-        }catch (Exception e){
-            return ResponseEntity.status(500).body(null);
-        }
+  @GetMapping("/selectRecent")
+  public ResponseEntity<?> selectRecent(HttpServletRequest request) {
+    try {
+      String adminId = (String) request.getAttribute("userId");
+      if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
+        return ResponseEntity.ok(
+            jsonParser.toJsonFromEntityList(verifyDoctorQualificationService.selectRecent()));
+      }
+      return ResponseEntity.status(400).body(null);
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body(null);
     }
+  }
 
-    @PostMapping("/approve")
-    public ResponseEntity <?> approve(@RequestBody String auditIdJson, HttpServletRequest request){
-        try {
-            String adminId = (String) request.getAttribute("userId");
-            if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
-                String auditId = jsonParser.parseJsonString(auditIdJson, "auditId");
-                String position = jsonParser.parseJsonString(auditIdJson, "position");
-                return ResponseEntity.ok(verifyDoctorQualificationService.approve(auditId, adminId, position));
-            } else {
-                return ResponseEntity.status(400).body(null);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(null);
-        }
+  @PostMapping("/approve")
+  public ResponseEntity<?> approve(@RequestBody String auditIdJson, HttpServletRequest request) {
+    try {
+      String adminId = (String) request.getAttribute("userId");
+      if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
+        String auditId = jsonParser.parseJsonString(auditIdJson, "auditId");
+        String position = jsonParser.parseJsonString(auditIdJson, "position");
+        return ResponseEntity.ok(
+            verifyDoctorQualificationService.approve(auditId, adminId, position));
+      } else {
+        return ResponseEntity.status(400).body(null);
+      }
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body(null);
     }
+  }
 
-    @PostMapping("/reject")
-    public ResponseEntity <?> reject(@RequestBody String auditIdJson, HttpServletRequest request){
-        try {
-            String adminId = (String) request.getAttribute("userId");
-            if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
-                String auditId = jsonParser.parseJsonString(auditIdJson, "auditId");
-                String comment = jsonParser.parseJsonString(auditIdJson, "comment");
-                return ResponseEntity.ok(verifyDoctorQualificationService.reject(auditId, adminId, comment));
-            } else {
-                return ResponseEntity.status(400).body(null);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(null);
-        }
+  @PostMapping("/reject")
+  public ResponseEntity<?> reject(@RequestBody String auditIdJson, HttpServletRequest request) {
+    try {
+      String adminId = (String) request.getAttribute("userId");
+      if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
+        String auditId = jsonParser.parseJsonString(auditIdJson, "auditId");
+        String comment = jsonParser.parseJsonString(auditIdJson, "comment");
+        return ResponseEntity.ok(
+            verifyDoctorQualificationService.reject(auditId, adminId, comment));
+      } else {
+        return ResponseEntity.status(400).body(null);
+      }
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body(null);
     }
+  }
 }

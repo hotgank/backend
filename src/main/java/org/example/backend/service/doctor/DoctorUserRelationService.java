@@ -27,15 +27,11 @@ public interface DoctorUserRelationService {
 
   DoctorUserRelation selectDoctorUserRelationByIDs(String doctorId, String userId);
 
+  public List<DoctorUserRelation> getRelationsByDoctorId(String doctorId);
 
+  public List<DoctorUserRelation> getRelationsByUserId(String userId);
 
-    public List<DoctorUserRelation> getRelationsByDoctorId(String doctorId);
+  public DoctorUserRelation getRelationById(Integer relationId);
 
-    public List<DoctorUserRelation> getRelationsByUserId(String userId);
-
-
-    public DoctorUserRelation getRelationById(Integer relationId);
-
-    List<DoctorGetUserBindingDTO> selectRemoveBindingRelations(String doctorId);
-
+  List<DoctorGetUserBindingDTO> selectRemoveBindingRelations(String doctorId);
 }

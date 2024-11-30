@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.util.Date;
 
 public class Statistics {
-  @TableId
-  private Integer statId;
+  @TableId private Integer statId;
   private String statType;
   private Integer value;
   private Date recordDate;
@@ -41,7 +40,5 @@ public class Statistics {
   public void setRecordDate(Date recordDate) {
     this.recordDate = recordDate;
   }
-
-  // Getters and Setters
 
 }

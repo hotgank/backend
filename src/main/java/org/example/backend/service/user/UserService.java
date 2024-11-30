@@ -7,22 +7,34 @@ import org.example.backend.entity.user.User;
 public interface UserService {
 
   int selectUserCount();
+
   void updateAvatarUrl(String userId, String avatarUrl);
+
   void updateUsername(String userId, String username);
+
   User selectById(String userId);
+
   List<User> selectAll();
+
   String insert(User user);
 
   boolean insertAllUser(List<User> users);
 
   boolean update(User user);
+
   boolean delete(String userId);
 
-  boolean banAccount(String userId); boolean activeAccount(String userId); boolean editUsername(String userId, String username);String register(User user);
+  boolean banAccount(String userId);
 
-  //根据openid查询用户
+  boolean activeAccount(String userId);
+
+  boolean editUsername(String userId, String username);
+
+  String register(User user);
+
+  // 根据openid查询用户
   User selectByOpenId(String openid);
 
-  //用户获取已认证的医生列表
+  // 用户获取已认证的医生列表
   List<UserGetDoctorDTO> selectAllQualifiedDoctors(String userId);
 }

@@ -23,17 +23,13 @@ public class UserServiceImpl implements UserService {
 
   private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-  @Autowired
-  private UserMapper userMapper;
+  @Autowired private UserMapper userMapper;
 
-  @Autowired
-  private EncryptionUtil encryptionUtil;
+  @Autowired private EncryptionUtil encryptionUtil;
 
-  @Autowired
-  private DoctorMapper doctorMapper;
+  @Autowired private DoctorMapper doctorMapper;
 
-  @Autowired
-  private DoctorUserRelationMapper doctorUserRelationMapper;
+  @Autowired private DoctorUserRelationMapper doctorUserRelationMapper;
 
   @Override
   public void updateUsername(String userId, String username) {
@@ -44,6 +40,7 @@ public class UserServiceImpl implements UserService {
       logger.error("更新用户昵称失败", e);
     }
   }
+
   @Override
   public void updateAvatarUrl(String userId, String avatarUrl) {
     try {
@@ -53,6 +50,7 @@ public class UserServiceImpl implements UserService {
       logger.error("更新用户头像失败", e);
     }
   }
+
   @Override
   public int selectUserCount() {
     try {
@@ -91,10 +89,10 @@ public class UserServiceImpl implements UserService {
     try {
       String userId = "U-" + UUID.randomUUID();
       user.setUserId(userId);
-      //String username = EncryptionUtil.encryptMD5(user.getUsername());
-      //user.setUsername(username);
-      //String password = EncryptionUtil.encryptMD5(user.getPassword());
-      //user.setPassword(password);
+      // String username = EncryptionUtil.encryptMD5(user.getUsername());
+      // user.setUsername(username);
+      // String password = EncryptionUtil.encryptMD5(user.getPassword());
+      // user.setPassword(password);
       user.setStatus("active");
       user.setRegistrationDate(LocalDateTime.now());
       userMapper.insertUser(user);
@@ -107,7 +105,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean insertAllUser(List<User> users){
+  public boolean insertAllUser(List<User> users) {
     try {
       for (User user : users) {
         insert(user);
@@ -174,7 +172,8 @@ public class UserServiceImpl implements UserService {
     }
   }
 
-  @Override public boolean editUsername(String userId, String username) {
+  @Override
+  public boolean editUsername(String userId, String username) {
     try {
       User user = selectById(userId);
       user.setUsername(username);
@@ -189,7 +188,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public String register(User user){
+  public String register(User user) {
     try {
       String userId = "U-" + UUID.randomUUID();
       user.setUserId(userId);
@@ -205,7 +204,7 @@ public class UserServiceImpl implements UserService {
     }
   }
 
-  //根据openid查询用户
+  // 根据openid查询用户
   @Override
   public User selectByOpenId(String openid) {
     try {
@@ -217,14 +216,15 @@ public class UserServiceImpl implements UserService {
     }
   }
 
-  //用户获取所有已认证医生
+  // 用户获取所有已认证医生
   @Override
   public List<UserGetDoctorDTO> selectAllQualifiedDoctors(String userId) {
     try {
-      //根据userId获取所有关系表数据
-      List<DoctorUserRelation> relations = doctorUserRelationMapper.selectDoctorUserRelationsByUserId(userId);
+      // 根据userId获取所有关系表数据
+      List<DoctorUserRelation> relations =
+          doctorUserRelationMapper.selectDoctorUserRelationsByUserId(userId);
       List<UserGetDoctorDTO> userGetDoctorDTO = doctorMapper.selectAllQualifiedDoctors();
-      //遍历userGetDoctorDTO,和relations进行匹配，如果匹配上，则设置isMyDoctor为1，否则为0
+      // 遍历userGetDoctorDTO,和relations进行匹配，如果匹配上，则设置isMyDoctor为1，否则为0
       for (UserGetDoctorDTO userGetDoctorDTO1 : userGetDoctorDTO) {
         for (DoctorUserRelation relation : relations) {
           if (userGetDoctorDTO1.getDoctorId().equals(relation.getDoctorId())) {

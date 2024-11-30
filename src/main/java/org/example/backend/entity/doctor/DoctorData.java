@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.util.Date;
 
 public class DoctorData {
-  @TableId
-  private String doctorId;  // Foreign key: Doctor ID
+  @TableId private String doctorId; // Foreign key: Doctor ID
   private Date date;
   private float rating;
   private int patients;
@@ -59,5 +58,4 @@ public class DoctorData {
   public void setPapers(int papers) {
     this.papers = papers;
   }
-  // getters and setters
 }

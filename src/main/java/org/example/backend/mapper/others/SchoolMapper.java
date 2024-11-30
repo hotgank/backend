@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Select;
 import org.example.backend.entity.others.School;
 
 @Mapper
-public interface SchoolMapper{
+public interface SchoolMapper {
   @Select("SELECT * FROM o_schools")
   @Results({
     @Result(column = "address", property = "address"),

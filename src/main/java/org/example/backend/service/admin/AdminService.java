@@ -5,7 +5,9 @@ import org.example.backend.entity.admin.Admin;
 
 public interface AdminService {
   Admin selectById(String adminId);
+
   List<Admin> selectAll();
+
   String insert(Admin admin);
 
   boolean update(Admin admin);
@@ -14,7 +16,7 @@ public interface AdminService {
 
   boolean updateMyPassword(String adminId, String password);
 
-    boolean activateAdmin(String adminId);
+  boolean activateAdmin(String adminId);
 
   boolean banAdmin(String adminId);
 

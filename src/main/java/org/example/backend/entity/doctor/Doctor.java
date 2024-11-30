@@ -33,6 +33,7 @@ public class Doctor {
   public String getUsername() {
     return username;
   }
+
   public String getPassword() {
     return password;
   }
@@ -96,6 +97,7 @@ public class Doctor {
   public void setName(String name) {
     this.name = name;
   }
+
   public void setUsername(String username) {
     this.username = username;
   }
@@ -155,31 +157,56 @@ public class Doctor {
   public void setStatus(String status) {
     this.status = status;
   }
+
   // getters and setters
 
   @Override
   public String toString() {
-    return "{" +
-        "doctorId='" + doctorId + '\'' +
-        ", name='" + name + '\'' +
-        ", password='" + password + '\'' +
-        ", phone='" + phone + '\'' +
-        ", email='" + email + '\'' +
-        ", birthdate=" + (birthdate != null ? birthdate.toString() : "null") +
-        ", gender='" + gender + '\'' +
-        ", position='" + position + '\'' +
-        ", workplace='" + workplace + '\'' +
-        ", qualification='" + qualification + '\'' +
-        ", experience='" + experience + '\'' +
-        ", rating=" + rating +
-        ", avatarUrl='" + avatarUrl + '\'' +
-        ", registrationDate=" + (registrationDate != null ? registrationDate.toString() : "null") +
-        ", lastLogin=" + (lastLogin != null ? lastLogin.toString() : "null") +
-        ", status='" + status + '\'' +
-        '}';
+    return "{"
+        + "doctorId='"
+        + doctorId
+        + '\''
+        + ", name='"
+        + name
+        + '\''
+        + ", password='"
+        + password
+        + '\''
+        + ", phone='"
+        + phone
+        + '\''
+        + ", email='"
+        + email
+        + '\''
+        + ", birthdate="
+        + (birthdate != null ? birthdate.toString() : "null")
+        + ", gender='"
+        + gender
+        + '\''
+        + ", position='"
+        + position
+        + '\''
+        + ", workplace='"
+        + workplace
+        + '\''
+        + ", qualification='"
+        + qualification
+        + '\''
+        + ", experience='"
+        + experience
+        + '\''
+        + ", rating="
+        + rating
+        + ", avatarUrl='"
+        + avatarUrl
+        + '\''
+        + ", registrationDate="
+        + (registrationDate != null ? registrationDate.toString() : "null")
+        + ", lastLogin="
+        + (lastLogin != null ? lastLogin.toString() : "null")
+        + ", status='"
+        + status
+        + '\''
+        + '}';
   }
-
-
-
-
 }

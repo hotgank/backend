@@ -31,11 +31,9 @@ public class AdminController {
 
   private static final Logger log = LoggerFactory.getLogger(AdminController.class);
 
-  @Autowired
-  private AdminService adminService;
+  @Autowired private AdminService adminService;
 
-  @Autowired
-  private JsonParser jsonParser;
+  @Autowired private JsonParser jsonParser;
 
   @GetMapping("/selectAll")
   public ResponseEntity<String> selectAll() {
@@ -83,7 +81,8 @@ public class AdminController {
   }
 
   @PostMapping("/updateMyEmailAndPhone")
-  public ResponseEntity<String> updateMyEmailAndPhone(HttpServletRequest request, @RequestBody String AdminJson) {
+  public ResponseEntity<String> updateMyEmailAndPhone(
+      HttpServletRequest request, @RequestBody String AdminJson) {
     String adminId = (String) request.getAttribute("userId");
     String email = jsonParser.parseJsonString(AdminJson, "email");
     String phone = jsonParser.parseJsonString(AdminJson, "phone");
@@ -98,16 +97,17 @@ public class AdminController {
   }
 
   @PostMapping("/updateMyPassword")
-  public ResponseEntity<String> updateMyPassword(HttpServletRequest request, @RequestBody String AdminJson) {
+  public ResponseEntity<String> updateMyPassword(
+      HttpServletRequest request, @RequestBody String AdminJson) {
     String adminId = (String) request.getAttribute("userId");
     String currentPassword = jsonParser.parseJsonString(AdminJson, "currentPassword");
     String newPassword = jsonParser.parseJsonString(AdminJson, "newPassword");
     String confirmPassword = jsonParser.parseJsonString(AdminJson, "confirmPassword");
 
-    if(!adminService.verifyByIdAndPassword(adminId, currentPassword)){
+    if (!adminService.verifyByIdAndPassword(adminId, currentPassword)) {
       return ResponseEntity.status(400).body("Password not true");
     }
-    if(Objects.equals(newPassword, confirmPassword)){
+    if (Objects.equals(newPassword, confirmPassword)) {
       // 调用服务层来更新管理员信息
       boolean success = adminService.updateMyPassword(adminId, newPassword);
 
@@ -116,10 +116,9 @@ public class AdminController {
       } else {
         return ResponseEntity.status(500).body("Failed to update admin information");
       }
-    }else{
+    } else {
       return ResponseEntity.status(400).body("Password not equals");
     }
-
   }
 
   @PostMapping("/edit")
@@ -176,11 +175,13 @@ public class AdminController {
   @GetMapping("/information")
   public ResponseEntity<String> getInformation(HttpServletRequest request) {
     try {
-      //从请求中获取用户ID
+      // 从请求中获取用户ID
       String userId = (String) request.getAttribute("userId");
       Admin admin = adminService.selectById(userId);
-      String result = jsonParser.removeKeyFromJson(jsonParser.removeKeyFromJson(
-              jsonParser.toJsonFromEntity(admin), "adminId"), "password");
+      String result =
+          jsonParser.removeKeyFromJson(
+              jsonParser.removeKeyFromJson(jsonParser.toJsonFromEntity(admin), "adminId"),
+              "password");
       result = jsonParser.removeKeyFromJson(result, "avatarUrl");
       result = jsonParser.removeKeyFromJson(result, "status");
 
@@ -191,7 +192,8 @@ public class AdminController {
   }
 
   @PostMapping("/upload_avatar_base64")
-  public ResponseEntity<String> uploadAvatarBase64(@RequestBody String base64Image, HttpServletRequest request) {
+  public ResponseEntity<String> uploadAvatarBase64(
+      @RequestBody String base64Image, HttpServletRequest request) {
     String adminId = (String) request.getAttribute("userId");
 
     // 解析 JSON 字符串
@@ -212,7 +214,8 @@ public class AdminController {
 
     // 额外的检查：确保 Base64 数据的长度是 4 的倍数
     if (base64Data.length() % 4 != 0) {
-      return new ResponseEntity<>("Base64 data length is not a multiple of 4", HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(
+          "Base64 data length is not a multiple of 4", HttpStatus.BAD_REQUEST);
     }
 
     try {
@@ -220,7 +223,13 @@ public class AdminController {
       byte[] imageBytes = Base64.getDecoder().decode(base64Data);
 
       // 构建文件保存路径
-      String folder = System.getProperty("user.dir") + File.separator + "uploads" + File.separator + "admin_avatars" + File.separator;
+      String folder =
+          System.getProperty("user.dir")
+              + File.separator
+              + "uploads"
+              + File.separator
+              + "admin_avatars"
+              + File.separator;
       String fileName = adminId + ".jpg";
 
       // 确保文件夹存在
@@ -245,28 +254,35 @@ public class AdminController {
       return ResponseEntity.ok("Successfully uploaded");
     } catch (IllegalArgumentException | IOException e) {
       log.error("Error occurred while uploading Base64 image", e);
-      return new ResponseEntity<>("Error occurred while uploading image", HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(
+          "Error occurred while uploading image", HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   @GetMapping("/get_avatar_base64")
   public ResponseEntity<String> getAvatarBase64(HttpServletRequest request) {
     String adminId = (String) request.getAttribute("userId");
-    String folder = System.getProperty("user.dir") + File.separator + "uploads" +File.separator + "admin_avatars" + File.separator;
+    String folder =
+        System.getProperty("user.dir")
+            + File.separator
+            + "uploads"
+            + File.separator
+            + "admin_avatars"
+            + File.separator;
     String fileName = adminId + ".jpg";
     Path path = Paths.get(folder + fileName);
-    log.info(folder+fileName);
+    log.info(folder + fileName);
     try {
       // 读取文件内容为字节数组
       byte[] imageBytes = Files.readAllBytes(path);
 
       // 编码为Base64字符串
-      String base64Image = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
+      String base64Image =
+          "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
 
-      return ResponseEntity.ok("{\"base64Image\": \""+base64Image+"\"}");
+      return ResponseEntity.ok("{\"base64Image\": \"" + base64Image + "\"}");
     } catch (IOException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
   }
-
 }

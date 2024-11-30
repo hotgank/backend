@@ -20,7 +20,6 @@ import org.example.backend.service.doctor.DoctorService;
 import org.example.backend.util.MailUtils;
 import org.example.backend.service.others.HospitalService;
 
-
 /**
  * 医生注册控制器
  * @author Q
@@ -31,16 +30,13 @@ public class DoctorRegisterController {
 
   private static final Logger logger = LoggerFactory.getLogger(DoctorRegisterController.class);
 
-  @Autowired
-  private MailUtils mailUtils;
+  @Autowired private MailUtils mailUtils;
 
-  @Autowired
-  private DoctorService doctorService;
+  @Autowired private DoctorService doctorService;
 
-  @Autowired
-  private HospitalService hospitalService;
-  @Autowired
-  private RedisUtil redisUtil;
+  @Autowired private HospitalService hospitalService;
+  @Autowired private RedisUtil redisUtil;
+
   @Qualifier("redisTemplate")
   @Autowired
   private RedisTemplate redisTemplate;
@@ -56,7 +52,7 @@ public class DoctorRegisterController {
     }
 
     String EmailExist = doctorService.isEmailExist(email);
-    if (!(EmailExist == null||EmailExist.isEmpty())) {
+    if (!(EmailExist == null || EmailExist.isEmpty())) {
       return ResponseEntity.status(400).body("邮箱已存在");
     }
 
@@ -88,7 +84,18 @@ public class DoctorRegisterController {
     doctor.setWorkplace(workplace);
     logger.info("收到注册请求，邮箱: {}, 用户名: {}", email, username);
 
-    if (email == null || email.isEmpty() || registerCode == null || registerCode.isEmpty() || username == null || username.isEmpty() || password == null || password.isEmpty()|| workplace == null || workplace.isEmpty()|| name == null || name.isEmpty()) {
+    if (email == null
+        || email.isEmpty()
+        || registerCode == null
+        || registerCode.isEmpty()
+        || username == null
+        || username.isEmpty()
+        || password == null
+        || password.isEmpty()
+        || workplace == null
+        || workplace.isEmpty()
+        || name == null
+        || name.isEmpty()) {
       logger.error("注册信息不完整");
       return ResponseEntity.status(400).body("注册信息不完整");
     }
@@ -100,18 +107,18 @@ public class DoctorRegisterController {
     }
 
     String UsernameExist = doctorService.isUsernameExist(username);
-    if (!(UsernameExist == null||UsernameExist.isEmpty())) {
+    if (!(UsernameExist == null || UsernameExist.isEmpty())) {
       return ResponseEntity.status(400).body("用户名已存在");
     }
 
     String EmailExist = doctorService.isEmailExist(email);
-    if (!(EmailExist == null||EmailExist.isEmpty())) {
+    if (!(EmailExist == null || EmailExist.isEmpty())) {
       return ResponseEntity.status(400).body("邮箱已存在");
     }
 
     String success = doctorService.insert(doctor);
 
-    if (success!=null) {
+    if (success != null) {
       logger.info("用户注册成功，邮箱: {}, 用户名: {}", email, username);
       redisTemplate.delete(email);
       return ResponseEntity.ok("注册成功");

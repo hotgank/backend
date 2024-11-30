@@ -1,6 +1,5 @@
 package org.example.backend.entity.others;
 
-
 public class School {
   private String schoolName;
   private String address;
@@ -32,10 +31,16 @@ public class School {
 
   @Override
   public String toString() {
-    return "School{" +
-      "schoolName='" + schoolName + '\'' +
-      ", address='" + address + '\'' +
-      ", adminId='" + adminId + '\'' +
-      '}';
+    return "School{"
+        + "schoolName='"
+        + schoolName
+        + '\''
+        + ", address='"
+        + address
+        + '\''
+        + ", adminId='"
+        + adminId
+        + '\''
+        + '}';
   }
 }

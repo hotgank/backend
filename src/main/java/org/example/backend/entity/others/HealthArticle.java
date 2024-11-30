@@ -4,15 +4,13 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.util.Date;
 
 public class HealthArticle {
-  @TableId
-  private Integer articleId;
+  @TableId private Integer articleId;
   private String doctorId;
   private String title;
   private String content;
   private Date publishDate;
   private String type;
   private String status;
-
 
   public Integer getArticleId() {
     return articleId;

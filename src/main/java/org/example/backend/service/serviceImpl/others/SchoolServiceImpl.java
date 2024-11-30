@@ -14,8 +14,7 @@ public class SchoolServiceImpl implements SchoolService {
 
   private static final Logger logger = LoggerFactory.getLogger(SchoolServiceImpl.class);
 
-  @Autowired
-  private SchoolMapper schoolMapper;
+  @Autowired private SchoolMapper schoolMapper;
 
   @Override
   public List<School> selectAllSchools() {
@@ -26,6 +25,5 @@ public class SchoolServiceImpl implements SchoolService {
       logger.error("获取学校列表失败", e);
       return null;
     }
-
   }
 }

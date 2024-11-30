@@ -16,8 +16,7 @@ public class ConsultationServiceImpl implements ConsultationService {
 
   private static final Logger logger = LoggerFactory.getLogger(MessageServiceImpl.class);
 
-  @Autowired
-  private ConsultationMapper consultationMapper;
+  @Autowired private ConsultationMapper consultationMapper;
 
   @Override
   public List<Consultation> selectAllConsultations() {
@@ -39,7 +38,6 @@ public class ConsultationServiceImpl implements ConsultationService {
       return Collections.emptyList();
     }
   }
-
 
   @Override
   public List<Consultation> selectConsultationByUserId(String userId) {
@@ -74,8 +72,7 @@ public class ConsultationServiceImpl implements ConsultationService {
       return consultation.getConsultationId();
     } catch (Exception e) {
       // 记录异常日志
-      logger.error("创建咨询失败, doctorId: {}, userId: {}",
-          doctorId, userId, e);
+      logger.error("创建咨询失败, doctorId: {}, userId: {}", doctorId, userId, e);
       return 0;
     }
   }

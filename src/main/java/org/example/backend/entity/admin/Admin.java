@@ -2,10 +2,9 @@ package org.example.backend.entity.admin;
 
 import java.time.LocalDateTime;
 
-
 public class Admin {
   private String adminId;
-  private String adminType;  // enum('super', 'first', 'second')
+  private String adminType; // enum('super', 'first', 'second')
   private String supervisorId;
   private String unitName;
   private String username;
@@ -112,22 +111,47 @@ public class Admin {
   public void setStatus(String status) {
     this.status = status;
   }
+
   // getters and setters
   @Override
   public String toString() {
-    return "Admin{" +
-        "adminId='" + adminId + '\'' +
-        ", adminType='" + adminType + '\'' +
-        ", supervisorId='" + supervisorId + '\'' +
-        ", unitName='" + unitName + '\'' +
-        ", username='" + username + '\'' +
-        ", password='" + password + '\'' +
-        ", email='" + email + '\'' +
-        ", phone='" + phone + '\'' +
-        ", avatarUrl='" + avatarUrl + '\''+
-        ", registrationDate=" + registrationDate + '\'' +
-        ", lastLogin=" + lastLogin + '\'' +
-        ", status='" + status + '\'' +
-        '}';
+    return "Admin{"
+        + "adminId='"
+        + adminId
+        + '\''
+        + ", adminType='"
+        + adminType
+        + '\''
+        + ", supervisorId='"
+        + supervisorId
+        + '\''
+        + ", unitName='"
+        + unitName
+        + '\''
+        + ", username='"
+        + username
+        + '\''
+        + ", password='"
+        + password
+        + '\''
+        + ", email='"
+        + email
+        + '\''
+        + ", phone='"
+        + phone
+        + '\''
+        + ", avatarUrl='"
+        + avatarUrl
+        + '\''
+        + ", registrationDate="
+        + registrationDate
+        + '\''
+        + ", lastLogin="
+        + lastLogin
+        + '\''
+        + ", status='"
+        + status
+        + '\''
+        + '}';
   }
 }

@@ -31,10 +31,16 @@ public class Hospital {
 
   @Override
   public String toString() {
-    return "Hospital{" +
-            "hospitalName='" + hospitalName + '\'' +
-            ", address='" + address + '\'' +
-            ", adminId='" + adminId + '\'' +
-            '}';
+    return "Hospital{"
+        + "hospitalName='"
+        + hospitalName
+        + '\''
+        + ", address='"
+        + address
+        + '\''
+        + ", adminId='"
+        + adminId
+        + '\''
+        + '}';
   }
 }

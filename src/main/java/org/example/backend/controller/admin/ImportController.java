@@ -18,59 +18,57 @@ import java.util.List;
 @RestController
 @RequestMapping("api/import")
 public class ImportController {
-    @Autowired
-    JsonParser jsonParser;
+  @Autowired JsonParser jsonParser;
 
-    @Autowired
-    ExcelReader excelReader;
+  @Autowired ExcelReader excelReader;
 
-    @Autowired
-    UserService userService;
+  @Autowired UserService userService;
 
-    @Autowired
-    DoctorService doctorService;
+  @Autowired DoctorService doctorService;
 
-    @Autowired
-    MultipartFileUtil multipartFileUtil;
+  @Autowired MultipartFileUtil multipartFileUtil;
 
-    @PostMapping("/user")
-    public ResponseEntity <String> importUser(@RequestParam("file") MultipartFile file,
-                                              @RequestParam("urlJson") String urlJson, HttpServletRequest request) {
-        try {
-            String adminId = (String) request.getAttribute("userId");
-            if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
-                String url = jsonParser.parseJsonString(urlJson, "url");
-                String fileUrl = multipartFileUtil.saveFile(file, url);
-                List<User> users = excelReader.readExcel(fileUrl, User.class);
-                if(users != null){
-                    userService.insertAllUser(users);
-                    return ResponseEntity.ok("User information added successfully");
-                }
-            }
-            return ResponseEntity.status(400).body("Failed to add user information");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Failed to add user information");
+  @PostMapping("/user")
+  public ResponseEntity<String> importUser(
+      @RequestParam("file") MultipartFile file,
+      @RequestParam("urlJson") String urlJson,
+      HttpServletRequest request) {
+    try {
+      String adminId = (String) request.getAttribute("userId");
+      if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
+        String url = jsonParser.parseJsonString(urlJson, "url");
+        String fileUrl = multipartFileUtil.saveFile(file, url);
+        List<User> users = excelReader.readExcel(fileUrl, User.class);
+        if (users != null) {
+          userService.insertAllUser(users);
+          return ResponseEntity.ok("User information added successfully");
         }
+      }
+      return ResponseEntity.status(400).body("Failed to add user information");
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body("Failed to add user information");
     }
+  }
 
-    @PostMapping("/doctor")
-    public ResponseEntity <String> importDoctor(@RequestParam("file") MultipartFile file,
-                                                @RequestParam("urlJson") String urlJson, HttpServletRequest request) {
-        try {
-            String adminId = (String) request.getAttribute("userId");
-            if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
-                String url = jsonParser.parseJsonString(urlJson, "url");
-                String fileUrl = multipartFileUtil.saveFile(file, url);
-                List<Doctor> doctors = excelReader.readExcel(fileUrl, Doctor.class);
-                if(doctors != null){
-                    doctorService.insertAllDoctors(doctors);
-                    return ResponseEntity.ok("Doctor information added successfully");
-                }
-            }
-            return ResponseEntity.status(400).body("Failed to add doctor information");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Failed to add doctor information");
+  @PostMapping("/doctor")
+  public ResponseEntity<String> importDoctor(
+      @RequestParam("file") MultipartFile file,
+      @RequestParam("urlJson") String urlJson,
+      HttpServletRequest request) {
+    try {
+      String adminId = (String) request.getAttribute("userId");
+      if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
+        String url = jsonParser.parseJsonString(urlJson, "url");
+        String fileUrl = multipartFileUtil.saveFile(file, url);
+        List<Doctor> doctors = excelReader.readExcel(fileUrl, Doctor.class);
+        if (doctors != null) {
+          doctorService.insertAllDoctors(doctors);
+          return ResponseEntity.ok("Doctor information added successfully");
         }
+      }
+      return ResponseEntity.status(400).body("Failed to add doctor information");
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body("Failed to add doctor information");
     }
-
+  }
 }

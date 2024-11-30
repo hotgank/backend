@@ -11,8 +11,7 @@ import java.util.List;
 @Service
 public class StatisticsServiceImpl implements StatisticsService {
 
-  @Autowired
-  private StatisticsMapper statisticsMapper;
+  @Autowired private StatisticsMapper statisticsMapper;
 
   @Override
   public Statistics getById(Integer statId) {

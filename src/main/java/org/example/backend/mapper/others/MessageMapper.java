@@ -8,117 +8,125 @@ import org.example.backend.entity.others.Message;
 @Mapper
 public interface MessageMapper {
 
-@Select("""
-        SELECT * FROM c_messages 
-        WHERE relation_id = #{relationId} 
-        ORDER BY message_seq DESC 
+  @Select(
+      """
+        SELECT * FROM c_messages
+        WHERE relation_id = #{relationId}
+        ORDER BY message_seq DESC
         LIMIT 1
     """)
-    @Results({
-        @Result(column = "message_id", property = "messageId"),
-        @Result(column = "relation_id", property = "relationId"),
-        @Result(column = "message_seq", property = "messageSeq"),
-        @Result(column = "sender_type", property = "senderType"),
-        @Result(column = "message_text", property = "messageText"),
-        @Result(column = "timestamp", property = "timestamp"),
-        @Result(column = "message_type", property ="messageType"),
-        @Result(column = "url", property = "url"),
-    })
+  @Results({
+    @Result(column = "message_id", property = "messageId"),
+    @Result(column = "relation_id", property = "relationId"),
+    @Result(column = "message_seq", property = "messageSeq"),
+    @Result(column = "sender_type", property = "senderType"),
+    @Result(column = "message_text", property = "messageText"),
+    @Result(column = "timestamp", property = "timestamp"),
+    @Result(column = "message_type", property = "messageType"),
+    @Result(column = "url", property = "url"),
+  })
   Message getLastMessage(@Param("relationId") Integer relationId);
 
   @Select("SELECT * FROM c_messages WHERE relation_id = #{relationId} ORDER BY message_seq ASC")
   @Results({
-      @Result(column = "message_id", property = "messageId"),
-      @Result(column = "relation_id", property = "relationId"),
-      @Result(column = "message_seq", property = "messageSeq"),
-      @Result(column = "sender_type", property = "senderType"),
-      @Result(column = "message_text", property = "messageText"),
-      @Result(column = "timestamp", property = "timestamp"),
-      @Result(column = "message_type", property = "messageType"),
-      @Result(column = "url", property = "url"),
+    @Result(column = "message_id", property = "messageId"),
+    @Result(column = "relation_id", property = "relationId"),
+    @Result(column = "message_seq", property = "messageSeq"),
+    @Result(column = "sender_type", property = "senderType"),
+    @Result(column = "message_text", property = "messageText"),
+    @Result(column = "timestamp", property = "timestamp"),
+    @Result(column = "message_type", property = "messageType"),
+    @Result(column = "url", property = "url"),
   })
   List<Message> selectByRelationId(@Param("relationId") Integer relationId);
 
-  @Insert("INSERT INTO c_messages (relation_id, message_seq, sender_type, message_text, timestamp, message_type, url)"
-      + " VALUES (#{relationId}, #{messageSeq}, #{senderType}, #{messageText}, #{timestamp}, #{messageType}, #{url})")
+  @Insert(
+      "INSERT INTO c_messages (relation_id, message_seq, sender_type, message_text, timestamp, message_type, url)"
+          + " VALUES (#{relationId}, #{messageSeq}, #{senderType}, #{messageText}, #{timestamp}, #{messageType}, #{url})")
   @Options(useGeneratedKeys = true, keyProperty = "messageId")
   int insert(Message message);
 
-    // 根据关系ID查询最后30条消息
-    @Select("""
-        SELECT * FROM c_messages 
-        WHERE relation_id = #{relationId} 
-        ORDER BY message_seq ASC 
+  // 根据关系ID查询最后30条消息
+  @Select(
+      """
+        SELECT * FROM c_messages
+        WHERE relation_id = #{relationId}
+        ORDER BY message_seq ASC
         LIMIT 30
     """)
-    @Results({
-        @Result(column = "message_id", property = "messageId"),
-        @Result(column = "relation_id", property = "relationId"),
-        @Result(column = "message_seq", property = "messageSeq"),
-        @Result(column = "sender_type", property = "senderType"),
-        @Result(column = "message_text", property = "messageText"),
-        @Result(column = "timestamp", property = "timestamp"),
-        @Result(column = "message_type", property ="messageType"),
-        @Result(column = "url", property = "url"),
-    })
-    List<Message> findLast30Messages(@Param("relationId") Integer relationId);
+  @Results({
+    @Result(column = "message_id", property = "messageId"),
+    @Result(column = "relation_id", property = "relationId"),
+    @Result(column = "message_seq", property = "messageSeq"),
+    @Result(column = "sender_type", property = "senderType"),
+    @Result(column = "message_text", property = "messageText"),
+    @Result(column = "timestamp", property = "timestamp"),
+    @Result(column = "message_type", property = "messageType"),
+    @Result(column = "url", property = "url"),
+  })
+  List<Message> findLast30Messages(@Param("relationId") Integer relationId);
 
-    // 根据关系ID和最新消息序号查询之后的消息
-    @Select("""
-        SELECT * FROM c_messages 
-        WHERE relation_id = #{relationId} 
-          AND message_seq > #{messageSeq} 
+  // 根据关系ID和最新消息序号查询之后的消息
+  @Select(
+      """
+        SELECT * FROM c_messages
+        WHERE relation_id = #{relationId}
+          AND message_seq > #{messageSeq}
         ORDER BY message_seq ASC
     """)
-    @Results({
-        @Result(column = "message_id", property = "messageId"),
-        @Result(column = "relation_id", property = "relationId"),
-        @Result(column = "message_seq", property = "messageSeq"),
-        @Result(column = "sender_type", property = "senderType"),
-        @Result(column = "message_text", property = "messageText"),
-        @Result(column = "timestamp", property = "timestamp"),
-        @Result(column = "message_type", property ="messageType"),
-        @Result(column = "url", property = "url"),
-    })
-    List<Message> findMessagesAfterSeq(@Param("relationId") Integer relationId, @Param("messageSeq") Integer messageSeq);
+  @Results({
+    @Result(column = "message_id", property = "messageId"),
+    @Result(column = "relation_id", property = "relationId"),
+    @Result(column = "message_seq", property = "messageSeq"),
+    @Result(column = "sender_type", property = "senderType"),
+    @Result(column = "message_text", property = "messageText"),
+    @Result(column = "timestamp", property = "timestamp"),
+    @Result(column = "message_type", property = "messageType"),
+    @Result(column = "url", property = "url"),
+  })
+  List<Message> findMessagesAfterSeq(
+      @Param("relationId") Integer relationId, @Param("messageSeq") Integer messageSeq);
 
-    // 根据关系ID和最早消息序号查询之前的消息
-    @Select("""
-        SELECT * FROM c_messages 
-        WHERE relation_id = #{relationId} 
-          AND message_seq < #{messageSeq} 
+  // 根据关系ID和最早消息序号查询之前的消息
+  @Select(
+      """
+        SELECT * FROM c_messages
+        WHERE relation_id = #{relationId}
+          AND message_seq < #{messageSeq}
         ORDER BY message_seq ASC
         LIMIT 15
     """)
-    @Results({
-        @Result(column = "message_id", property = "messageId"),
-        @Result(column = "relation_id", property = "relationId"),
-        @Result(column = "message_seq", property = "messageSeq"),
-        @Result(column = "sender_type", property = "senderType"),
-        @Result(column = "message_text", property = "messageText"),
-        @Result(column = "timestamp", property = "timestamp"),
-        @Result(column = "message_type", property ="messageType"),
-        @Result(column = "url", property = "url"),
-    })
-    List<Message> findMessagesBeforeSeq(@Param("relationId") Integer relationId, @Param("messageSeq") Integer messageSeq);
+  @Results({
+    @Result(column = "message_id", property = "messageId"),
+    @Result(column = "relation_id", property = "relationId"),
+    @Result(column = "message_seq", property = "messageSeq"),
+    @Result(column = "sender_type", property = "senderType"),
+    @Result(column = "message_text", property = "messageText"),
+    @Result(column = "timestamp", property = "timestamp"),
+    @Result(column = "message_type", property = "messageType"),
+    @Result(column = "url", property = "url"),
+  })
+  List<Message> findMessagesBeforeSeq(
+      @Param("relationId") Integer relationId, @Param("messageSeq") Integer messageSeq);
 
-    // 插入新消息
-    @Insert("""
+  // 插入新消息
+  @Insert(
+      """
         INSERT INTO c_messages (relation_id, sender_type, message_text, timestamp, message_type, url)
         VALUES (#{relationId}, #{senderType}, #{messageText}, #{timestamp}, #{messageType}, #{url})
     """)
-    @Options(useGeneratedKeys = true, keyProperty = "messageSeq")
-    int insertMessage(Message message);
+  @Options(useGeneratedKeys = true, keyProperty = "messageSeq")
+  int insertMessage(Message message);
 
   // 查询未读消息数量
-  @Select("SELECT COUNT(*) " +
-      "FROM c_messages " +
-      "WHERE relation_id = #{relationId} " +
-      "AND message_seq > #{readSeg} " +
-      "AND sender_type = #{senderType} ")
-  int countUnreadMessages(@Param("relationId") int relationId,
+  @Select(
+      "SELECT COUNT(*) "
+          + "FROM c_messages "
+          + "WHERE relation_id = #{relationId} "
+          + "AND message_seq > #{readSeg} "
+          + "AND sender_type = #{senderType} ")
+  int countUnreadMessages(
+      @Param("relationId") int relationId,
       @Param("readSeg") int readSeg,
       @Param("senderType") String senderType);
-
-
 }

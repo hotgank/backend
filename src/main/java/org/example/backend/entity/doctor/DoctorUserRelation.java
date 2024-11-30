@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class DoctorUserRelation {
   private int relationId;
   private String doctorId; // Foreign key: Doctor ID
-  private String userId;  // Foreign key: Child ID
+  private String userId; // Foreign key: Child ID
   private String relationStatus;
   private LocalDateTime createdAt;
 
@@ -48,16 +48,25 @@ public class DoctorUserRelation {
   public void setCreatedAt(LocalDateTime createdAt) {
     this.createdAt = createdAt;
   }
+
   // getters and setters
 
   @Override
   public String toString() {
-    return "DoctorUserRelation{" +
-        "relationId=" + relationId +
-        ", doctorId='" + doctorId + '\'' +
-        ", userId='" + userId + '\'' +
-        ", relationType='" + relationStatus + '\'' +
-        ", createdAt=" + createdAt +
-        '}';
+    return "DoctorUserRelation{"
+        + "relationId="
+        + relationId
+        + ", doctorId='"
+        + doctorId
+        + '\''
+        + ", userId='"
+        + userId
+        + '\''
+        + ", relationType='"
+        + relationStatus
+        + '\''
+        + ", createdAt="
+        + createdAt
+        + '}';
   }
 }

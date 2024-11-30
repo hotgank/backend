@@ -15,19 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/doctorMessage")
 public class DoctorMessageController {
 
-  @Autowired
-  MessageService messageService;
-  @Autowired
-  private JsonParser jsonParser;
-
+  @Autowired MessageService messageService;
+  @Autowired private JsonParser jsonParser;
 
   @PostMapping("/add")
   public ResponseEntity<String> add(@RequestBody Message message) {
     message.setSenderType("doctor");
     int result = messageService.insertMessage(message);
-    if(result > 0){
+    if (result > 0) {
       return ResponseEntity.ok("Added successfully");
-    }else{
+    } else {
       return ResponseEntity.status(500).body("Failed to add message");
     }
   }

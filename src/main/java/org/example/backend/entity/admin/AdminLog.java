@@ -50,5 +50,4 @@ public class AdminLog {
   public void setTimestamp(LocalDateTime timestamp) {
     this.timestamp = timestamp;
   }
-  // getters and setters
 }

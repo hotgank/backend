@@ -25,45 +25,42 @@ public class ReportServiceImpl implements ReportService {
 
   private static final Logger logger = LoggerFactory.getLogger(ReportServiceImpl.class);
 
-  @Autowired
-  private ReportMapper reportMapper;
+  @Autowired private ReportMapper reportMapper;
 
-  @Autowired
-  private ParentChildRelationService parentChildRelationService;
+  @Autowired private ParentChildRelationService parentChildRelationService;
 
-  @Autowired
-  private ChildService childService;
+  @Autowired private ChildService childService;
 
-  @Autowired
-  private DoctorService doctorService;
+  @Autowired private DoctorService doctorService;
 
   @Override
   public List<UserHistoryReportDTO> selectUserHistoryReport(String userId) {
-    List<ParentChildRelation> childRelations = parentChildRelationService.getRelationsByUserId(userId);
+    List<ParentChildRelation> childRelations =
+        parentChildRelationService.getRelationsByUserId(userId);
 
     // Step 2: 遍历孩子，获取每个孩子的详细信息和报告
     List<UserHistoryReportDTO> allReports = new ArrayList<>();
     for (ParentChildRelation relation : childRelations) {
-        // 获取孩子基本信息
-        Child child = childService.selectById(relation.getChildId());
+      // 获取孩子基本信息
+      Child child = childService.selectById(relation.getChildId());
 
-        // 获取该孩子的所有报告
-        List<Report> reports = this.selectByChildId(relation.getChildId());
+      // 获取该孩子的所有报告
+      List<Report> reports = this.selectByChildId(relation.getChildId());
 
-        // 整合数据
-        for (Report report : reports) {
-            UserHistoryReportDTO reportDTO = new UserHistoryReportDTO();
-            reportDTO.setId(report.getReportId());
-            reportDTO.setChildName(child.getName());
-            reportDTO.setReportType(report.getReportType());
-            reportDTO.setCreatedAt(report.getCreatedAt());
-            reportDTO.setState(report.getState());
-            reportDTO.setResult(report.getResult());
-            reportDTO.setComment(report.getComment());
-            reportDTO.setAnalyse(report.getAnalyse());
-            reportDTO.setUrl(report.getUrl());
-            allReports.add(reportDTO);
-        }
+      // 整合数据
+      for (Report report : reports) {
+        UserHistoryReportDTO reportDTO = new UserHistoryReportDTO();
+        reportDTO.setId(report.getReportId());
+        reportDTO.setChildName(child.getName());
+        reportDTO.setReportType(report.getReportType());
+        reportDTO.setCreatedAt(report.getCreatedAt());
+        reportDTO.setState(report.getState());
+        reportDTO.setResult(report.getResult());
+        reportDTO.setComment(report.getComment());
+        reportDTO.setAnalyse(report.getAnalyse());
+        reportDTO.setUrl(report.getUrl());
+        allReports.add(reportDTO);
+      }
     }
 
     // Step 3: 按创建时间降序排序
@@ -71,12 +68,12 @@ public class ReportServiceImpl implements ReportService {
 
     return allReports;
   }
+
   @Override
   public Report selectByReportId(int reportId) {
     try {
       return reportMapper.selectByReportId(reportId);
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       // 记录异常日志
       logger.error("获取报告失败, reportId: {}", reportId, e);
       return null;
@@ -84,11 +81,10 @@ public class ReportServiceImpl implements ReportService {
   }
 
   @Override
-  public List <Report> selectByChildId(String childId) {
+  public List<Report> selectByChildId(String childId) {
     try {
       return reportMapper.selectByChildId(childId);
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       // 记录异常日志
       logger.error("获取报告失败, childId: {}", childId, e);
       return null;
@@ -101,8 +97,7 @@ public class ReportServiceImpl implements ReportService {
       report.setCreatedAt(LocalDateTime.now());
       reportMapper.insert(report);
       return report.getReportId();
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       // 记录异常日志
       logger.error("保存报告失败, childId: {}", report.getChildId(), e);
       return 0;
@@ -114,8 +109,7 @@ public class ReportServiceImpl implements ReportService {
     try {
       reportMapper.update(report);
       return true;
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       // 记录异常日志
       logger.error("更新报告失败, reportId: {}", report.getReportId(), e);
       return false;
@@ -127,8 +121,7 @@ public class ReportServiceImpl implements ReportService {
     try {
       reportMapper.deleteByChildId(childId);
       return true;
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       // 记录异常日志
       logger.error("删除报告失败, childId: {}", childId, e);
       return false;
@@ -140,8 +133,7 @@ public class ReportServiceImpl implements ReportService {
     try {
       reportMapper.deleteByReportId(reportId);
       return true;
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       // 记录异常日志
       logger.error("删除报告失败, reportId: {}", reportId, e);
       return false;
@@ -152,8 +144,7 @@ public class ReportServiceImpl implements ReportService {
   public List<Report> selectAll() {
     try {
       return reportMapper.selectAll();
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       // 记录异常日志
       logger.error("获取所有报告失败", e);
       return null;
@@ -164,7 +155,7 @@ public class ReportServiceImpl implements ReportService {
   public List<Report> selectByUserId(String userId) {
     try {
       return reportMapper.selectByUserId(userId);
-    }catch (Exception e) {
+    } catch (Exception e) {
       // 记录异常日志
       logger.error("获取用户报告失败, userId: {}", userId, e);
       return null;
@@ -174,40 +165,38 @@ public class ReportServiceImpl implements ReportService {
   @Override
   public boolean doctorEditReport(int reportId, String comment, String doctorId) {
     try {
-      //根据reportId获取报告
+      // 根据reportId获取报告
       Report report = selectByReportId(reportId);
-      //获取报告的医生id，查询医生信息
+      // 获取报告的医生id，查询医生信息
       Doctor doctor = doctorService.selectById(doctorId);
       String doctorName = doctor.getName();
       String doctorPosition = doctor.getPosition();
       String doctorWorkplace = doctor.getWorkplace();
-      //构造医生信息字符串
+      // 构造医生信息字符串
       String doctorInfo = "-----" + doctorName + "，" + doctorPosition + "，" + doctorWorkplace;
-      //如果评论不为空，检查医生信息，如果医生信息为空，则添加；如果医生信息不为空，则覆盖更新
-      if (comment != null){
-        //看comment是否有"-----"
-        if (comment.contains("-----")){
-          //如果有且医生信息符合，则不添加，否则覆盖添加
-          if (!comment.contains(doctorInfo)){
-            //覆盖"-----"以及之后的内容
+      // 如果评论不为空，检查医生信息，如果医生信息为空，则添加；如果医生信息不为空，则覆盖更新
+      if (comment != null) {
+        // 看comment是否有"-----"
+        if (comment.contains("-----")) {
+          // 如果有且医生信息符合，则不添加，否则覆盖添加
+          if (!comment.contains(doctorInfo)) {
+            // 覆盖"-----"以及之后的内容
             comment = comment.replaceFirst("-----.*", doctorInfo);
           }
-        }
-        else {
+        } else {
           comment = comment + doctorInfo;
         }
       }
       report.setComment(comment);
       report.setDoctorId(doctorId);
       report.setCreatedAt(LocalDateTime.now());
-      //如果报告类型不是以"评估报告"结尾，则添加"评估报告"
+      // 如果报告类型不是以"评估报告"结尾，则添加"评估报告"
       if (!report.getReportType().endsWith("评估报告")) {
         report.setReportType(report.getReportType() + "评估报告");
       }
       reportMapper.update(report);
       return true;
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       // 记录异常日志
       logger.error("医生编辑报告失败, reportId: {}", reportId, e);
       return false;
@@ -218,8 +207,7 @@ public class ReportServiceImpl implements ReportService {
   public List<DoctorGetReportDTO> DoctorGetReportByUserId(String userId) {
     try {
       return reportMapper.selectUserHistoryReport(userId);
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       // 记录异常日志
       logger.error("获取用户报告失败, userId: {}", userId, e);
       return null;

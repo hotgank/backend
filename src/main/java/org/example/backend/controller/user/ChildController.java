@@ -22,28 +22,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/children")
 public class ChildController {
 
-  @Autowired
-  private ChildService childService;
+  @Autowired private ChildService childService;
 
-  @Autowired
-  private ParentChildRelationImpl parentChildRelationService;
+  @Autowired private ParentChildRelationImpl parentChildRelationService;
 
-  @Autowired
-  private JsonParser jsonParser;
+  @Autowired private JsonParser jsonParser;
 
-  @Autowired
-  private ExcelReader excelReader;
+  @Autowired private ExcelReader excelReader;
 
   // 处理创建孩子和创建用户的关系请求
   @PostMapping("/createChild")
   public ResponseEntity<String> createChild(@RequestBody Child child, HttpServletRequest request) {
     try {
-      //从请求中获取用户ID
+      // 从请求中获取用户ID
       String userId = (String) request.getAttribute("userId");
 
-      //调用服务层来添加孩子信息到数据库
+      // 调用服务层来添加孩子信息到数据库
       String childId = childService.insert(child);
-      //调用服务层来创建孩子和用户的关系
+      // 调用服务层来创建孩子和用户的关系
       ParentChildRelation relation = new ParentChildRelation();
       relation.setUserId(userId);
       relation.setChildId(childId);
@@ -51,7 +47,7 @@ public class ChildController {
       relation.setCreatedAt(java.time.LocalDateTime.now());
       int relationId = parentChildRelationService.createRelation(relation);
       relation.setRelationId(relationId);
-      return ResponseEntity.ok("{\"relationId\":\""+relation.getRelationId()+"\"}");
+      return ResponseEntity.ok("{\"relationId\":\"" + relation.getRelationId() + "\"}");
     } catch (Exception e) {
       return ResponseEntity.status(500).body("Failed to create child information");
     }
@@ -76,33 +72,43 @@ public class ChildController {
     if (selectedChild != null) {
       // 假设 selectedChild.getBirthdate() 返回的是 java.util.Date 类型，转换为 LocalDate
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-      String formattedBirthdate = selectedChild.getBirthdate().toInstant()
-          .atZone(ZoneId.systemDefault())
-          .toLocalDate()
-          .format(formatter);
+      String formattedBirthdate =
+          selectedChild
+              .getBirthdate()
+              .toInstant()
+              .atZone(ZoneId.systemDefault())
+              .toLocalDate()
+              .format(formatter);
 
-      return ResponseEntity.ok("{\"name\":\"" + selectedChild.getName()
-          + "\",\"school\":\"" + selectedChild.getSchool()
-          + "\",\"gender\":\"" + selectedChild.getGender()
-          + "\",\"birthdate\":\"" + formattedBirthdate
-          + "\",\"height\":\"" + selectedChild.getHeight()
-          + "\",\"weight\":\"" + selectedChild.getWeight()
-          + "\"}");
+      return ResponseEntity.ok(
+          "{\"name\":\""
+              + selectedChild.getName()
+              + "\",\"school\":\""
+              + selectedChild.getSchool()
+              + "\",\"gender\":\""
+              + selectedChild.getGender()
+              + "\",\"birthdate\":\""
+              + formattedBirthdate
+              + "\",\"height\":\""
+              + selectedChild.getHeight()
+              + "\",\"weight\":\""
+              + selectedChild.getWeight()
+              + "\"}");
     } else {
       return ResponseEntity.status(500).body("Failed to add child information");
     }
   }
 
-      // 处理添加孩子信息的请求
-      @PostMapping("/add")
-      public ResponseEntity<String> addChild(@RequestBody Child child) {
+  // 处理添加孩子信息的请求
+  @PostMapping("/add")
+  public ResponseEntity<String> addChild(@RequestBody Child child) {
 
-        // 调用服务层来添加孩子信息到数据库
-        String result = childService.insert(child);
+    // 调用服务层来添加孩子信息到数据库
+    String result = childService.insert(child);
 
-        if (result != null) {
-          return ResponseEntity.ok("Child information added successfully, childId: " + result);
-        } else {
+    if (result != null) {
+      return ResponseEntity.ok("Child information added successfully, childId: " + result);
+    } else {
       return ResponseEntity.status(500).body("Failed to add child information");
     }
   }
@@ -121,7 +127,7 @@ public class ChildController {
     }
   }
 
-  //删除档案
+  // 删除档案
   @PostMapping("/delete")
   public ResponseEntity<String> deleteChild(@RequestBody String childIdJson) {
     String childId = jsonParser.parseJsonString(childIdJson, "childId");
