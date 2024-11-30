@@ -22,7 +22,7 @@ public class JwtUtil {
   private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 
   // 定义密钥和过期时间，密钥需要更长一些以满足 HS256 要求
-  private String secret = "DoctorChildLongerSecretKey1234567890"; // 至少32字节
+  private String secret = "DoctorChildLongerSecretKey1234567890"; //
   private long expirationTime = 1000 * 60 * 60 * 5;
 
   private Key getSigningKey() {

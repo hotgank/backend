@@ -186,7 +186,7 @@ log.info("relationId: " + relationId);
     String messageType = determineMessageType(file);
 
     // 处理文件上传并获取文件 URL
-    String fileUrl = multipartFileUtil.saveMutipartFile(file, "MessageFiles/" + relationId + "/");
+    String fileUrl = multipartFileUtil.saveMultipartFile(file, "MessageFiles/" + relationId + "/");
     if (fileUrl == null) {
       return ResponseEntity.status(400).body(null);  // 如果文件上传失败，返回 400 错误
     }

@@ -25,20 +25,6 @@ public class MessageServiceImpl implements MessageService {
   private ConsultationService consultationService;
 
 
-
-  public List<Message> selectMessagesById(String doctorId, String userId) {
-//    try {
-//      Consultation consultation = consultationService.selectConsultationByDoctorIdAndUserId(doctorId, userId);
-//      Integer consultationId = consultation.getConsultationId();
-//      return messageMapper.selectById(consultationId);
-//    } catch (Exception e) {
-//      // 记录异常日志
-//      logger.error("获取咨询信息失败, doctorId: {}, userId: {}", doctorId, userId, e);
-//      return Collections.emptyList();
-//    }
-    return null;
-  }
-
   @Override
   public Message getLastMessage( Integer relationId) {
     return messageMapper.getLastMessage(relationId);

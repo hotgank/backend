@@ -121,7 +121,7 @@ public ResponseEntity<String> uploadChatImage(
   // 根据文件名删除图片
   @DeleteMapping("/delete/{filename}")
   public ResponseEntity<String> deleteImage(@PathVariable("filename") String filename) {
-    String folder = System.getProperty("user.dir") + File.separator + "uploads" + File.separator + "imagea" + File.separator;
+    String folder = System.getProperty("user.dir") + File.separator + "uploads" + File.separator + "images" + File.separator;
     File file = new File(folder + filename);
 
     if (file.exists()) {

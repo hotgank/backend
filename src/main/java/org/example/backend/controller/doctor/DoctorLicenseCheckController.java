@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/doctorlicense")
+@RequestMapping("/api/doctorLicense")
 public class DoctorLicenseCheckController {
   private static final Logger log = LoggerFactory.getLogger(DoctorController.class);
     @Autowired private DoctorDataService doctorDataService;
@@ -26,7 +26,7 @@ public class DoctorLicenseCheckController {
     @PostMapping("/insert")
     public ResponseEntity<LicenseCheck> insertCheckLicense(MultipartFile multipartFile,HttpServletRequest request) {
       String doctorId = (String) request.getAttribute("userId");
-      String url = multipartFileUtil.saveMutipartFile(multipartFile,"LicenseImage/"+doctorId+"/");
+      String url = multipartFileUtil.saveMultipartFile(multipartFile,"LicenseImage/"+doctorId+"/");
       log.info("url:{}",url);
       if (url == null) return ResponseEntity.badRequest().build();
       LicenseCheck licenseCheck = new LicenseCheck();

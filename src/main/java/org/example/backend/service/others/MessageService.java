@@ -4,20 +4,18 @@ import java.util.List;
 import org.example.backend.entity.others.Message;
 
 public interface MessageService {
-  List<Message> selectMessagesById(String doctorId, String userId);
 
     int insertMessage(Message message);
 
+     Message getLastMessage( Integer relationId);
 
-    public Message getLastMessage( Integer relationId);
+     List<Message> getLast30Messages(Integer relationId);
 
-    public List<Message> getLast30Messages(Integer relationId);
+     List<Message> getMessagesAfterSeq(Integer relationId, Integer messageSeq);
 
-    public List<Message> getMessagesAfterSeq(Integer relationId, Integer messageSeq);
+     List<Message> getMessagesBeforeSeq(Integer relationId, Integer messageSeq);
 
-    public List<Message> getMessagesBeforeSeq(Integer relationId, Integer messageSeq);
+     Message sendMessage(Integer relationId, String senderType, String messageText, String messageType, String url);
 
-    public Message sendMessage(Integer relationId, String senderType, String messageText, String messageType, String url);
-
-  public int countUnreadMessages(int relationId, int readSeg, String senderType);
+   int countUnreadMessages(int relationId, int readSeg, String senderType);
 }

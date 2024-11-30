@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/verifyDoctor")
-public class verifyDoctorQualificationController {
+public class VerifyDoctorQualificationController {
 
     @Autowired
     private JsonParser jsonParser;

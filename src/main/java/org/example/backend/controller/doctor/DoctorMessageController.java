@@ -20,17 +20,6 @@ public class DoctorMessageController {
   @Autowired
   private JsonParser jsonParser;
 
-  @PostMapping("/select")
-  public ResponseEntity<String> select(@RequestBody String consultationJson) {
-    String doctorId = jsonParser.parseJsonString(consultationJson, "doctorId");
-    String userId = jsonParser.parseJsonString(consultationJson, "userId");
-    List<Message> messages = messageService.selectMessagesById(doctorId, userId);
-    if(messages != null){
-      return ResponseEntity.ok(jsonParser.toJsonFromEntityList(messages));
-    }else{
-      return ResponseEntity.status(500).body("Failed to find messages");
-    }
-  }
 
   @PostMapping("/add")
   public ResponseEntity<String> add(@RequestBody Message message) {

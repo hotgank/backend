@@ -45,7 +45,7 @@ public class Doctor {
     return email;
   }
 
-  public Date getbirthdate() {
+  public Date getBirthdate() {
     return birthdate;
   }
 
@@ -112,7 +112,7 @@ public class Doctor {
     this.email = email;
   }
 
-  public void setbirthdate(Date birthdate) {
+  public void setBirthdate(Date birthdate) {
     this.birthdate = birthdate;
   }
 

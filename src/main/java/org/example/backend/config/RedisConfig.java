@@ -11,6 +11,7 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 
 /**
  * Redis配置
+ *
  * @author q
  */
 @Configuration

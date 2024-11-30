@@ -191,10 +191,6 @@ doctor.setEmail(newEmail);
       return ResponseEntity.status(400).body("注销账号码错误或无效");
     }
 
-
-
-
-
     boolean success = doctorService.delete(doctorId);
 
     if (success) {
@@ -206,8 +202,5 @@ doctor.setEmail(newEmail);
       return ResponseEntity.status(500).body("注销失败");
     }
   }
-
-
-
 
 }

@@ -45,9 +45,9 @@ public class UserGetDoctorDTO {
 
   public void setEmail(String email) { this.email = email; }
 
-  public Date getbirthdate() { return birthdate; }
+  public Date getBirthdate() { return birthdate; }
 
-  public void setbirthdate(Date birthdate) { this.birthdate = birthdate; }
+  public void setBirthdate(Date birthdate) { this.birthdate = birthdate; }
 
   public String getGender() { return gender; }
 
