@@ -22,20 +22,15 @@ import org.example.backend.util.JsonParser;
 public class DoctorLoginController {
 
   private static final Logger log = LoggerFactory.getLogger(DoctorLoginController.class);
-  @Autowired
-  private DoctorService doctorService;
+  @Autowired private DoctorService doctorService;
 
-  @Autowired
-  private JwtUtil jwtUtil;  // 假设你有一个 JwtUtil 来处理 JWT 生成
+  @Autowired private JwtUtil jwtUtil; // 假设你有一个 JwtUtil 来处理 JWT 生成
 
-  @Autowired
-  private RedisUtil redisUtil;  // 假设你有一个 RedisUtil 来存储 token
+  @Autowired private RedisUtil redisUtil; // 假设你有一个 RedisUtil 来存储 token
 
-  @Autowired
-  private JsonParser jsonParser;
+  @Autowired private JsonParser jsonParser;
 
-  @Autowired
-  private MailUtils mailUtils;
+  @Autowired private MailUtils mailUtils;
 
   @PostMapping("/loginByEmail")
   public ResponseEntity<String> loginByEmail(@RequestBody Map<String, String> body) {
@@ -45,9 +40,9 @@ public class DoctorLoginController {
 
     // 查询数据库，查找是否有该邮箱的用户
     String doctorId = doctorService.loginByEmail(email, password);
-    if (doctorId == null|| doctorId.isEmpty()) {
+    if (doctorId == null || doctorId.isEmpty()) {
       return ResponseEntity.badRequest().body("账号或密码错误");
-    }else if (doctorId.equals("disabled")){
+    } else if (doctorId.equals("disabled")) {
       return ResponseEntity.badRequest().body("账号已封禁");
     }
 
@@ -68,7 +63,7 @@ public class DoctorLoginController {
     doctorJson = jsonParser.removeKeyFromJson(doctorJson, "avatarUrl");
     doctorJson = jsonParser.removeKeyFromJson(doctorJson, "status");
     // 构建响应体
-    String response = "{\"token\":\"" + jwtToken + "\",\"doctor\":" + doctorJson  + "}";
+    String response = "{\"token\":\"" + jwtToken + "\",\"doctor\":" + doctorJson + "}";
 
     // 返回 JWT token 和医生的详细信息
     return ResponseEntity.ok(response);
@@ -82,9 +77,9 @@ public class DoctorLoginController {
 
     // 查询数据库，查找是否有该用户名的用户
     String doctorId = doctorService.loginByUsername(username, password);
-    if (doctorId == null|| doctorId.isEmpty()) {
+    if (doctorId == null || doctorId.isEmpty()) {
       return ResponseEntity.badRequest().body("账号或密码错误");
-    }else if (doctorId.equals("disabled")){
+    } else if (doctorId.equals("disabled")) {
       return ResponseEntity.badRequest().body("账号已封禁");
     }
 
@@ -105,7 +100,7 @@ public class DoctorLoginController {
     doctorJson = jsonParser.removeKeyFromJson(doctorJson, "avatarUrl");
     doctorJson = jsonParser.removeKeyFromJson(doctorJson, "status");
     // 构建响应体
-    String response = "{\"token\":\"" + jwtToken + "\",\"doctor\":" + doctorJson  + "}";
+    String response = "{\"token\":\"" + jwtToken + "\",\"doctor\":" + doctorJson + "}";
 
     // 返回 JWT token 和医生的详细信息
     return ResponseEntity.ok(response);
@@ -118,18 +113,18 @@ public class DoctorLoginController {
       log.error("邮箱地址为空");
       return ResponseEntity.status(400).body("错误请求");
     }
-    String  username= jsonParser.parseJsonString(doctorJson, "username");
+    String username = jsonParser.parseJsonString(doctorJson, "username");
 
     if (username == null || username.isEmpty()) {
       log.error("用户名为空");
       return ResponseEntity.status(400).body("错误请求");
     }
     Doctor doctor = doctorService.selectDoctorByEmail(email);
-    if (doctor==null){
+    if (doctor == null) {
       log.error("该邮箱未注册");
       return ResponseEntity.status(400).body("该邮箱未注册");
     }
-    if (!doctor.getUsername().equals(username)){
+    if (!doctor.getUsername().equals(username)) {
       log.error("用户名错误");
       return ResponseEntity.status(400).body("用户名错误");
     }
@@ -151,10 +146,10 @@ public class DoctorLoginController {
   @PostMapping("/ChangePasswd")
   public ResponseEntity<String> changePassword(@RequestBody String doctorJson) {
     String email = jsonParser.parseJsonString(doctorJson, "email");
-    String  changeCode = jsonParser.parseJsonString(doctorJson, "changeCode");
+    String changeCode = jsonParser.parseJsonString(doctorJson, "changeCode");
     String newPassword = jsonParser.parseJsonString(doctorJson, "newPassword");
     Doctor doctor = doctorService.selectDoctorByEmail(email);
-    if (doctor==null){
+    if (doctor == null) {
       log.error("该邮箱未注册");
       return ResponseEntity.status(400).body("该邮箱未注册");
     }
@@ -162,7 +157,7 @@ public class DoctorLoginController {
       log.error("忘记密码码无效，邮箱: {}, 注册码: {}", email, changeCode);
       return ResponseEntity.status(400).body("忘记密码码错误或无效");
     }
-    if (newPassword == null){
+    if (newPassword == null) {
       return ResponseEntity.status(400).body("密码不能为空");
     }
     if (doctorService.updatePassword(doctor.getDoctorId(), newPassword)) {

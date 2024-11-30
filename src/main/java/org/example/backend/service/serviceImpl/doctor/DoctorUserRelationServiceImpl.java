@@ -21,8 +21,8 @@ public class DoctorUserRelationServiceImpl implements DoctorUserRelationService 
 
   private static final Logger logger = LoggerFactory.getLogger(DoctorUserRelationServiceImpl.class);
 
-  @Autowired
-  private DoctorUserRelationMapper doctorUserRelationMapper;
+  @Autowired private DoctorUserRelationMapper doctorUserRelationMapper;
+
   @Override
   public List<DoctorWithStatus> selectPendingDoctors(String userId) {
     try {
@@ -35,7 +35,7 @@ public class DoctorUserRelationServiceImpl implements DoctorUserRelationService 
     }
   }
 
-  @Override  //用户查找我的医生
+  @Override // 用户查找我的医生
   public List<Doctor> selectMyDoctors(String userId) {
     try {
       List<Doctor> doctors = doctorUserRelationMapper.selectDoctorsByUserId(userId);
@@ -62,7 +62,8 @@ public class DoctorUserRelationServiceImpl implements DoctorUserRelationService 
   @Override
   public List<User> selectRecentPatients(String doctorId, String relationStatus) {
     try {
-      List<User> myPatients = doctorUserRelationMapper.selectRecentPatients(doctorId, relationStatus);
+      List<User> myPatients =
+          doctorUserRelationMapper.selectRecentPatients(doctorId, relationStatus);
       logger.info("获取最近患者成功");
       return myPatients;
     } catch (Exception e) {
@@ -77,11 +78,11 @@ public class DoctorUserRelationServiceImpl implements DoctorUserRelationService 
       relation.setCreatedAt(LocalDateTime.now());
       relation.setRelationStatus("pending");
       int result = doctorUserRelationMapper.createDoctorUserRelation(relation);
-      if(result > 0){
+      if (result > 0) {
         int relationId = relation.getRelationId();
         logger.info("Relation with ID {} updated successfully", relationId);
         return relationId;
-      }else{
+      } else {
         logger.error("Error creating relation");
         return 0;
       }
@@ -102,7 +103,7 @@ public class DoctorUserRelationServiceImpl implements DoctorUserRelationService 
       }
       return updated;
     } catch (Exception e) {
-      logger.error("Error updating relation: {}", e.getMessage(),e);
+      logger.error("Error updating relation: {}", e.getMessage(), e);
       return false;
     }
   }
@@ -120,9 +121,11 @@ public class DoctorUserRelationServiceImpl implements DoctorUserRelationService 
   }
 
   @Override
-  public List<DoctorGetUserBindingDTO> selectPendingPatients(String doctorId, String relationStatus) {
+  public List<DoctorGetUserBindingDTO> selectPendingPatients(
+      String doctorId, String relationStatus) {
     try {
-      List<DoctorGetUserBindingDTO> pendingPatients = doctorUserRelationMapper.selectPendingPatients(doctorId, relationStatus);
+      List<DoctorGetUserBindingDTO> pendingPatients =
+          doctorUserRelationMapper.selectPendingPatients(doctorId, relationStatus);
       logger.info("获取待绑定患者成功");
       return pendingPatients;
     } catch (Exception e) {
@@ -136,28 +139,28 @@ public class DoctorUserRelationServiceImpl implements DoctorUserRelationService 
     return doctorUserRelationMapper.selectDoctorUserRelation(doctorId, userId);
   }
 
-@Override
-     public List<DoctorUserRelation> getRelationsByDoctorId(String doctorId) {
-        return doctorUserRelationMapper.findRelationsByDoctorId(doctorId);
-    }
-@Override
-    public List<DoctorUserRelation> getRelationsByUserId(String userId) {
-        return doctorUserRelationMapper.findRelationsByUserId(userId);
-    }
+  @Override
+  public List<DoctorUserRelation> getRelationsByDoctorId(String doctorId) {
+    return doctorUserRelationMapper.findRelationsByDoctorId(doctorId);
+  }
 
-@Override
-    public DoctorUserRelation getRelationById(Integer relationId) {
-  return doctorUserRelationMapper.findRelationById(relationId);
-}
+  @Override
+  public List<DoctorUserRelation> getRelationsByUserId(String userId) {
+    return doctorUserRelationMapper.findRelationsByUserId(userId);
+  }
 
-    @Override
-    public List<DoctorGetUserBindingDTO> selectRemoveBindingRelations(String doctorId) {
-      try {
-        return doctorUserRelationMapper.selectRemoveBindingRelations(doctorId);
-      } catch (Exception e) {
-        logger.error("Error selecting remove binding relations: {}", e.getMessage(), e);
-        return Collections.emptyList();
-      }
+  @Override
+  public DoctorUserRelation getRelationById(Integer relationId) {
+    return doctorUserRelationMapper.findRelationById(relationId);
+  }
 
+  @Override
+  public List<DoctorGetUserBindingDTO> selectRemoveBindingRelations(String doctorId) {
+    try {
+      return doctorUserRelationMapper.selectRemoveBindingRelations(doctorId);
+    } catch (Exception e) {
+      logger.error("Error selecting remove binding relations: {}", e.getMessage(), e);
+      return Collections.emptyList();
     }
+  }
 }

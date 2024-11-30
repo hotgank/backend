@@ -26,14 +26,11 @@ public class DoctorServiceImpl implements DoctorService {
 
   private static final Logger logger = LoggerFactory.getLogger(DoctorServiceImpl.class);
 
-  @Resource
-  private RedisTemplate<String, String> redisTemplate;
+  @Resource private RedisTemplate<String, String> redisTemplate;
 
-  @Autowired
-  private DoctorMapper doctorMapper;
+  @Autowired private DoctorMapper doctorMapper;
 
-  @Autowired
-  private EncryptionUtil encryptionUtil;
+  @Autowired private EncryptionUtil encryptionUtil;
 
   @Override
   public int selectDoctorCount() {
@@ -98,7 +95,8 @@ public class DoctorServiceImpl implements DoctorService {
       logger.info("Doctor with ID {} inserted successfully", doctor.getDoctorId());
       return doctorId;
     } catch (Exception e) {
-      logger.error("Error inserting doctor with ID {}: {}", doctor.getDoctorId(), e.getMessage(), e);
+      logger.error(
+          "Error inserting doctor with ID {}: {}", doctor.getDoctorId(), e.getMessage(), e);
       return null;
     }
   }
@@ -111,8 +109,7 @@ public class DoctorServiceImpl implements DoctorService {
       }
       logger.info("All doctors inserted successfully");
       return true;
-      }
-    catch (Exception e) {
+    } catch (Exception e) {
       logger.error("Error inserting doctors: {}", e.getMessage(), e);
       return false;
     }
@@ -141,7 +138,6 @@ public class DoctorServiceImpl implements DoctorService {
       return false;
     }
   }
-
 
   @Override
   public boolean banAccount(String doctorId) {
@@ -175,7 +171,6 @@ public class DoctorServiceImpl implements DoctorService {
     return false;
   }
 
-
   @Override
   public boolean updatePassword(String doctorId, String newPassword) {
     try {
@@ -194,14 +189,14 @@ public class DoctorServiceImpl implements DoctorService {
   }
 
   @Override
-  public boolean validatePassword(String doctorId, String password){
+  public boolean validatePassword(String doctorId, String password) {
     Doctor doctor = selectById(doctorId);
-    if(doctor == null){
+    if (doctor == null) {
       return false;
     }
-    if(encryptionUtil.verifyMD5(password, doctor.getPassword())){
+    if (encryptionUtil.verifyMD5(password, doctor.getPassword())) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
@@ -218,9 +213,9 @@ public class DoctorServiceImpl implements DoctorService {
   @Override
   public String loginByEmail(String email, String password) {
     Doctor doctor = doctorMapper.selectDoctorByEmail(email);
-    if(doctor == null){
+    if (doctor == null) {
       return null;
-    }else if(Objects.equals(doctor.getStatus(), "disabled")){
+    } else if (Objects.equals(doctor.getStatus(), "disabled")) {
       return "disabled";
     }
     if (encryptionUtil.verifyMD5(password, doctor.getPassword())) {
@@ -232,9 +227,9 @@ public class DoctorServiceImpl implements DoctorService {
   @Override
   public String loginByUsername(String username, String password) {
     Doctor doctor = doctorMapper.selectDoctorByUsername(username);
-    if(doctor == null){
+    if (doctor == null) {
       return null;
-    }else if(Objects.equals(doctor.getStatus(), "disabled")){
+    } else if (Objects.equals(doctor.getStatus(), "disabled")) {
       return "disabled";
     }
     if (encryptionUtil.verifyMD5(password, doctor.getPassword())) {
@@ -272,7 +267,13 @@ public class DoctorServiceImpl implements DoctorService {
 
   @Override
   public String getAvatarBase64(String doctorId) {
-    String folder = System.getProperty("user.dir") + File.separator + "uploads" +File.separator + "doctor_avatars" + File.separator;
+    String folder =
+        System.getProperty("user.dir")
+            + File.separator
+            + "uploads"
+            + File.separator
+            + "doctor_avatars"
+            + File.separator;
     String fileName = doctorId + ".jpg";
     Path path = Paths.get(folder + fileName);
     try {
@@ -280,7 +281,8 @@ public class DoctorServiceImpl implements DoctorService {
       byte[] imageBytes = Files.readAllBytes(path);
 
       // 编码为Base64字符串
-      String base64Image = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
+      String base64Image =
+          "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
 
       return base64Image;
     } catch (IOException e) {
@@ -310,9 +312,7 @@ public class DoctorServiceImpl implements DoctorService {
     // 检查注册码是否有效
     String email = doctor.getEmail();
 
-
     // 验证注册码是否有效
-
 
     // 创建医生对象
 

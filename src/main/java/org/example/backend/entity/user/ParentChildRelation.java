@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class ParentChildRelation {
   private int relationId;
-  private String userId;  // Foreign key: User ID
+  private String userId; // Foreign key: User ID
   private String childId; // Foreign key: Child ID
   private String relationType;
   private LocalDateTime createdAt;

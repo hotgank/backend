@@ -17,15 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/parentChildRelation")
 public class ParentChildRelationController {
 
-  @Autowired
-  private ParentChildRelationService parentChildRelationService;
+  @Autowired private ParentChildRelationService parentChildRelationService;
 
-  @Autowired
-  private JsonParser jsonParser;
+  @Autowired private JsonParser jsonParser;
 
-  //根据userId获取所有关系表数据
+  // 根据userId获取所有关系表数据
   @PostMapping("/selectAllRelations")
-  public ResponseEntity <String> selectAllRelations(HttpServletRequest request) {
+  public ResponseEntity<String> selectAllRelations(HttpServletRequest request) {
     // 从请求中获取用户ID
     String userId = (String) request.getAttribute("userId");
 
@@ -37,7 +35,7 @@ public class ParentChildRelationController {
     }
   }
 
-  //根据relationId删除关系
+  // 根据relationId删除关系
   @PostMapping("/deleteRelationById")
   public ResponseEntity<String> deleteRelationById(@RequestBody String relationIdJson) {
     try {
@@ -53,7 +51,7 @@ public class ParentChildRelationController {
     }
   }
 
-  //根据childId删除关系
+  // 根据childId删除关系
   @PostMapping("/deleteRelationByChildId")
   public ResponseEntity<String> deleteRelationByChildId(@RequestBody String childIdJson) {
     try {
@@ -69,7 +67,7 @@ public class ParentChildRelationController {
     }
   }
 
-  //根据userId获取所有孩子
+  // 根据userId获取所有孩子
   @PostMapping("/getChildrenByUserId")
   public ResponseEntity<String> getChildrenByUserId(@RequestBody String userIdJson) {
     try {

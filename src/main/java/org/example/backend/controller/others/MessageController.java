@@ -31,32 +31,26 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("api/messages")
 public class MessageController {
-  @Autowired
-  private UrlUtil urlUtil;
+  @Autowired private UrlUtil urlUtil;
 
   private static final Logger log = LoggerFactory.getLogger(MessageController.class);
-  @Autowired
-    private MessageService messageService;
+  @Autowired private MessageService messageService;
 
-  @Autowired
-  private DoctorUserRelationService doctorUserRelationService;
+  @Autowired private DoctorUserRelationService doctorUserRelationService;
 
-  @Autowired
-  private MultipartFileUtil multipartFileUtil;
+  @Autowired private MultipartFileUtil multipartFileUtil;
 
-  @Autowired
-  private RedisUtil redisUtil;
+  @Autowired private RedisUtil redisUtil;
 
-  @Autowired
-  private JsonParser jsonParser;
+  @Autowired private JsonParser jsonParser;
 
   // 支持的文件类型（根据 MIME 类型或文件扩展名）
   private static final List<String> IMAGE_TYPES = List.of("image/jpeg", "image/png", "image/gif");
   private static final List<String> VIDEO_TYPES = List.of("video/mp4", "video/avi", "video/mpeg");
   private static final List<String> TEXT_TYPES = List.of("text/plain", "application/json");
 
-    @GetMapping("/lastMessage")
-public ResponseEntity<List<LastMessage>> getLastMessage(HttpServletRequest httpServletRequest) {
+  @GetMapping("/lastMessage")
+  public ResponseEntity<List<LastMessage>> getLastMessage(HttpServletRequest httpServletRequest) {
     String userId = (String) httpServletRequest.getAttribute("userId");
 
     // 查询用户的所有医生
@@ -65,140 +59,149 @@ public ResponseEntity<List<LastMessage>> getLastMessage(HttpServletRequest httpS
 
     // 遍历每个医生
     for (Doctor doctor : doctors) {
-        // 如果医生有头像 URL，将其转换为 Base64
+      // 如果医生有头像 URL，将其转换为 Base64
 
-        // 获取医生和用户之间的关系
-        DoctorUserRelation relation = doctorUserRelationService.selectDoctorUserRelationByIDs(doctor.getDoctorId(), userId);
-        if (relation != null) {
-            // 获取最后一条消息
-            Message message = messageService.getLastMessage(relation.getRelationId());
-            if (message != null) {
-                // 创建 LastMessage 对象并添加到列表中
-                LastMessage lastMessage = new LastMessage(doctor, message);
-                lastMessages.add(lastMessage);
-            }
+      // 获取医生和用户之间的关系
+      DoctorUserRelation relation =
+          doctorUserRelationService.selectDoctorUserRelationByIDs(doctor.getDoctorId(), userId);
+      if (relation != null) {
+        // 获取最后一条消息
+        Message message = messageService.getLastMessage(relation.getRelationId());
+        if (message != null) {
+          // 创建 LastMessage 对象并添加到列表中
+          LastMessage lastMessage = new LastMessage(doctor, message);
+          lastMessages.add(lastMessage);
         }
+      }
     }
 
     // 如果有数据，返回 LastMessage 列表，否则返回空数据
     if (!lastMessages.isEmpty()) {
-        return ResponseEntity.ok(lastMessages);
+      return ResponseEntity.ok(lastMessages);
     } else {
-        return ResponseEntity.noContent().build(); // 返回 HTTP 204 状态码
+      return ResponseEntity.noContent().build(); // 返回 HTTP 204 状态码
     }
-}
+  }
 
+  @GetMapping("/last30/{relationId}")
+  public ResponseEntity<List<Message>> getLast30Messages(
+      @PathVariable Integer relationId, HttpServletRequest httpServletRequest) {
+    String Id = (String) httpServletRequest.getAttribute("userId");
 
+    DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
+    if (!(relation.getDoctorId().equals(Id) || relation.getUserId().equals(Id))) {
+      return ResponseEntity.status(500).body(null);
+    }
+    return ResponseEntity.ok(messageService.getLast30Messages(relationId));
+  }
 
-    @GetMapping("/last30/{relationId}")
-    public ResponseEntity<List<Message>> getLast30Messages(@PathVariable Integer relationId, HttpServletRequest httpServletRequest) {
-                String Id = (String) httpServletRequest.getAttribute("userId");
+  @GetMapping("/after/{relationId}/{messageSeq}")
+  public ResponseEntity<List<Message>> getMessagesAfterSeq(
+      @PathVariable Integer relationId,
+      @PathVariable Integer messageSeq,
+      HttpServletRequest httpServletRequest) {
+    String Id = (String) httpServletRequest.getAttribute("userId");
 
-      DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
-      if (!(relation.getDoctorId().equals(Id) || relation.getUserId().equals(Id))) {
-        return ResponseEntity.status(500).body(null);
-      }
-      return ResponseEntity.ok(messageService.getLast30Messages(relationId));
+    DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
+    if (!(relation.getDoctorId().equals(Id) || relation.getUserId().equals(Id))) {
+      return ResponseEntity.status(500).body(null);
+    }
+    return ResponseEntity.ok(messageService.getMessagesAfterSeq(relationId, messageSeq));
+  }
+
+  @GetMapping("/before/{relationId}/{messageSeq}")
+  public ResponseEntity<List<Message>> getMessagesBeforeSeq(
+      @PathVariable Integer relationId,
+      @PathVariable Integer messageSeq,
+      HttpServletRequest httpServletRequest) {
+    String Id = (String) httpServletRequest.getAttribute("userId");
+
+    DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
+    if (!(relation.getDoctorId().equals(Id) || relation.getUserId().equals(Id))) {
+      return ResponseEntity.status(500).body(null);
+    }
+    return ResponseEntity.ok(messageService.getMessagesBeforeSeq(relationId, messageSeq));
+  }
+
+  @PostMapping("/send")
+  public ResponseEntity<Message> sendMessage(
+      @RequestBody SendMessageRequest request, HttpServletRequest httpServletRequest) {
+    String Id = (String) httpServletRequest.getAttribute("userId");
+    int relationId = request.getRelationId();
+    DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
+    if (relation == null) {
+      return ResponseEntity.status(500).body(null);
+    }
+    if (!relation.getRelationStatus().equals("approved")) {
+      return ResponseEntity.status(500).body(null);
+    }
+    if (relation.getDoctorId().equals(Id)) {
+      request.setSenderType("doctor");
+    } else if (relation.getUserId().equals(Id)) {
+      request.setSenderType("user");
+    } else {
+      return ResponseEntity.status(500).body(null);
     }
 
-    @GetMapping("/after/{relationId}/{messageSeq}")
-    public ResponseEntity<List<Message>> getMessagesAfterSeq(@PathVariable Integer relationId, @PathVariable Integer messageSeq,HttpServletRequest httpServletRequest) {
-                String Id = (String) httpServletRequest.getAttribute("userId");
+    Message message =
+        messageService.sendMessage(
+            request.getRelationId(),
+            request.getSenderType(),
+            request.getMessageText(),
+            request.getMessageType(),
+            request.getUrl());
+    return ResponseEntity.ok(message);
+  }
 
-      DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
-      if (!(relation.getDoctorId().equals(Id) || relation.getUserId().equals(Id))) {
-        return ResponseEntity.status(500).body(null);
-      }
-      return ResponseEntity.ok(messageService.getMessagesAfterSeq(relationId, messageSeq));
-    }
-
-    @GetMapping("/before/{relationId}/{messageSeq}")
-    public ResponseEntity<List<Message>> getMessagesBeforeSeq(@PathVariable Integer relationId, @PathVariable Integer messageSeq,HttpServletRequest httpServletRequest) {
-        String Id = (String) httpServletRequest.getAttribute("userId");
-
-      DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
-      if (!(relation.getDoctorId().equals(Id) || relation.getUserId().equals(Id))) {
-        return ResponseEntity.status(500).body(null);
-      }
-      return ResponseEntity.ok(messageService.getMessagesBeforeSeq(relationId, messageSeq));
-    }
-
-    @PostMapping("/send")
-    public ResponseEntity<Message> sendMessage(@RequestBody SendMessageRequest request,
-        HttpServletRequest httpServletRequest){
-      String Id = (String) httpServletRequest.getAttribute("userId");
-      int relationId = request.getRelationId();
-      DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
-      if(relation == null){
-        return ResponseEntity.status(500).body(null);
-      }
-      if(!relation.getRelationStatus().equals("approved")){
-        return ResponseEntity.status(500).body(null);
-      }
-      if (relation.getDoctorId().equals(Id)){
-        request.setSenderType("doctor");
-      } else if (relation.getUserId().equals(Id)) {
-        request.setSenderType("user");
-      }else {
-        return ResponseEntity.status(500).body(null);
-      }
-
-      Message message = messageService.sendMessage(
-                request.getRelationId(),
-                request.getSenderType(),
-                request.getMessageText(),
-                request.getMessageType(),
-                request.getUrl()
-        );
-        return ResponseEntity.ok(message);
-    }
   @PostMapping("/sendFile")
-  public ResponseEntity<Message> sendFile(Integer relationId,
+  public ResponseEntity<Message> sendFile(
+      Integer relationId,
       String messageText,
       MultipartFile file,
       HttpServletRequest httpServletRequest) {
     // 获取当前用户的 ID
     String userId = (String) httpServletRequest.getAttribute("userId");
 
-log.info("relationId: " + relationId);
+    log.info("relationId: " + relationId);
     // 获取医生-用户关系
     DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
     if (relation == null) {
-      return ResponseEntity.status(500).body(null);  // 如果没有找到关系，返回 500 错误
+      return ResponseEntity.status(500).body(null); // 如果没有找到关系，返回 500 错误
     }
 
     // 校验关系状态
     if (!relation.getRelationStatus().equals("approved")) {
-      return ResponseEntity.status(500).body(null);  // 如果关系没有通过审批，返回 500 错误
+      return ResponseEntity.status(500).body(null); // 如果关系没有通过审批，返回 500 错误
     }
 
     // 设置消息发送者类型
     String senderType = null;
     if (relation.getDoctorId().equals(userId)) {
-      senderType = "doctor";  // 如果是医生发送消息
+      senderType = "doctor"; // 如果是医生发送消息
     } else if (relation.getUserId().equals(userId)) {
-      senderType = "user";  // 如果是用户发送消息
+      senderType = "user"; // 如果是用户发送消息
     } else {
-      return ResponseEntity.status(500).body(null);  // 如果发送者不在关系中，返回 500 错误
+      return ResponseEntity.status(500).body(null); // 如果发送者不在关系中，返回 500 错误
     }
 
     // 判断文件类型并设置 message_type
     String messageType = determineMessageType(file);
 
     // 处理文件上传并获取文件 URL
-    String fileUrl = multipartFileUtil.saveMutipartFile(file, "MessageFiles/" + relationId + "/");
+    String fileUrl = multipartFileUtil.saveMultipartFile(file, "MessageFiles/" + relationId + "/");
     if (fileUrl == null) {
-      return ResponseEntity.status(400).body(null);  // 如果文件上传失败，返回 400 错误
+      return ResponseEntity.status(400).body(null); // 如果文件上传失败，返回 400 错误
     }
 
     // 创建消息记录
-    Message message = messageService.sendMessage(
-        relationId,
-        senderType,
-        messageText,  // 文本消息内容
-        messageType,                // 自动推断的消息类型
-        fileUrl                     // 文件 URL
-    );
+    Message message =
+        messageService.sendMessage(
+            relationId,
+            senderType,
+            messageText, // 文本消息内容
+            messageType, // 自动推断的消息类型
+            fileUrl // 文件 URL
+            );
 
     // 返回成功响应
     return ResponseEntity.ok(message);
@@ -209,18 +212,19 @@ log.info("relationId: " + relationId);
     String contentType = file.getContentType();
     if (contentType != null) {
       if (IMAGE_TYPES.contains(contentType)) {
-        return "image";  // 图片
+        return "image"; // 图片
       } else if (VIDEO_TYPES.contains(contentType)) {
-        return "video";  // 视频
+        return "video"; // 视频
       } else if (TEXT_TYPES.contains(contentType)) {
-        return "text";  // 文本
+        return "text"; // 文本
       }
     }
-    return "file";  // 默认是文件类型
+    return "file"; // 默认是文件类型
   }
 
   @PostMapping("/getReadInfo")
-  public ResponseEntity<String> getReadInfo(@RequestBody  String jsonString, HttpServletRequest httpServletRequest) {
+  public ResponseEntity<String> getReadInfo(
+      @RequestBody String jsonString, HttpServletRequest httpServletRequest) {
     String userId = (String) httpServletRequest.getAttribute("userId");
     int relationId = jsonParser.parseJsonInt(jsonString, "relationId");
     int ReadSeq = jsonParser.parseJsonInt(jsonString, "ReadSeq");
@@ -232,19 +236,25 @@ log.info("relationId: " + relationId);
     String senderType = null;
     if (relation.getDoctorId().equals(userId)) {
       senderType = "doctor";
-    }else if (relation.getUserId().equals(userId)) {
+    } else if (relation.getUserId().equals(userId)) {
       senderType = "user";
-    }else {
+    } else {
       return ResponseEntity.status(500).body(null);
     }
-    redisUtil.setNoExpireKey(relationId+"_"+senderType, ReadSeq);
-    int DoctorUnread = messageService.countUnreadMessages(relationId,redisUtil.getIntegerFromRedis(relationId+"_doctor"), "user");
-    int UserUnread = messageService.countUnreadMessages(relationId,redisUtil.getIntegerFromRedis(relationId+"_user"), "doctor");
-  return ResponseEntity.ok("{\"DoctorUnread\": "+ DoctorUnread +", \"UserUnread\":"+ UserUnread +"}");
+    redisUtil.setNoExpireKey(relationId + "_" + senderType, ReadSeq);
+    int DoctorUnread =
+        messageService.countUnreadMessages(
+            relationId, redisUtil.getIntegerFromRedis(relationId + "_doctor"), "user");
+    int UserUnread =
+        messageService.countUnreadMessages(
+            relationId, redisUtil.getIntegerFromRedis(relationId + "_user"), "doctor");
+    return ResponseEntity.ok(
+        "{\"DoctorUnread\": " + DoctorUnread + ", \"UserUnread\":" + UserUnread + "}");
   }
 
   @PostMapping("/getUnReadInfo")
-  public ResponseEntity<String> startReadInfo(@RequestBody  String jsonString, HttpServletRequest httpServletRequest) {
+  public ResponseEntity<String> startReadInfo(
+      @RequestBody String jsonString, HttpServletRequest httpServletRequest) {
     String userId = (String) httpServletRequest.getAttribute("userId");
     int relationId = jsonParser.parseJsonInt(jsonString, "relationId");
     DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
@@ -255,37 +265,42 @@ log.info("relationId: " + relationId);
     String senderType = null;
     if (relation.getDoctorId().equals(userId)) {
       senderType = "doctor";
-    }else if (relation.getUserId().equals(userId)) {
+    } else if (relation.getUserId().equals(userId)) {
       senderType = "user";
-    }else {
+    } else {
       return ResponseEntity.status(500).body(null);
     }
-    int DoctorUnread = messageService.countUnreadMessages(relationId,redisUtil.getIntegerFromRedis(relationId+"_doctor"), "user");
-    int UserUnread = messageService.countUnreadMessages(relationId,redisUtil.getIntegerFromRedis(relationId+"_user"), "doctor");
-    return ResponseEntity.ok("{\"DoctorUnread\": "+ DoctorUnread +", \"UserUnread\":"+ UserUnread +"}");
+    int DoctorUnread =
+        messageService.countUnreadMessages(
+            relationId, redisUtil.getIntegerFromRedis(relationId + "_doctor"), "user");
+    int UserUnread =
+        messageService.countUnreadMessages(
+            relationId, redisUtil.getIntegerFromRedis(relationId + "_user"), "doctor");
+    return ResponseEntity.ok(
+        "{\"DoctorUnread\": " + DoctorUnread + ", \"UserUnread\":" + UserUnread + "}");
   }
 
-  //更新Redis中的已读消息的序列号
+  // 更新Redis中的已读消息的序列号
   @PostMapping("/updateReadInfo")
-  public ResponseEntity<String> updateReadInfo(@RequestBody  String jsonString, HttpServletRequest httpServletRequest) {
-      String userId = (String) httpServletRequest.getAttribute("userId");
-      int relationId = jsonParser.parseJsonInt(jsonString, "relationId");
-      int ReadSeq = jsonParser.parseJsonInt(jsonString, "ReadSeq");
-      DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
-      if (relation == null) {
-          log.error("relationId: " + relationId + " not found");
-          return ResponseEntity.status(500).body(null);
-      }
-      String senderType = null;
-      if (relation.getDoctorId().equals(userId)) {
-          senderType = "doctor";
-      }else if (relation.getUserId().equals(userId)) {
-          senderType = "user";
-      }else {
-          return ResponseEntity.status(500).body(null);
-      }
-      redisUtil.setNoExpireKey(relationId+"_"+senderType, ReadSeq);
-      return ResponseEntity.ok("success");
+  public ResponseEntity<String> updateReadInfo(
+      @RequestBody String jsonString, HttpServletRequest httpServletRequest) {
+    String userId = (String) httpServletRequest.getAttribute("userId");
+    int relationId = jsonParser.parseJsonInt(jsonString, "relationId");
+    int ReadSeq = jsonParser.parseJsonInt(jsonString, "ReadSeq");
+    DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
+    if (relation == null) {
+      log.error("relationId: " + relationId + " not found");
+      return ResponseEntity.status(500).body(null);
+    }
+    String senderType = null;
+    if (relation.getDoctorId().equals(userId)) {
+      senderType = "doctor";
+    } else if (relation.getUserId().equals(userId)) {
+      senderType = "user";
+    } else {
+      return ResponseEntity.status(500).body(null);
+    }
+    redisUtil.setNoExpireKey(relationId + "_" + senderType, ReadSeq);
+    return ResponseEntity.ok("success");
   }
 }
-

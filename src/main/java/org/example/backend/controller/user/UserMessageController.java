@@ -16,32 +16,18 @@ import java.util.List;
 @RequestMapping("/api/userMessage")
 public class UserMessageController {
 
-    @Autowired
-    MessageService messageService;
+  @Autowired MessageService messageService;
 
-    @Autowired
-    private JsonParser jsonParser;
+  @Autowired private JsonParser jsonParser;
 
-    @PostMapping("/select")
-    public ResponseEntity<String> select(@RequestBody String consultationJson) {
-        String doctorId = jsonParser.parseJsonString(consultationJson, "doctorId");
-        String userId = jsonParser.parseJsonString(consultationJson, "userId");
-        List<Message> messages = messageService.selectMessagesById(doctorId, userId);
-        if(messages != null){
-            return ResponseEntity.ok(jsonParser.toJsonFromEntityList(messages));
-        }else{
-            return ResponseEntity.status(500).body("Failed to find messages");
-        }
+  @PostMapping("/add")
+  public ResponseEntity<String> add(@RequestBody Message message) {
+    message.setSenderType("user");
+    int result = messageService.insertMessage(message);
+    if (result > 0) {
+      return ResponseEntity.ok("Added successfully");
+    } else {
+      return ResponseEntity.status(500).body("Failed to add message");
     }
-
-    @PostMapping("/add")
-    public ResponseEntity<String> add(@RequestBody Message message) {
-        message.setSenderType("user");
-        int result = messageService.insertMessage(message);
-        if(result > 0){
-            return ResponseEntity.ok("Added successfully");
-        }else{
-            return ResponseEntity.status(500).body("Failed to add message");
-        }
-    }
+  }
 }

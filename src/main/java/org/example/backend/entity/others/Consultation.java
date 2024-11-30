@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class Consultation {
   private int consultationId;
   private String doctorId; // Foreign key: Doctor ID
-  private String userId;   // Foreign key: User ID
+  private String userId; // Foreign key: User ID
   private LocalDateTime consultationStart;
   private LocalDateTime consultationEnd;
   private int rating;
@@ -57,16 +57,25 @@ public class Consultation {
   public void setRating(int rating) {
     this.rating = rating;
   }
+
   // getters and setters
   @Override
   public String toString() {
-    return "Consultation{" +
-        "consultationId=" + consultationId +
-        ", doctorId='" + doctorId + '\'' +
-        ", userId='" + userId + '\'' +
-        ", consultationStart=" + consultationStart +
-        ", consultationEnd=" + consultationEnd +
-        ", rating=" + rating +
-        '}';
+    return "Consultation{"
+        + "consultationId="
+        + consultationId
+        + ", doctorId='"
+        + doctorId
+        + '\''
+        + ", userId='"
+        + userId
+        + '\''
+        + ", consultationStart="
+        + consultationStart
+        + ", consultationEnd="
+        + consultationEnd
+        + ", rating="
+        + rating
+        + '}';
   }
 }

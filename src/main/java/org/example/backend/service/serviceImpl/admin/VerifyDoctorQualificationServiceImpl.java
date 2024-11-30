@@ -17,78 +17,73 @@ import java.util.List;
 @Service
 public class VerifyDoctorQualificationServiceImpl implements VerifyDoctorQualificationService {
 
-    private static final Logger logger = LoggerFactory.getLogger(VerifyDoctorQualificationServiceImpl.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(VerifyDoctorQualificationServiceImpl.class);
 
-    @Autowired
-    LicenseCheckMapper licenseCheckMapper;
+  @Autowired LicenseCheckMapper licenseCheckMapper;
 
-    @Autowired
-    DoctorMapper doctorMapper;
+  @Autowired DoctorMapper doctorMapper;
 
-    @Override
-    public List<AdminGetDoctorLicenseDTO> selectAll() {
-        try {
-            return licenseCheckMapper.adminSelectAll();
-        }
-        catch (Exception e) {
-            // 记录异常日志
-            logger.error("获取所有审核信息失败", e);
-            return null;
-        }
+  @Override
+  public List<AdminGetDoctorLicenseDTO> selectAll() {
+    try {
+      return licenseCheckMapper.adminSelectAll();
+    } catch (Exception e) {
+      // 记录异常日志
+      logger.error("获取所有审核信息失败", e);
+      return null;
     }
+  }
 
-    @Override
-    public List<AdminGetDoctorLicenseDTO> selectRecent() {
-        try {
-            return licenseCheckMapper.adminSelectRecent();
-        }
-        catch (Exception e) {
-            // 记录异常日志
-            logger.error("获取所有审核信息失败", e);
-            return null;
-        }
+  @Override
+  public List<AdminGetDoctorLicenseDTO> selectRecent() {
+    try {
+      return licenseCheckMapper.adminSelectRecent();
+    } catch (Exception e) {
+      // 记录异常日志
+      logger.error("获取所有审核信息失败", e);
+      return null;
     }
+  }
 
-    @Override
-    public boolean approve(String auditId, String adminId, String position) {
-        try {
-            LicenseCheck licenseCheck = licenseCheckMapper.selectById(auditId);
-            Doctor doctor = doctorMapper.selectById(licenseCheck.getDoctorId());
-            if(doctor != null){
-                doctor.setPosition(position);
-                doctor.setQualification("已认证");
-                doctorMapper.updateDoctor(doctor);
-            }else{
-                logger.error("审核通过失败");
-                return false;
-            }
-            licenseCheck.setAdminId(adminId);
-            licenseCheck.setStatus("认证通过");
-            licenseCheck.setUpdatedAt(LocalDateTime.now());
-            licenseCheck.setComment("");
-            return licenseCheckMapper.update(licenseCheck);
-        }
-        catch (Exception e) {
-            // 记录异常日志
-            logger.error("审核通过失败", e);
-            return false;
-        }
+  @Override
+  public boolean approve(String auditId, String adminId, String position) {
+    try {
+      LicenseCheck licenseCheck = licenseCheckMapper.selectById(auditId);
+      Doctor doctor = doctorMapper.selectById(licenseCheck.getDoctorId());
+      if (doctor != null) {
+        doctor.setPosition(position);
+        doctor.setQualification("已认证");
+        doctorMapper.updateDoctor(doctor);
+      } else {
+        logger.error("审核通过失败");
+        return false;
+      }
+      licenseCheck.setAdminId(adminId);
+      licenseCheck.setStatus("认证通过");
+      licenseCheck.setUpdatedAt(LocalDateTime.now());
+      licenseCheck.setComment("");
+      return licenseCheckMapper.update(licenseCheck);
+    } catch (Exception e) {
+      // 记录异常日志
+      logger.error("审核通过失败", e);
+      return false;
     }
+  }
 
-    @Override
-    public boolean reject(String auditId, String adminId, String comment) {
-        try {
-            LicenseCheck licenseCheck = licenseCheckMapper.selectById(auditId);
-            licenseCheck.setAdminId(adminId);
-            licenseCheck.setStatus("已打回");
-            licenseCheck.setUpdatedAt(LocalDateTime.now());
-            licenseCheck.setComment(comment);
-            return licenseCheckMapper.update(licenseCheck);
-        }
-        catch (Exception e) {
-            // 记录异常日志
-            logger.error("审核拒绝失败", e);
-            return false;
-        }
+  @Override
+  public boolean reject(String auditId, String adminId, String comment) {
+    try {
+      LicenseCheck licenseCheck = licenseCheckMapper.selectById(auditId);
+      licenseCheck.setAdminId(adminId);
+      licenseCheck.setStatus("已打回");
+      licenseCheck.setUpdatedAt(LocalDateTime.now());
+      licenseCheck.setComment(comment);
+      return licenseCheckMapper.update(licenseCheck);
+    } catch (Exception e) {
+      // 记录异常日志
+      logger.error("审核拒绝失败", e);
+      return false;
     }
+  }
 }

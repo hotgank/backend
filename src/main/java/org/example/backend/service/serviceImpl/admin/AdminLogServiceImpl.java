@@ -9,8 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AdminLogServiceImpl implements AdminLogService {
-  @Autowired
-  private AdminLogMapper adminLogMapper;
+  @Autowired private AdminLogMapper adminLogMapper;
 
   @Override
   public List<AdminLog> getAllAdminLogs() {

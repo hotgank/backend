@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.example.backend.entity.admin.LicenseCheck;
-import  org.example.backend.service.doctor.DoctorDataService;
+import org.example.backend.service.doctor.DoctorDataService;
 import org.example.backend.util.MultipartFileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,38 +17,39 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/doctorlicense")
+@RequestMapping("/api/doctorLicense")
 public class DoctorLicenseCheckController {
   private static final Logger log = LoggerFactory.getLogger(DoctorController.class);
-    @Autowired private DoctorDataService doctorDataService;
-    @Autowired private MultipartFileUtil multipartFileUtil;
+  @Autowired private DoctorDataService doctorDataService;
+  @Autowired private MultipartFileUtil multipartFileUtil;
 
-    @PostMapping("/insert")
-    public ResponseEntity<LicenseCheck> insertCheckLicense(MultipartFile multipartFile,HttpServletRequest request) {
-      String doctorId = (String) request.getAttribute("userId");
-      String url = multipartFileUtil.saveMutipartFile(multipartFile,"LicenseImage/"+doctorId+"/");
-      log.info("url:{}",url);
-      if (url == null) return ResponseEntity.badRequest().build();
-      LicenseCheck licenseCheck = new LicenseCheck();
-      licenseCheck.setDoctorId(doctorId);
-      licenseCheck.setUrl(url);
-      licenseCheck.setStatus("未认证");
-      licenseCheck.setCreatedAt(LocalDateTime.now());
-      boolean success = doctorDataService.insertCheckLicense(licenseCheck);
-      log.info("success:{}",success);
-      if (success){
-        return ResponseEntity.ok(licenseCheck);
-      }
-
-      return ResponseEntity.badRequest().build();
+  @PostMapping("/insert")
+  public ResponseEntity<LicenseCheck> insertCheckLicense(
+      MultipartFile multipartFile, HttpServletRequest request) {
+    String doctorId = (String) request.getAttribute("userId");
+    String url =
+        multipartFileUtil.saveMultipartFile(multipartFile, "LicenseImage/" + doctorId + "/");
+    log.info("url:{}", url);
+    if (url == null) return ResponseEntity.badRequest().build();
+    LicenseCheck licenseCheck = new LicenseCheck();
+    licenseCheck.setDoctorId(doctorId);
+    licenseCheck.setUrl(url);
+    licenseCheck.setStatus("未认证");
+    licenseCheck.setCreatedAt(LocalDateTime.now());
+    boolean success = doctorDataService.insertCheckLicense(licenseCheck);
+    log.info("success:{}", success);
+    if (success) {
+      return ResponseEntity.ok(licenseCheck);
     }
 
-    @GetMapping("/myLicense")
-  public ResponseEntity<List<LicenseCheck>> selectMyLicense(HttpServletRequest request) {
-      String doctorId = (String) request.getAttribute("userId");
-      List<LicenseCheck> licenseCheck = doctorDataService.selectAllCheckLicense(doctorId);
-      if (licenseCheck!=null)return ResponseEntity.ok(licenseCheck);
-      return ResponseEntity.badRequest().build();
+    return ResponseEntity.badRequest().build();
   }
 
+  @GetMapping("/myLicense")
+  public ResponseEntity<List<LicenseCheck>> selectMyLicense(HttpServletRequest request) {
+    String doctorId = (String) request.getAttribute("userId");
+    List<LicenseCheck> licenseCheck = doctorDataService.selectAllCheckLicense(doctorId);
+    if (licenseCheck != null) return ResponseEntity.ok(licenseCheck);
+    return ResponseEntity.badRequest().build();
+  }
 }

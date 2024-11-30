@@ -30,15 +30,13 @@ import org.example.backend.entity.others.Report;
 @RequestMapping("/api/ai")
 public class AIDetectionController {
 
-  @Autowired
-  private ReportService reportService;
+  @Autowired private ReportService reportService;
 
-  @Autowired
-  private ReportUtil reportUtil;
+  @Autowired private ReportUtil reportUtil;
 
-  //日志输出
-  private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(
-      AIDetectionController.class);
+  // 日志输出
+  private static final org.slf4j.Logger logger =
+      org.slf4j.LoggerFactory.getLogger(AIDetectionController.class);
 
   @PostMapping("/detect")
   public ResponseEntity<String> detect(@RequestBody Map<String, String> body) {
@@ -50,7 +48,7 @@ public class AIDetectionController {
     report.setReportType("脊柱异位");
     report.setState("检测中");
     report.setUrl(imageUrl);
-    int reportId =reportService.insertReport(report);
+    int reportId = reportService.insertReport(report);
     // Start the async task
     detectAsync(imageUrl, reportId);
 
@@ -73,7 +71,13 @@ public class AIDetectionController {
     Map<String, String> myBody = new HashMap<>();
 
     // 将imageUrl转换为服务器上的文件路径
-    String baseDirectory = System.getProperty("user.dir") + File.separator + "uploads" + File.separator + "images" + File.separator;
+    String baseDirectory =
+        System.getProperty("user.dir")
+            + File.separator
+            + "uploads"
+            + File.separator
+            + "images"
+            + File.separator;
     String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
     String imgFile = baseDirectory + fileName;
 
@@ -121,7 +125,8 @@ public class AIDetectionController {
   }
 
   // The post method remains unchanged
-  public String post(String url, Map<String, String> headers, Map<String, String> body) throws IOException {
+  public String post(String url, Map<String, String> headers, Map<String, String> body)
+      throws IOException {
     HttpClient client = new HttpClient();
     PostMethod postMethod = new PostMethod(url);
 

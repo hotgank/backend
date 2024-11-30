@@ -15,30 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/doctorMessage")
 public class DoctorMessageController {
 
-  @Autowired
-  MessageService messageService;
-  @Autowired
-  private JsonParser jsonParser;
-
-  @PostMapping("/select")
-  public ResponseEntity<String> select(@RequestBody String consultationJson) {
-    String doctorId = jsonParser.parseJsonString(consultationJson, "doctorId");
-    String userId = jsonParser.parseJsonString(consultationJson, "userId");
-    List<Message> messages = messageService.selectMessagesById(doctorId, userId);
-    if(messages != null){
-      return ResponseEntity.ok(jsonParser.toJsonFromEntityList(messages));
-    }else{
-      return ResponseEntity.status(500).body("Failed to find messages");
-    }
-  }
+  @Autowired MessageService messageService;
+  @Autowired private JsonParser jsonParser;
 
   @PostMapping("/add")
   public ResponseEntity<String> add(@RequestBody Message message) {
     message.setSenderType("doctor");
     int result = messageService.insertMessage(message);
-    if(result > 0){
+    if (result > 0) {
       return ResponseEntity.ok("Added successfully");
-    }else{
+    } else {
       return ResponseEntity.status(500).body("Failed to add message");
     }
   }

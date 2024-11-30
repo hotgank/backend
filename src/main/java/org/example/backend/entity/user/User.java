@@ -103,20 +103,35 @@ public class User {
     this.sessionKey = sessionKey;
   }
 
-
   // getters and setters
   @Override
   public String toString() {
-    return "User{" +
-        "userId='" + userId + '\'' +
-        ", username='" + username + '\'' +
-        ", password='" + password + '\'' +
-        ", email='" + email + '\'' +
-        ", phone='" + phone + '\'' +
-        ", registrationDate=" + registrationDate +
-        ", lastLogin=" + lastLogin +
-        ", status='" + status + '\'' +
-        ", avatarUrl='" + avatarUrl + '\'' +
-       '}';
+    return "User{"
+        + "userId='"
+        + userId
+        + '\''
+        + ", username='"
+        + username
+        + '\''
+        + ", password='"
+        + password
+        + '\''
+        + ", email='"
+        + email
+        + '\''
+        + ", phone='"
+        + phone
+        + '\''
+        + ", registrationDate="
+        + registrationDate
+        + ", lastLogin="
+        + lastLogin
+        + ", status='"
+        + status
+        + '\''
+        + ", avatarUrl='"
+        + avatarUrl
+        + '\''
+        + '}';
   }
 }

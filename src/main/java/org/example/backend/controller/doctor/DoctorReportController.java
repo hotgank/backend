@@ -17,34 +17,35 @@ import java.util.List;
 @RequestMapping("/api/doctorReport")
 public class DoctorReportController {
 
-    @Autowired private ReportService reportService;
+  @Autowired private ReportService reportService;
 
-    @Autowired
-    private JsonParser jsonParser;
+  @Autowired private JsonParser jsonParser;
 
-    private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager.getLogger(DoctorReportController.class);
+  private static final org.apache.logging.log4j.Logger logger =
+      org.apache.logging.log4j.LogManager.getLogger(DoctorReportController.class);
 
-    @PostMapping("/selectByChildId")
-    public ResponseEntity<String> selectByChildId(HttpServletRequest request) {
-        String childId = (String) request.getAttribute("userId");
-        List<Report> reports = reportService.selectByChildId(childId);
-        if(reports != null){
-            return ResponseEntity.ok(jsonParser.toJsonFromEntityList(reports));
-        }else{
-            return ResponseEntity.status(500).body("Failed to find reports");
-        }
+  @PostMapping("/selectByChildId")
+  public ResponseEntity<String> selectByChildId(HttpServletRequest request) {
+    String childId = (String) request.getAttribute("userId");
+    List<Report> reports = reportService.selectByChildId(childId);
+    if (reports != null) {
+      return ResponseEntity.ok(jsonParser.toJsonFromEntityList(reports));
+    } else {
+      return ResponseEntity.status(500).body("Failed to find reports");
     }
+  }
 
-    @PostMapping("/comment")
-    public ResponseEntity<String> comment(@RequestBody Report report, HttpServletRequest request) {
-        String doctorId = (String) request.getAttribute("userId");
-        logger.info("doctorId: " + doctorId);
-        logger.info("report: " + report);
-        boolean success = reportService.doctorEditReport(report.getReportId(), report.getComment(), doctorId);
-        if(success){
-            return ResponseEntity.ok("Comment successfully");
-        }else{
-            return ResponseEntity.status(500).body("Failed to comment");
-        }
+  @PostMapping("/comment")
+  public ResponseEntity<String> comment(@RequestBody Report report, HttpServletRequest request) {
+    String doctorId = (String) request.getAttribute("userId");
+    logger.info("doctorId: " + doctorId);
+    logger.info("report: " + report);
+    boolean success =
+        reportService.doctorEditReport(report.getReportId(), report.getComment(), doctorId);
+    if (success) {
+      return ResponseEntity.ok("Comment successfully");
+    } else {
+      return ResponseEntity.status(500).body("Failed to comment");
     }
+  }
 }

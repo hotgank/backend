@@ -16,16 +16,15 @@ import java.util.Collections;
 
 /**
  * JWT 认证过滤器
+ *
  * @author Q
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-  @Autowired
-  private JwtUtil jwtUtil;
+  @Autowired private JwtUtil jwtUtil;
 
-  @Autowired
-  private RedisUtil redisUtil;
+  @Autowired private RedisUtil redisUtil;
 
   public JwtAuthenticationFilter(JwtUtil jwtUtil, RedisUtil redisUtil) {
     this.jwtUtil = jwtUtil;
@@ -33,7 +32,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   }
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+  protected void doFilterInternal(
+      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
     String authorizationHeader = request.getHeader("Authorization");
 
@@ -42,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
       // 从请求头中获取 token 后，先解析 token 获取 userId
       String userIdFromToken = jwtUtil.extractUserId(token);
-      //System.out.println("userIdFromToken: " + userIdFromToken);
+      // System.out.println("userIdFromToken: " + userIdFromToken);
 
       // 从 Redis 中获取对应的 token
       String tokenFromRedis = redisUtil.getTokenFromRedis(userIdFromToken);
@@ -57,7 +57,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 设置 userId 到请求上下文中（如果需要使用）
         request.setAttribute("userId", userIdFromToken);
-        //System.out.println("Token matched and valid, user authenticated with userId: " + userIdFromToken);
+        // System.out.println("Token matched and valid, user authenticated with userId: " +
+        // userIdFromToken);
       } else {
         // 如果 token 不匹配或者无效，返回 401 Unauthorized 错误
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -68,4 +69,3 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     filterChain.doFilter(request, response);
   }
 }
-

@@ -59,7 +59,7 @@ public class MultipartFileUtil {
         }
     }
 
-    public String saveMutipartFile(MultipartFile file, String url) {
+    public String saveMultipartFile(MultipartFile file, String url) {
         try {
             // 指定文件保存路径
             String uploadDir = "uploads/" + url;

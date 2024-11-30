@@ -23,67 +23,66 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/url")
 public class UrlController {
 
-  @Autowired
-  UrlUtil urlUtil;
+  @Autowired UrlUtil urlUtil;
 
-  @Autowired
-  private JsonParser jsonParser;
+  @Autowired private JsonParser jsonParser;
 
-  @Autowired
-  private DoctorUserRelationService doctorUserRelationService;
+  @Autowired private DoctorUserRelationService doctorUserRelationService;
 
   private static final Logger logger = org.slf4j.LoggerFactory.getLogger(UrlController.class);
 
-    @GetMapping("/avatar")
-    public ResponseEntity<Resource> getFile(@RequestParam String url) {
-        if (!url.startsWith("http://localhost:8080/doctor_avatars")) {
-            return ResponseEntity.badRequest().body(null);
-        }
-        return urlUtil.getFile(url);
+  @GetMapping("/avatar")
+  public ResponseEntity<Resource> getFile(@RequestParam String url) {
+    if (!url.startsWith("http://localhost:8080/doctor_avatars")) {
+      return ResponseEntity.badRequest().body(null);
     }
-    @GetMapping("/base64")
-    public ResponseEntity<String> getImageAsBase64(@RequestParam String url) {
-        if (!url.startsWith("http://localhost:8080/")) {
-            return ResponseEntity.badRequest().body(null);
-        }// 使用工具类获取 Base64 编码
-
-        return urlUtil.getImageAsBase64(url);
-
-    }
-
-    @PostMapping("/getReportImage")
-    public ResponseEntity <Resource> getReportImage(@RequestBody String urlJson) {
-      String url = jsonParser.parseJsonString(urlJson, "url");
-      logger.info("getReportImage: " + url);
-        return urlUtil.getFile(url);
-    }
-
-    @GetMapping("/getLicenseImage")
-    public ResponseEntity<Resource> getLicenseImage(@RequestParam String url) {
-        System.out.println(url);
-        if (!url.startsWith("http://localhost:8080/")) {
-            return ResponseEntity.badRequest().body(null);
-        }
-        logger.info("getLicenseImage: " + url);
-        return urlUtil.getFile(url);
-    }
-    @GetMapping("/getMessageAttachment")
-  public ResponseEntity<Resource> getMessageAttachment(@RequestParam String url,
-        HttpServletRequest request) {
-      String userId = (String) request.getAttribute("userId");
-      if (!url.startsWith("http://localhost:8080/MessageFiles")) {
-        return ResponseEntity.badRequest().body(null);
-      }
-      int relationId = extractIntegerFromUrl(url);
-      DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
-      if (relation == null) {
-        return ResponseEntity.badRequest().body(null);
-      }
-      if(relation.getUserId().equals(userId)||relation.getDoctorId().equals(userId)) {
-        return urlUtil.getFile(url);
-      }
-      return ResponseEntity.status(500).body(null);
+    return urlUtil.getFile(url);
   }
+
+  @GetMapping("/base64")
+  public ResponseEntity<String> getImageAsBase64(@RequestParam String url) {
+    if (!url.startsWith("http://localhost:8080/")) {
+      return ResponseEntity.badRequest().body(null);
+    } // 使用工具类获取 Base64 编码
+
+    return urlUtil.getImageAsBase64(url);
+  }
+
+  @PostMapping("/getReportImage")
+  public ResponseEntity<Resource> getReportImage(@RequestBody String urlJson) {
+    String url = jsonParser.parseJsonString(urlJson, "url");
+    logger.info("getReportImage: " + url);
+    return urlUtil.getFile(url);
+  }
+
+  @GetMapping("/getLicenseImage")
+  public ResponseEntity<Resource> getLicenseImage(@RequestParam String url) {
+    System.out.println(url);
+    if (!url.startsWith("http://localhost:8080/")) {
+      return ResponseEntity.badRequest().body(null);
+    }
+    logger.info("getLicenseImage: " + url);
+    return urlUtil.getFile(url);
+  }
+
+  @GetMapping("/getMessageAttachment")
+  public ResponseEntity<Resource> getMessageAttachment(
+      @RequestParam String url, HttpServletRequest request) {
+    String userId = (String) request.getAttribute("userId");
+    if (!url.startsWith("http://localhost:8080/MessageFiles")) {
+      return ResponseEntity.badRequest().body(null);
+    }
+    int relationId = extractIntegerFromUrl(url);
+    DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
+    if (relation == null) {
+      return ResponseEntity.badRequest().body(null);
+    }
+    if (relation.getUserId().equals(userId) || relation.getDoctorId().equals(userId)) {
+      return urlUtil.getFile(url);
+    }
+    return ResponseEntity.status(500).body(null);
+  }
+
   public int extractIntegerFromUrl(String url) {
     String[] parts = url.split("/");
     for (int i = 0; i < parts.length; i++) {
@@ -97,5 +96,4 @@ public class UrlController {
     }
     throw new IllegalArgumentException("Invalid URL format");
   }
-
 }

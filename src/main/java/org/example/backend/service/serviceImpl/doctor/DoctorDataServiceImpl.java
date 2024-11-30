@@ -11,11 +11,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DoctorDataServiceImpl implements DoctorDataService {
-  @Autowired
-  private DoctorDataMapper doctorDataMapper;
+  @Autowired private DoctorDataMapper doctorDataMapper;
 
-  @Autowired
-  private LicenseCheckMapper licenseCheckMapper;
+  @Autowired private LicenseCheckMapper licenseCheckMapper;
 
   @Override
   public List<DoctorData> getAllDoctorData() {

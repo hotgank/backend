@@ -1,6 +1,5 @@
 package org.example.backend.service.serviceImpl.others;
 
-
 import java.util.List;
 import org.example.backend.entity.others.Hospital;
 import org.example.backend.mapper.others.HospitalMapper;
@@ -15,8 +14,8 @@ public class HospitalServiceImpl implements HospitalService {
 
   private static final Logger logger = LoggerFactory.getLogger(HospitalServiceImpl.class);
 
-  @Autowired
-  private HospitalMapper hospitalMapper;
+  @Autowired private HospitalMapper hospitalMapper;
+
   @Override
   public List<Hospital> selectAllHospitals() {
     try {

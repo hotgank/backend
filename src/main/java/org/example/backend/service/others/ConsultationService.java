@@ -5,9 +5,14 @@ import org.example.backend.entity.others.Consultation;
 
 public interface ConsultationService {
   List<Consultation> selectAllConsultations();
+
   Consultation selectConsultationById(int id);
+
   List<Consultation> selectConsultationByDoctorId(String doctorId);
+
   List<Consultation> selectConsultationByUserId(String userId);
+
   Consultation selectConsultationByDoctorIdAndUserId(String doctorId, String userId);
+
   int insertConsultation(String doctorId, String userId);
 }

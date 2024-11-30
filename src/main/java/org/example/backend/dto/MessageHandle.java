@@ -14,6 +14,7 @@ public class MessageHandle {
   public User getUser() {
     return user;
   }
+
   public void setUser(User user) {
     this.user = user;
   }
@@ -21,9 +22,11 @@ public class MessageHandle {
   public int getRelationId() {
     return relationId;
   }
+
   public void setRelationId(int relationId) {
     this.relationId = relationId;
   }
+
   @Override
   public String toString() {
     return "MessageHandle [user=" + user + ", relationId=" + relationId + "]";

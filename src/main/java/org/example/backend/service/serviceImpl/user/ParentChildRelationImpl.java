@@ -10,16 +10,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- * ParentChildRelationImpl
- */
+/** ParentChildRelationImpl */
 @Service
 public class ParentChildRelationImpl implements ParentChildRelationService {
 
-  @Autowired
-  private ParentChildRelationMapper parentChildRelationMapper;
+  @Autowired private ParentChildRelationMapper parentChildRelationMapper;
 
-  private static final Logger logger = LoggerFactory.getLogger( ParentChildRelationImpl.class);
+  private static final Logger logger = LoggerFactory.getLogger(ParentChildRelationImpl.class);
+
   @Override
   public List<ParentChildRelation> getAllRelations() {
     return parentChildRelationMapper.selectAll();
@@ -40,7 +38,6 @@ public class ParentChildRelationImpl implements ParentChildRelationService {
       logger.error("Error creating relation: {}", e.getMessage(), e);
       return -1;
     }
-
   }
 
   @Override
@@ -56,7 +53,7 @@ public class ParentChildRelationImpl implements ParentChildRelationService {
   }
 
   @Override
-  public Boolean deleteRelationById( int relationId) {
+  public Boolean deleteRelationById(int relationId) {
     try {
       parentChildRelationMapper.deleteRelationById(relationId);
       logger.info("relation deleted successfully");
@@ -65,9 +62,9 @@ public class ParentChildRelationImpl implements ParentChildRelationService {
       logger.error("Error deleting relation: {}", e.getMessage(), e);
       return false;
     }
-    }
+  }
 
-    @Override
+  @Override
   public List<ParentChildRelation> getRelationsByUserId(String userId) {
     try {
       return parentChildRelationMapper.selectByUserId(userId);
@@ -75,10 +72,10 @@ public class ParentChildRelationImpl implements ParentChildRelationService {
       logger.error("Error getting relations by userId: {}", e.getMessage(), e);
       return null;
     }
-    }
+  }
 
-    // delete all relations by childId
-    @Override
+  // delete all relations by childId
+  @Override
   public Boolean deleteRelationsByChildId(String childId) {
     try {
       parentChildRelationMapper.deleteRelationsByChildId(childId);

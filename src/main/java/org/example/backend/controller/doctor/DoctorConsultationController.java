@@ -14,20 +14,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/doctorConsultation")
 public class DoctorConsultationController {
 
-  @Autowired
-  ConsultationService consultationService;
+  @Autowired ConsultationService consultationService;
 
-  @Autowired
-  private JsonParser jsonParser;
+  @Autowired private JsonParser jsonParser;
 
   @PostMapping("/add")
   public ResponseEntity<String> addConsultation(@RequestBody String consultationJson) {
     String doctorId = jsonParser.parseJsonString(consultationJson, "doctorId");
     String userId = jsonParser.parseJsonString(consultationJson, "userId");
     int consultationId = consultationService.insertConsultation(doctorId, userId);
-    if(consultationId > 0){
+    if (consultationId > 0) {
       return ResponseEntity.ok("Consultation added successfully");
-    }else{
+    } else {
       return ResponseEntity.badRequest().body("Failed to add consultation");
     }
   }
@@ -38,11 +36,10 @@ public class DoctorConsultationController {
     String userId = jsonParser.parseJsonString(consultationJson, "userId");
     Consultation consultation =
         consultationService.selectConsultationByDoctorIdAndUserId(doctorId, userId);
-    if(consultation != null){
+    if (consultation != null) {
       return ResponseEntity.ok(jsonParser.toJsonFromEntity(consultation));
-    }else{
+    } else {
       return ResponseEntity.badRequest().body("Failed to select consultation");
     }
   }
-
 }

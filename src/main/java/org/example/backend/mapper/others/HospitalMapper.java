@@ -11,9 +11,9 @@ import org.example.backend.entity.others.Hospital;
 public interface HospitalMapper {
   @Select("SELECT * FROM o_hospitals")
   @Results({
-      @Result(column = "hospital_name", property = "hospitalName"),
-      @Result(column = "address", property = "address"),
-      @Result(column = "admin_id", property = "adminId"),
+    @Result(column = "hospital_name", property = "hospitalName"),
+    @Result(column = "address", property = "address"),
+    @Result(column = "admin_id", property = "adminId"),
   })
   List<Hospital> selectAll();
 }

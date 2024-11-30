@@ -107,7 +107,7 @@ public class AdminServiceImpl implements AdminService {
   }
 
   @Override
-  public boolean activateAdmin(String adminId){
+  public boolean activateAdmin(String adminId) {
     try {
       Admin admin = selectById(adminId);
       admin.setStatus("active");
@@ -121,7 +121,7 @@ public class AdminServiceImpl implements AdminService {
   }
 
   @Override
-  public boolean banAdmin(String adminId){
+  public boolean banAdmin(String adminId) {
     try {
       Admin admin = selectById(adminId);
       admin.setStatus("disabled");
@@ -152,7 +152,7 @@ public class AdminServiceImpl implements AdminService {
     if (adminDetails == null) {
       return null;
     }
-    if(adminDetails.getStatus().equals("disabled")){
+    if (adminDetails.getStatus().equals("disabled")) {
       return "disabled";
     }
     if (encryptionUtil.verifyMD5(password, adminDetails.getPassword())) {
@@ -167,7 +167,7 @@ public class AdminServiceImpl implements AdminService {
     if (adminDetails == null) {
       return null;
     }
-    if(adminDetails.getStatus().equals("disabled")){
+    if (adminDetails.getStatus().equals("disabled")) {
       return "disabled";
     }
     if (encryptionUtil.verifyMD5(password, adminDetails.getPassword())) {
@@ -181,5 +181,4 @@ public class AdminServiceImpl implements AdminService {
     Admin admin = adminMapper.selectById(adminId);
     return encryptionUtil.verifyMD5(password, admin.getPassword());
   }
-
 }

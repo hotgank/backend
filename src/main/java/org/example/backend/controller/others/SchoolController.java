@@ -13,19 +13,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/school")
 public class SchoolController {
-  @Autowired
-  private SchoolService schoolService;
+  @Autowired private SchoolService schoolService;
 
-  @Autowired
-  private JsonParser jsonParser;
+  @Autowired private JsonParser jsonParser;
 
   @GetMapping("/selectAll")
   public ResponseEntity<String> selectAllSchools() {
-    List <School> schools = schoolService.selectAllSchools();
+    List<School> schools = schoolService.selectAllSchools();
 
-    if(schools != null){
+    if (schools != null) {
       return ResponseEntity.ok(jsonParser.toJsonFromEntityList(schools));
-    }else{
+    } else {
       return ResponseEntity.status(500).body("Failed to find schools");
     }
   }

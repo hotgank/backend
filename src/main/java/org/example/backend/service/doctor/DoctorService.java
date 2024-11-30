@@ -8,15 +8,22 @@ public interface DoctorService {
   int selectUnqualifiedDoctorCount();
 
   Doctor selectById(String doctorId);
+
   List<Doctor> selectAll();
+
   String insert(Doctor doctor);
 
   boolean insertAllDoctors(List<Doctor> doctors);
 
   boolean update(Doctor doctor);
+
   boolean delete(String doctorId);
 
-  boolean banAccount(String doctorId); boolean activeAccount(String doctorId);boolean updatePassword(String doctorId, String newPassword);
+  boolean banAccount(String doctorId);
+
+  boolean activeAccount(String doctorId);
+
+  boolean updatePassword(String doctorId, String newPassword);
 
   String generateRegisterCode(String email);
 
@@ -39,5 +46,6 @@ public interface DoctorService {
   String getAvatarBase64(String doctorId);
 
   int selectDoctorCount();
+
   Doctor selectDoctorByEmail(String email);
 }

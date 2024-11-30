@@ -11,8 +11,8 @@ public class WebConfig implements WebMvcConfigurer {
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
     // 将 /images/ URL 映射到项目根目录下的 AIDetectionImage 文件夹
-    registry.addResourceHandler("/images/**")
+    registry
+        .addResourceHandler("/images/**")
         .addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/images/");
   }
 }
-

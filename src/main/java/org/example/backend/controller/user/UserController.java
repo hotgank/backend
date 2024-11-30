@@ -24,17 +24,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/user")
 public class UserController {
 
-  @Autowired
-  private UserService userService;
+  @Autowired private UserService userService;
 
-  @Autowired
-  private JsonParser jsonParser;
+  @Autowired private JsonParser jsonParser;
 
-  @Autowired
-  private ExcelReader excelReader;
+  @Autowired private ExcelReader excelReader;
 
   @PostMapping("/uploadUsername")
-  public ResponseEntity<String> uploadUsername(@RequestBody Map<String, String> payload, HttpServletRequest request) {
+  public ResponseEntity<String> uploadUsername(
+      @RequestBody Map<String, String> payload, HttpServletRequest request) {
     String userId = (String) request.getAttribute("userId");
 
     // 从 JSON 请求体中获取 username 字段
@@ -57,11 +55,17 @@ public class UserController {
 
     // 调用服务层来根据userId查询用户信息
     User selectedUser = userService.selectById(userId);
-    if (selectedUser != null){
-      return ResponseEntity.ok("{\"username\":\""+selectedUser.getUsername()
-          +"\",\"phone\":\""+selectedUser.getPhone()
-          +"\",\"avatarUrl\":\""+selectedUser.getAvatarUrl()
-          +"\",\"openid\":\""+selectedUser.getOpenid()+"\"}");
+    if (selectedUser != null) {
+      return ResponseEntity.ok(
+          "{\"username\":\""
+              + selectedUser.getUsername()
+              + "\",\"phone\":\""
+              + selectedUser.getPhone()
+              + "\",\"avatarUrl\":\""
+              + selectedUser.getAvatarUrl()
+              + "\",\"openid\":\""
+              + selectedUser.getOpenid()
+              + "\"}");
     } else {
       return ResponseEntity.status(500).body("Failed to Get user information");
     }
@@ -72,7 +76,7 @@ public class UserController {
     String adminId = (String) request.getAttribute("userId");
     if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
       int userCount = userService.selectUserCount();
-      return ResponseEntity.ok("{\"userCount\":\"" + userCount+ "\"}");
+      return ResponseEntity.ok("{\"userCount\":\"" + userCount + "\"}");
     } else {
       return ResponseEntity.status(500).body("Failed to Get user information");
     }
@@ -179,7 +183,7 @@ public class UserController {
   }
 
   @PostMapping("/deleteById")
-  public ResponseEntity<String> deleteById(@RequestBody String userIdJson ) {
+  public ResponseEntity<String> deleteById(@RequestBody String userIdJson) {
     String userId = jsonParser.parseJsonString(userIdJson, "userId");
     // 调用服务层来删除用户信息
     boolean success = userService.delete(userId);
@@ -190,7 +194,7 @@ public class UserController {
     }
   }
 
-  //获取所有已认证的医生
+  // 获取所有已认证的医生
   @PostMapping("/selectAllQualifiedDoctors")
   public ResponseEntity<String> selectAllQualifiedDoctors(HttpServletRequest request) {
     String userId = (String) request.getAttribute("userId");
