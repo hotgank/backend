@@ -69,11 +69,7 @@ public class ImageController {
       byte[] bytes = file.getBytes();
       Files.write(path, bytes);
 
-      // 生成图片的访问 URL
-      //      String serverUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-      //          .path("/UserAvatar/")
-      //          .toUriString();
-      //      String imageUrl = serverUrl + uniqueFileName;
+
       String imageUrl = "http://localhost:8080/UserAvatar/" + uniqueFileName;
 
       // 更新用户头像信息
