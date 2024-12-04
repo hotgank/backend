@@ -42,10 +42,12 @@ public class AIDetectionController {
   public ResponseEntity<String> detect(@RequestBody Map<String, String> body) {
     String childId = body.get("childId");
     String imageUrl = body.get("imageUrl");
+    String type = body.get("type");
 
     Report report = new Report();
     report.setChildId(childId);
-    report.setReportType("脊柱异位");
+
+    report.setReportType(type);
     report.setState("检测中");
     report.setUrl(imageUrl);
     int reportId = reportService.insertReport(report);
