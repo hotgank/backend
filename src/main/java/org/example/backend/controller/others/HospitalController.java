@@ -49,7 +49,7 @@ public class HospitalController {
   public ResponseEntity<String> getHospitalCount() {
     int count = hospitalService.getHospitalCount();
     if (count != -1) {
-      return ResponseEntity.ok(String.valueOf(count));
+      return ResponseEntity.ok("{\"count\":\"" + count + "\"}");
     } else {
       return ResponseEntity.status(500).body("Failed to get hospital count");
     }
