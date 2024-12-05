@@ -37,4 +37,6 @@ public interface UserService {
 
   // 用户获取已认证的医生列表
   List<UserGetDoctorDTO> selectAllQualifiedDoctors(String userId);
+
+  List<User> selectUserByCondition(String queryString, int currentPage, int pageSize);
 }
