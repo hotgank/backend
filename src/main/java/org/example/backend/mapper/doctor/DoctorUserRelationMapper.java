@@ -154,6 +154,7 @@ public interface DoctorUserRelationMapper {
     @Result(column = "user_id", property = "userId"),
     @Result(column = "relation_id", property = "relationId"),
     @Result(column = "relation_status", property = "relationStatus"),
+      @Result(column = "created_at", property = "createdAt")
   })
   DoctorUserRelation findRelationById(@Param("relationId") Integer relationId);
 
