@@ -1,5 +1,7 @@
 package org.example.backend.service.serviceImpl.user;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
@@ -238,6 +240,57 @@ public class UserServiceImpl implements UserService {
       // 记录异常日志
       logger.error("获取医生列表失败", e);
       return Collections.emptyList();
+    }
+  }
+
+  @Override
+  public List<User> selectUserByCondition(String queryString, int currentPage, int pageSize) {
+    logger.info("根据条件查询用户，当前页: {}, 每页记录数: {}, 查询条件: {}", currentPage, pageSize, queryString);
+    try {
+      // 启动分页
+      PageHelper.startPage(currentPage, pageSize);
+      logger.info(
+          "PageHelper 分页信息: pageNum={}, pageSize={}, startRow={}, endRow={}, total={}, pages={}",
+          PageHelper.getLocalPage().getPageNum(),
+          PageHelper.getLocalPage().getPageSize(),
+          PageHelper.getLocalPage().getStartRow(),
+          PageHelper.getLocalPage().getEndRow(),
+          PageHelper.getLocalPage().getTotal(),
+          PageHelper.getLocalPage().getPages());
+      int total = userMapper.selectUserCount();
+      logger.info("获取用户总数成功，总数: {}", total);
+      // 判断分页条件是否合理
+      // 不能小于0
+      if (currentPage < 1) {
+        logger.warn("当前页数不能小于1，设置当前页数为1");
+        currentPage = 1;
+      }
+      if (pageSize < 1) {
+        logger.warn("每页记录数不能小于1，设置每页记录数为1");
+        pageSize = 1;
+      }
+      // 根据pageSize计算总页数，判断currentPage是否合理
+      int totalPages = (int) Math.ceil((double) total / pageSize);
+      if (currentPage > totalPages) {
+        logger.warn("当前页数不能大于总页数，设置当前页数为{}", totalPages);
+        currentPage = totalPages;
+      }
+      List<User> list =
+          userMapper.selectUserByCondition(queryString, (currentPage - 1) * pageSize, pageSize);
+      PageInfo<User> pageInfo = new PageInfo<>(list);
+      logger.info("根据条件查询用户成功，总记录数: {}, 结果: {}", pageInfo.getTotal(), list);
+      logger.info(
+          "PageHelper 分页信息: pageNum={}, pageSize={}, startRow={}, endRow={}, total={}, pages={}",
+          pageInfo.getPageNum(),
+          pageInfo.getPageSize(),
+          pageInfo.getStartRow(),
+          pageInfo.getEndRow(),
+          pageInfo.getTotal(),
+          pageInfo.getPages());
+      return list;
+    } catch (Exception e) {
+      logger.error("根据条件查询用户失败", e);
+      return null;
     }
   }
 }

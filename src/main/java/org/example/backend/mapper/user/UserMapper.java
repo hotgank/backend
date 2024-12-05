@@ -7,8 +7,10 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.Update;
 import org.example.backend.entity.user.User;
+import org.example.backend.util.SqlProvider.UserSqlProvider;
 
 @Mapper
 public interface UserMapper {
@@ -89,4 +91,27 @@ public interface UserMapper {
     @Result(column = "registration_date", property = "registrationDate"),
   })
   User selectByOpenId(@Param("openid") String openid);
+
+
+  /**
+   * 根据条件查询用户
+   *
+   * @param queryString 查询条件
+   * @param PageBegin 页码
+   * @param PageSize 页大小
+   * @return 用户列表
+   */
+  @SelectProvider(type = UserSqlProvider.class, method = "selectUserByCondition")
+  @Results({
+      @Result(column = "user_id", property = "userId"),
+      @Result(column = "username", property = "username"),
+      @Result(column = "password", property = "password"),
+      @Result(column = "email", property = "email"),
+      @Result(column = "phone", property = "phone"),
+      @Result(column = "registration_date", property = "registrationDate"),
+      @Result(column = "last_login", property = "lastLogin"),
+      @Result(column = "status", property = "status"),
+      @Result(column = "avatar_url", property = "avatarUrl")
+  })
+  List<User> selectUserByCondition(@Param("queryString") String queryString, @Param("pageBegin") int PageBegin, @Param("PageSize") int PageSize);
 }
