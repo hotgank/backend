@@ -12,6 +12,8 @@ public class HospitalSqlProvider {
    * 构造查询语句
    *
    * @param queryString 查询条件
+   * pageBegin 页数
+   * pageSize 每页数量
    * @return 查询语句
    */
   public String selectHospitalByCondition(
