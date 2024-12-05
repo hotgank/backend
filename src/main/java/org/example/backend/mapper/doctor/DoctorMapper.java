@@ -8,9 +8,11 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.Update;
 import org.example.backend.dto.UserGetDoctorDTO;
 import org.example.backend.entity.doctor.Doctor;
+import org.example.backend.util.SqlProvider.DoctorSqlProvider;
 
 @Mapper
 public interface DoctorMapper {
@@ -169,4 +171,35 @@ public interface DoctorMapper {
     @Result(column = "birthdate", property = "birthdate")
   })
   List<UserGetDoctorDTO> selectAllQualifiedDoctors();
+
+
+  /**
+   * 根据查询条件分页查询所有医生
+   *
+   * @param queryString 查询条件
+   * @param PageBegin 开始页
+   * @param PageSize 每页数量
+   * @return 分页查询结果
+   */
+  @SelectProvider(type = DoctorSqlProvider.class, method = "selectDoctorByCondition")
+  @Results({
+      @Result(column = "doctor_id", property = "doctorId"),
+      @Result(column = "name", property = "name"),
+      @Result(column = "username", property = "username"),
+      @Result(column = "password", property = "password"),
+      @Result(column = "phone", property = "phone"),
+      @Result(column = "email", property = "email"),
+      @Result(column = "age", property = "age"),
+      @Result(column = "gender", property = "gender"),
+      @Result(column = "position", property = "position"),
+      @Result(column = "workplace", property = "workplace"),
+      @Result(column = "qualification", property = "qualification"),
+      @Result(column = "experience", property = "experience"),
+      @Result(column = "rating", property = "rating"),
+      @Result(column = "avatar_url", property = "avatarUrl"),
+      @Result(column = "registration_date", property = "registrationDate"),
+      @Result(column = "last_login", property = "lastLogin"),
+      @Result(column = "status", property = "status")
+  })
+  List<Doctor> selectDoctorByCondition(@Param("queryString") String queryString, @Param("pageBegin") int PageBegin, @Param("PageSize") int PageSize);
 }

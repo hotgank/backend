@@ -326,4 +326,17 @@ public class DoctorController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
   }
+
+  @PostMapping("/selectPage")
+  public ResponseEntity<String> selectPage(@RequestBody String jsonString){
+    int currentPage = jsonParser.parseJsonInt(jsonString, "currentPage");
+    int pageSize = jsonParser.parseJsonInt(jsonString, "pageSize");
+    String queryString = jsonParser.parseJsonString(jsonString, "queryString");
+    List<Doctor> doctors = doctorService.selectDoctorByCondition(queryString, currentPage, pageSize);
+    if (doctors == null){
+      return ResponseEntity.status(500).body("Failed");
+    }
+    doctors.forEach(doctor -> doctor.setPassword(""));
+    return ResponseEntity.ok(jsonParser.toJsonFromEntityList(doctors));
+  }
 }
