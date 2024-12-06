@@ -48,4 +48,6 @@ public interface DoctorService {
   int selectDoctorCount();
 
   Doctor selectDoctorByEmail(String email);
+
+  List<Doctor> selectDoctorByCondition(String queryString, int currentPage, int pageSize);
 }

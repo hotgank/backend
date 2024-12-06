@@ -147,8 +147,7 @@ public class DoctorUserRelationController {
     int count = 0;
     for (DoctorUserRelation r : relations) {
       if (r.getRelationStatus().equals("pending")
-          || r.getRelationStatus().equals("approved")
-          || r.getRelationStatus().equals("removeBinding")) {
+          || r.getRelationStatus().equals("approved")) {
         count++;
       }
     }

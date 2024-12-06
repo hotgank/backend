@@ -1,5 +1,8 @@
 package org.example.backend.controller.doctor;
 
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import org.example.backend.entity.others.Consultation;
 import org.example.backend.service.others.ConsultationService;
 import org.example.backend.util.JsonParser;
@@ -19,10 +22,11 @@ public class DoctorConsultationController {
   @Autowired private JsonParser jsonParser;
 
   @PostMapping("/add")
-  public ResponseEntity<String> addConsultation(@RequestBody String consultationJson) {
-    String doctorId = jsonParser.parseJsonString(consultationJson, "doctorId");
-    String userId = jsonParser.parseJsonString(consultationJson, "userId");
-    int consultationId = consultationService.insertConsultation(doctorId, userId);
+  public ResponseEntity<String> addConsultation(@RequestBody String JsonString, HttpServletRequest request) {
+    int rating = jsonParser.parseJsonInt(JsonString, "rating");
+    String doctorId = jsonParser.parseJsonString(JsonString, "doctorId");
+    String userId = (String) request.getAttribute("userId");
+    int consultationId = consultationService.insertConsultation(doctorId, userId,rating);
     if (consultationId > 0) {
       return ResponseEntity.ok("Consultation added successfully");
     } else {
@@ -42,4 +46,5 @@ public class DoctorConsultationController {
       return ResponseEntity.badRequest().body("Failed to select consultation");
     }
   }
+
 }

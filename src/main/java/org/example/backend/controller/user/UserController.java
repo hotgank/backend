@@ -201,4 +201,17 @@ public class UserController {
     List<UserGetDoctorDTO> allQualifiedDoctors = userService.selectAllQualifiedDoctors(userId);
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(allQualifiedDoctors));
   }
+
+  @PostMapping("/selectPage")
+  public ResponseEntity<String> selectPage(@RequestBody String jsonString) {
+    int currentPage = jsonParser.parseJsonInt(jsonString, "currentPage");
+    int pageSize = jsonParser.parseJsonInt(jsonString, "pageSize");
+    String queryString = jsonParser.parseJsonString(jsonString, "queryString");
+    List<User> users = userService.selectUserByCondition(queryString, currentPage, pageSize);
+    if (users == null){
+      return ResponseEntity.status(500).body("Failed to get user information");
+    }
+    users.forEach(user -> user.setPassword(""));
+    return ResponseEntity.ok(jsonParser.toJsonFromEntityList(users));
+  }
 }
