@@ -72,13 +72,14 @@ public class ConsultationServiceImpl implements ConsultationService {
   }
 
   @Override
-  public int insertConsultation(int relationId, int rating) {
+  public int insertConsultation(String doctorId, String userId, int rating) {
     try {
       //根据关系id查询医生id和用户id
-      DoctorUserRelation relation = doctorUserRelationMapper.findRelationById(relationId);
-      String doctorId = relation.getDoctorId();
-      String userId = relation.getUserId();
-      LocalDateTime createdAt = LocalDateTime.now();
+      DoctorUserRelation relation = doctorUserRelationMapper.selectDoctorUserRelation(doctorId, userId);
+      if (relation == null){
+        logger.error("未找到医生和用户关系, doctorId: {}, userId: {}", doctorId, userId);
+      }
+      LocalDateTime createdAt = relation.getCreatedAt();
 
       Consultation consultation = new Consultation();
       consultation.setDoctorId(doctorId);
