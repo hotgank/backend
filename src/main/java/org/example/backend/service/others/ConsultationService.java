@@ -15,5 +15,5 @@ public interface ConsultationService {
 
   Consultation selectConsultationByDoctorIdAndUserId(String doctorId, String userId);
 
-  int insertConsultation(int relationId, int rating);
+  int insertConsultation(String doctorId, String userId, int rating);
 }

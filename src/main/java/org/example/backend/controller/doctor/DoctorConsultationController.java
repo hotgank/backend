@@ -22,10 +22,11 @@ public class DoctorConsultationController {
   @Autowired private JsonParser jsonParser;
 
   @PostMapping("/add")
-  public ResponseEntity<String> addConsultation(@RequestBody String JsonString) {
+  public ResponseEntity<String> addConsultation(@RequestBody String JsonString, HttpServletRequest request) {
     int rating = jsonParser.parseJsonInt(JsonString, "rating");
-    int relationId = jsonParser.parseJsonInt(JsonString, "relationId");
-    int consultationId = consultationService.insertConsultation(relationId, rating);
+    String doctorId = jsonParser.parseJsonString(JsonString, "doctorId");
+    String userId = (String) request.getAttribute("userId");
+    int consultationId = consultationService.insertConsultation(doctorId, userId,rating);
     if (consultationId > 0) {
       return ResponseEntity.ok("Consultation added successfully");
     } else {
