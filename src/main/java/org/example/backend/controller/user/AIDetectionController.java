@@ -50,6 +50,8 @@ public class AIDetectionController {
     report.setReportType(type);
     report.setState("检测中");
     report.setUrl(imageUrl);
+    report.setAllowState("disallow");
+    report.setReadState("unread");
     int reportId = reportService.insertReport(report);
     // Start the async task
     detectAsync(imageUrl, reportId);

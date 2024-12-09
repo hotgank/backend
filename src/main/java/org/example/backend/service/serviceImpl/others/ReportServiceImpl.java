@@ -213,4 +213,39 @@ public class ReportServiceImpl implements ReportService {
       return null;
     }
   }
+
+  @Override
+  public boolean allowReport(int reportId, String allowState) {
+    try {
+      reportMapper.editReportAllowState(reportId, allowState);
+      return true;
+    } catch (Exception e) {
+      // 记录异常日志
+      logger.error("允许报告失败, reportId: {}", reportId, e);
+      return false;
+    }
+  }
+
+  @Override
+  public int countUnreadReports(String userId) {
+    try {
+      return reportMapper.countUnreadReports(userId);
+    } catch (Exception e) {
+      // 记录异常日志
+      logger.error("获取未读报告数量失败, userId: {}", userId, e);
+      return 0;
+    }
+  }
+
+  @Override
+  public boolean updateReadStateByChildId(String childId) {
+    try {
+      reportMapper.updateReadStateByChildId(childId);
+      return true;
+    } catch (Exception e) {
+      // 记录异常日志
+      logger.error("更新报告已读状态失败, childId: {}", childId, e);
+      return false;
+    }
+  }
 }
