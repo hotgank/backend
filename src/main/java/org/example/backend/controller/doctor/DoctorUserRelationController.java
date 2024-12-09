@@ -15,6 +15,7 @@ import org.example.backend.service.doctor.DoctorUserRelationService;
 import org.example.backend.service.others.MessageService;
 import org.example.backend.service.others.ReportService;
 import org.example.backend.util.JsonParser;
+import org.example.backend.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,8 @@ public class DoctorUserRelationController {
   @Autowired private ReportService reportService;
 
   @Autowired private MessageService messageService;
+
+  @Autowired private RedisUtil redisUtil;
 
   @GetMapping("/selectApplication")
   public ResponseEntity<String> selectApplication(HttpServletRequest request) {
@@ -192,6 +195,11 @@ public class DoctorUserRelationController {
     boolean success = doctorUserRelationService.updateDoctorUserRelation(relation);
 
     if (success) {
+      //医生发送信息
+      messageService.sendMessage(relation.getRelationId(), "doctor", "我已通过你的申请，可以开始咨询啦", "text", "");
+      //初始化已读消息序列号
+      redisUtil.setNoExpireKey(relation.getRelationId() + "_" + "doctor", 0);
+      redisUtil.setNoExpireKey(relation.getRelationId() + "_" + "user", 0);
       return ResponseEntity.ok("Successfully reviewed doctor child relation");
     } else {
       return ResponseEntity.status(500).body("Failed to review doctor child relation");

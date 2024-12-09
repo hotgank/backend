@@ -132,4 +132,17 @@ public interface ReportMapper {
   @Update(
       "UPDATE r_reports SET allow_state = #{allowState} WHERE report_id = #{reportId}")
   boolean editReportAllowState(@Param("reportId") int reportId, @Param("allowState") String allowState);
+
+  //根据userId查询出u_parents_children表中的所有childId，然后根据childId查询计算出r_reports表中read_state为"unread"的个数
+  @Select(
+      "SELECT COUNT(r.report_id) "
+          + "FROM r_reports r "
+          + "JOIN u_parents_children p ON r.child_id = p.child_id "
+          + "WHERE p.user_id = #{userId} AND r.read_state = 'unread'")
+  int countUnreadReports(@Param("userId") String userId);
+
+  //根据childId查询，把read_state为"unread"的改为"read"
+  @Update(
+      "UPDATE r_reports SET read_state = 'read' WHERE child_id = #{childId} AND read_state = 'unread'")
+  boolean updateReadStateByChildId(@Param("childId") String childId);
 }

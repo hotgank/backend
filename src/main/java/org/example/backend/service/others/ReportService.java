@@ -34,4 +34,10 @@ public interface ReportService {
 
   //授权接口
   boolean allowReport(int reportId, String allowState);
+
+  //获取用户未读报告的数量
+  int countUnreadReports(String userId);
+
+  //更新报告已读状态
+  boolean updateReadStateByChildId(String childId);
 }
