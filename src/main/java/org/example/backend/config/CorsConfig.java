@@ -19,7 +19,9 @@ public class CorsConfig {
     config.addAllowedOrigin("http://*:10689");
     config.addAllowedOrigin("https://*:5173");
     config.addAllowedOrigin("https://*:10689");
-    config.addAllowedOriginPattern("*");
+    config.addAllowedOrigin("http://zeropw.cn");
+    config.addAllowedOrigin("https://zeropw.cn");
+//    config.addAllowedOriginPattern("*");
     // 是否允许携带Cookie
     config.setAllowCredentials(true);
 
