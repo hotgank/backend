@@ -31,4 +31,7 @@ public interface ReportService {
 
   // 医生获取报告
   List<DoctorGetReportDTO> DoctorGetReportByUserId(String userId);
+
+  //授权接口
+  boolean allowReport(int reportId, String allowState);
 }

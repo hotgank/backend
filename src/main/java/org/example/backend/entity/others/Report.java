@@ -13,6 +13,8 @@ public class Report {
   private String comment;
   private String doctorId;
   private String url; // Image URL
+  private String allowState;
+  private String readState;
 
   public int getReportId() {
     return reportId;
@@ -116,6 +118,12 @@ public class Report {
         + ", url='"
         + url
         + '\''
+        + ", allowState='"
+        + allowState
+        + '\''
+        + ", readState='"
+        + readState
+        + '\''
         + '}';
   }
 
@@ -125,5 +133,21 @@ public class Report {
 
   public void setState(String state) {
     this.state = state;
+  }
+
+  public String getAllowState() {
+    return allowState;
+  }
+
+  public void setAllowState(String allowState) {
+    this.allowState = allowState;
+  }
+
+  public String getReadState() {
+    return readState;
+  }
+
+  public void setReadState(String readState) {
+    this.readState = readState;
   }
 }

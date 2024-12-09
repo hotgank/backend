@@ -89,4 +89,30 @@ public class UserReportController {
       return ResponseEntity.status(500).body("更新失败");
     }
   }
+
+  // allow报告
+  @PostMapping("/allowReport")
+  public ResponseEntity<String> allowReport(@RequestBody String reportIdJson) {
+    int reportId = jsonParser.parseJsonInt(reportIdJson, "reportId");
+    String allowState = "allow";
+    boolean result = reportService.allowReport(reportId, allowState);
+    if (result) {
+      return ResponseEntity.ok("允许成功");
+    } else {
+      return ResponseEntity.status(500).body("允许失败");
+    }
+  }
+
+  // disallow报告
+  @PostMapping("/disallowReport")
+  public ResponseEntity<String> disallowReport(@RequestBody String reportIdJson) {
+    int reportId = jsonParser.parseJsonInt(reportIdJson, "reportId");
+    String allowState = "disallow";
+    boolean result = reportService.allowReport(reportId, allowState);
+    if (result) {
+      return ResponseEntity.ok("禁止成功");
+    } else {
+      return ResponseEntity.status(500).body("禁止失败");
+    }
+  }
 }

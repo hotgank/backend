@@ -213,4 +213,16 @@ public class ReportServiceImpl implements ReportService {
       return null;
     }
   }
+
+  @Override
+  public boolean allowReport(int reportId, String allowState) {
+    try {
+      reportMapper.editReportAllowState(reportId, allowState);
+      return true;
+    } catch (Exception e) {
+      // 记录异常日志
+      logger.error("允许报告失败, reportId: {}", reportId, e);
+      return false;
+    }
+  }
 }
