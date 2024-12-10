@@ -19,4 +19,6 @@ public interface MessageService {
       Integer relationId, String senderType, String messageText, String messageType, String url);
 
   int countUnreadMessages(int relationId, int readSeg, String senderType);
+
+  int TodayCousultationUserCount(String doctorId);
 }

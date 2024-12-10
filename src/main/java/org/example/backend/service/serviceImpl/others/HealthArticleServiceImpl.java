@@ -29,6 +29,11 @@ public class HealthArticleServiceImpl implements HealthArticleService {
   }
 
   @Override
+  public List<HealthArticle> getTotalAll() {
+    return healthArticleMapper.selectListAll();
+  }
+
+  @Override
   public boolean createHealthArticle(HealthArticle healthArticle) {
     try {
       healthArticleMapper.insertHealthArticle(healthArticle);
@@ -75,5 +80,10 @@ public class HealthArticleServiceImpl implements HealthArticleService {
   @Override
   public List<HealthArticle> getByDoctorId(String doctorId) {
     return healthArticleMapper.selectByDoctorId(doctorId);
+  }
+
+  @Override
+  public int selectCountByDoctorId(String doctorId) {
+    return healthArticleMapper.selectCountByDoctorId(doctorId);
   }
 }

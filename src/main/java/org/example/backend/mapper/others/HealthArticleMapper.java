@@ -29,7 +29,7 @@ public interface HealthArticleMapper {
   })
   HealthArticle selectById(Integer articleId);
 
-  @Select("SELECT * FROM o_health_articles")
+  @Select("SELECT * FROM o_health_articles WHERE status = '已发布'")
   @Results({
     @Result(column = "article_id", property = "articleId"),
     @Result(column = "doctor_id", property = "doctorId"),
@@ -59,4 +59,20 @@ public interface HealthArticleMapper {
     @Result(column = "status", property = "status"),
   })
   List<HealthArticle> selectByDoctorId(String doctorId);
+
+  @Select("SELECT * FROM o_health_articles")
+  @Results({
+      @Result(column = "article_id", property = "articleId"),
+      @Result(column = "doctor_id", property = "doctorId"),
+      @Result(column = "title", property = "title"),
+      @Result(column = "content", property = "content"),
+      @Result(column = "publish_date", property = "publishDate"),
+      @Result(column = "type", property = "type"),
+      @Result(column = "status", property = "status"),
+  })
+  List<HealthArticle> selectListAll();
+
+
+  @Select("SELECT COUNT(*) FROM o_health_articles WHERE doctor_id=#{doctorId} AND status='已发布'")
+  int selectCountByDoctorId(String doctorId);
 }

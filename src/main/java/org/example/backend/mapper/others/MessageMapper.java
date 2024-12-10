@@ -129,4 +129,32 @@ public interface MessageMapper {
       @Param("relationId") int relationId,
       @Param("readSeg") int readSeg,
       @Param("senderType") String senderType);
+
+  // 查询今天咨询的用户数量
+  @Select(
+      """
+      SELECT 
+          COUNT(DISTINCT cm.relation_id) AS consultation_count
+      FROM 
+          c_messages cm
+      JOIN 
+          d_doctors_users ddu ON cm.relation_id = ddu.relation_id
+      JOIN 
+          d_doctors d ON ddu.doctor_id = d.doctor_id
+      WHERE 
+          d.doctor_id = #{doctorId}
+          AND cm.sender_type = 'user'
+          AND DATE(cm.timestamp) = CURDATE()
+          AND EXISTS (
+              SELECT 1 
+              FROM c_consultations c
+              WHERE c.consultation_start >= CURDATE() 
+              AND c.consultation_end <= CURDATE()
+              AND c.user_id = ddu.user_id
+              AND c.doctor_id = d.doctor_id
+          )
+      """
+  )
+  int TodayCousultationUserCount(@Param("doctorId") String doctorId);
+
 }
