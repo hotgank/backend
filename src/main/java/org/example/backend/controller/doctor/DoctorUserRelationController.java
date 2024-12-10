@@ -160,16 +160,24 @@ public class DoctorUserRelationController {
     DoctorUserRelation doctorUserRelation =
         doctorUserRelationService.selectDoctorUserRelationByIDs(
             relation.getDoctorId(), relation.getUserId());
+    int result = 0;
     if (doctorUserRelation != null) {
       if (doctorUserRelation.getRelationStatus().equals("pending")) {
         return ResponseEntity.status(500).body("You had sent a pending invitation already");
       } else if (doctorUserRelation.getRelationStatus().equals("approved")) {
         return ResponseEntity.status(500).body("You have been bound with this doctor already");
-      } else {
-        return ResponseEntity.status(500).body("You had been rejected already");
+      } else if (doctorUserRelation.getRelationStatus().equals("rejected")){
+        doctorUserRelation.setRelationStatus("pending");
+        boolean updateResult = doctorUserRelationService.updateDoctorUserRelation(doctorUserRelation);
+        if (updateResult) {
+          return ResponseEntity.ok("Successfully bound doctor with child");
+        } else {
+          return ResponseEntity.status(500).body("Failed to bound doctor with child");
+        }
       }
+    } else {
+      result = doctorUserRelationService.createDoctorUserRelation(relation);
     }
-    int result = doctorUserRelationService.createDoctorUserRelation(relation);
 
     if (result > 0) {
       return ResponseEntity.ok("Successfully bound doctor with child");
