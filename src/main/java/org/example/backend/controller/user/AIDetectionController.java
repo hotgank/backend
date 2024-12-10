@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.example.backend.entity.others.DetectionAPI;
+import org.example.backend.service.others.DetectionAPIService;
 import org.example.backend.service.others.ReportService;
 import org.example.backend.util.ReportUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,8 @@ public class AIDetectionController {
 
   @Autowired private ReportUtil reportUtil;
 
+  @Autowired private DetectionAPIService detectionAPIService;
+
   // 日志输出
   private static final org.slf4j.Logger logger =
       org.slf4j.LoggerFactory.getLogger(AIDetectionController.class);
@@ -44,12 +48,19 @@ public class AIDetectionController {
     String imageUrl = body.get("imageUrl");
     String type = body.get("type");
 
+    // 更新API调用次数
+    DetectionAPI detectionAPI = detectionAPIService.selectByType(type);
+    detectionAPI.setNumber(detectionAPI.getNumber()+1);
+    detectionAPIService.updateDetectionAPI(detectionAPI);
+
     Report report = new Report();
     report.setChildId(childId);
 
     report.setReportType(type);
     report.setState("检测中");
     report.setUrl(imageUrl);
+    report.setAllowState("disallow");
+    report.setReadState("unread");
     int reportId = reportService.insertReport(report);
     // Start the async task
     detectAsync(imageUrl, reportId);

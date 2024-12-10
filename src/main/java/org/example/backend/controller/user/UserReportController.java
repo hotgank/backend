@@ -37,6 +37,11 @@ public class UserReportController {
   public ResponseEntity<String> selectByChildId(@RequestBody String childIdJson) {
     String childId = jsonParser.parseJsonString(childIdJson, "childId");
     List<Report> reports = reportService.selectByChildId(childId);
+    //更新报告状态
+    boolean isUpdated =reportService.updateReadStateByChildId(childId);
+    if (!isUpdated){
+      return ResponseEntity.status(500).body("更新失败");
+    }
     if (reports != null) {
       return ResponseEntity.ok(jsonParser.toJsonFromEntityList(reports));
     } else {
@@ -88,5 +93,38 @@ public class UserReportController {
     } else {
       return ResponseEntity.status(500).body("更新失败");
     }
+  }
+
+  // allow报告
+  @PostMapping("/allowReport")
+  public ResponseEntity<String> allowReport(@RequestBody String reportIdJson) {
+    int reportId = jsonParser.parseJsonInt(reportIdJson, "reportId");
+    String allowState = "allow";
+    boolean result = reportService.allowReport(reportId, allowState);
+    if (result) {
+      return ResponseEntity.ok("允许成功");
+    } else {
+      return ResponseEntity.status(500).body("允许失败");
+    }
+  }
+
+  // disallow报告
+  @PostMapping("/disallowReport")
+  public ResponseEntity<String> disallowReport(@RequestBody String reportIdJson) {
+    int reportId = jsonParser.parseJsonInt(reportIdJson, "reportId");
+    String allowState = "disallow";
+    boolean result = reportService.allowReport(reportId, allowState);
+    if (result) {
+      return ResponseEntity.ok("禁止成功");
+    } else {
+      return ResponseEntity.status(500).body("禁止失败");
+    }
+  }
+  //获取未读报告数量
+  @GetMapping("/countUnreadReports")
+  public ResponseEntity<String> countUnreadReports(HttpServletRequest request) {
+    String userId = (String) request.getAttribute("userId");
+    int count = reportService.countUnreadReports(userId);
+    return ResponseEntity.ok("{\"count\":\"" + count + "\"}");
   }
 }
