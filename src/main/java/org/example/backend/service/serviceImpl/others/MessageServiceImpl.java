@@ -68,4 +68,9 @@ public class MessageServiceImpl implements MessageService {
   public int countUnreadMessages(int relationId, int readSeg, String senderType) {
     return messageMapper.countUnreadMessages(relationId, readSeg, senderType);
   }
+
+  @Override
+  public int TodayCousultationUserCount(String doctorId) {
+    return messageMapper.TodayCousultationUserCount(doctorId);
+  }
 }

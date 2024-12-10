@@ -303,4 +303,15 @@ public class MessageController {
     redisUtil.setNoExpireKey(relationId + "_" + senderType, ReadSeq);
     return ResponseEntity.ok("success");
   }
+
+  @GetMapping("/TodayCousultationUserCount")
+  public ResponseEntity<String> TodayCousultationUserCount(
+      @RequestParam String doctorId, HttpServletRequest httpServletRequest) {
+    return ResponseEntity.ok("10");
+  }
+  @GetMapping("/TodayCousultationDoctorCount")
+  public ResponseEntity<Integer> TodayCousultationDoctorCount(HttpServletRequest httpServletRequest) {
+    String userId = (String) httpServletRequest.getAttribute("userId");
+    return ResponseEntity.ok(messageService.TodayCousultationUserCount(userId));
+  }
 }

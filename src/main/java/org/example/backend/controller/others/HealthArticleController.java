@@ -46,6 +46,13 @@ public class HealthArticleController {
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(healthArticleService.getAll()));
   }
 
+  @PostMapping("/getTotalAll")
+  public ResponseEntity<String> getTotalAllHealthArticle() {
+    String jsonString = jsonParser.toJsonFromEntityList(healthArticleService.getAll());
+    jsonString = jsonParser.removeKeyFromJson(jsonString, "doctorId");
+    return ResponseEntity.ok(jsonParser.toJsonFromEntityList(healthArticleService.getTotalAll()));
+  }
+
   @PostMapping("/getDoctorByArticleId")
   public ResponseEntity<String> getDoctorByArticleId(@RequestBody String healthArticle) {
     int articleId = jsonParser.parseJsonInt(healthArticle, "articleId");
@@ -112,5 +119,24 @@ public class HealthArticleController {
     String jsonString = jsonParser.toJsonFromEntity(healthArticle1);
     jsonString = jsonParser.removeKeyFromJson(jsonString, "doctorId");
     return ResponseEntity.ok(jsonString);
+  }
+
+  @PostMapping("/changeStatus")
+  public ResponseEntity<String> changeStatus(@RequestBody String healthArticle) {
+    int articleId = jsonParser.parseJsonInt(healthArticle, "articleId");
+    String status = jsonParser.parseJsonString(healthArticle, "status");
+    if(status.equals("已发布") || status.equals("未审核")|| status.equals("已打回")){
+      HealthArticle healthArticle1 = healthArticleService.getById(articleId);
+      healthArticle1.setStatus(status);
+      boolean result = healthArticleService.updateHealthArticle(healthArticle1);
+      if (result) return ResponseEntity.ok("Successfully change status");
+      else return ResponseEntity.status(500).body("Failed to change status");
+    }else return ResponseEntity.status(403).body("Forbidden");
+  }
+
+  @GetMapping("/myPublished")
+  public ResponseEntity<Integer> getMyPublishedArticles(HttpServletRequest request) {
+    String doctorId = (String) request.getAttribute("userId");
+    return ResponseEntity.ok(healthArticleService.selectCountByDoctorId(doctorId));
   }
 }
