@@ -85,8 +85,8 @@ public interface HospitalMapper {
   @Results({
     @Result(column = "hospital_name", property = "hospitalName"),
     @Result(column = "address", property = "address"),
-    @Result(column = "o_hospitals.admin_id", property = "adminId"),
-    @Result(column = "username", property = "adminUsername")
+    @Result(column = "admin_id", property = "adminId"),
+    @Result(column = "adminUsername", property = "adminUsername")
   })
   List<AdminGetHospitalDTO> selectHospitalByCondition(
       @Param("queryString") String queryString,
