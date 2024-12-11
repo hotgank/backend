@@ -145,16 +145,9 @@ public interface MessageMapper {
           d.doctor_id = #{doctorId}
           AND cm.sender_type = 'user'
           AND DATE(cm.timestamp) = CURDATE()
-          AND EXISTS (
-              SELECT 1 
-              FROM c_consultations c
-              WHERE c.consultation_start >= CURDATE() 
-              AND c.consultation_end <= CURDATE()
-              AND c.user_id = ddu.user_id
-              AND c.doctor_id = d.doctor_id
-          )
       """
   )
   int TodayCousultationUserCount(@Param("doctorId") String doctorId);
+
 
 }
