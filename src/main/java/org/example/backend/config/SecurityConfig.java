@@ -36,6 +36,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers("/api/DoctorRegister/**")
                     .permitAll()
+                    .requestMatchers("/UserAvatar/**")
+                    .permitAll()
                     .anyRequest()
                     .authenticated() // 其他请求都需要认证
             )
