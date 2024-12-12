@@ -8,6 +8,8 @@ public interface HealthArticleService {
 
   List<HealthArticle> getAll();
 
+  List<HealthArticle> getTotalAll();
+
   boolean createHealthArticle(HealthArticle healthArticle);
 
   boolean updateHealthArticle(HealthArticle healthArticle);
@@ -15,4 +17,6 @@ public interface HealthArticleService {
   boolean deleteHealthArticle(Integer articleId);
 
   List<HealthArticle> getByDoctorId(String doctorId);
+
+  int selectCountByDoctorId(String doctorId);
 }

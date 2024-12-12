@@ -85,4 +85,9 @@ public interface ConsultationMapper {
   // 根据ID删除咨询记录
   @Delete("DELETE FROM c_consultations WHERE consultation_id = #{id}")
   int deleteConsultationById(int id);
+
+  @Select(
+      "SELECT AVG(rating) FROM c_consultations WHERE doctor_id = #{doctorId}"
+  )
+  float selectAvgRatingByDoctorId(@Param("doctorId") String doctorId);
 }

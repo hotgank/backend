@@ -16,4 +16,6 @@ public interface ConsultationService {
   Consultation selectConsultationByDoctorIdAndUserId(String doctorId, String userId);
 
   int insertConsultation(String doctorId, String userId, int rating);
+
+  float selectAvgRatingByDoctorId(String doctorId);
 }

@@ -3,6 +3,7 @@ package org.example.backend.service.serviceImpl.others;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.doctor.DoctorUserRelation;
 import org.example.backend.entity.others.Consultation;
 import org.example.backend.mapper.doctor.DoctorMapper;
@@ -93,11 +94,22 @@ public class ConsultationServiceImpl implements ConsultationService {
       }
       consultation.setRating(rating);
       consultationMapper.insertConsultation(consultation);
+      float avgRating = consultationMapper.selectAvgRatingByDoctorId(doctorId);
+      if(avgRating <= 5 && avgRating >= 0) {
+        Doctor doctor = doctorMapper.selectById(doctorId);
+        doctor.setRating(avgRating);
+        doctorMapper.updateDoctor(doctor);
+      }
       return consultation.getConsultationId();
     } catch (Exception e) {
       // 记录异常日志
       logger.error("创建失败 e");
       return 0;
     }
+  }
+
+  @Override
+  public float selectAvgRatingByDoctorId(String doctorId) {
+    return consultationMapper.selectAvgRatingByDoctorId(doctorId);
   }
 }
