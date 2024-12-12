@@ -59,6 +59,7 @@ public class ReportServiceImpl implements ReportService {
         reportDTO.setComment(report.getComment());
         reportDTO.setAnalyse(report.getAnalyse());
         reportDTO.setUrl(report.getUrl());
+        reportDTO.setAllowState(report.getAllowState());
         allReports.add(reportDTO);
       }
     }

@@ -155,7 +155,7 @@ public class DoctorUserRelationController {
         count++;
       }
     }
-    if (count >= 5) {
+    if (count >= 20) {
       return ResponseEntity.status(500).body("You have too many pending invitations");
     }
     DoctorUserRelation doctorUserRelation =
@@ -167,7 +167,7 @@ public class DoctorUserRelationController {
         return ResponseEntity.status(500).body("You had sent a pending invitation already");
       } else if (doctorUserRelation.getRelationStatus().equals("approved")) {
         return ResponseEntity.status(500).body("You have been bound with this doctor already");
-      } else if (doctorUserRelation.getRelationStatus().equals("rejected")){
+      } else if (doctorUserRelation.getRelationStatus().equals("rejected")||doctorUserRelation.getRelationStatus().equals("removeBinding")){
         doctorUserRelation.setRelationStatus("pending");
         boolean updateResult = doctorUserRelationService.updateDoctorUserRelation(doctorUserRelation);
         if (updateResult) {

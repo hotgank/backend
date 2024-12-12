@@ -12,7 +12,15 @@ public class UserHistoryReportDTO {
   private String analyse;
   private String comment;
   private String url; // Image URL
+  private String allowState;
 
+  public String getAllowState() {
+    return allowState;
+  }
+
+  public void setAllowState(String allowState) {
+    this.allowState = allowState;
+  }
   public int getId() {
     return id;
   }
