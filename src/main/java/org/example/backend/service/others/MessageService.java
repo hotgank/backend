@@ -1,6 +1,7 @@
 package org.example.backend.service.others;
 
 import java.util.List;
+import org.example.backend.entity.doctor.DoctorUserRelation;
 import org.example.backend.entity.others.Message;
 
 public interface MessageService {
@@ -21,4 +22,8 @@ public interface MessageService {
   int countUnreadMessages(int relationId, int readSeg, String senderType);
 
   int TodayCousultationUserCount(String doctorId);
+
+  public String getReadInfoSeq(int relationId);
+
+  public boolean updateReadInfoSeq(String userId,int relationId,int ReadSeq);
 }

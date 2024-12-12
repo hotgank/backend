@@ -106,6 +106,10 @@ public class MessageController {
     if (!(relation.getDoctorId().equals(Id) || relation.getUserId().equals(Id))) {
       return ResponseEntity.status(500).body(null);
     }
+    boolean flag = messageService.updateReadInfoSeq(Id,relationId, messageSeq);
+    if(!flag){
+      log.info("更新已读数据失败");
+    }
     return ResponseEntity.ok(messageService.getMessagesAfterSeq(relationId, messageSeq));
   }
 
