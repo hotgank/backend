@@ -94,6 +94,17 @@ public class MessageController {
     }
     return ResponseEntity.ok(messageService.getLast30Messages(relationId));
   }
+  @GetMapping("/new30/{relationId}")
+  public ResponseEntity<List<Message>> getNew30Messages(
+      @PathVariable Integer relationId, HttpServletRequest httpServletRequest) {
+    String Id = (String) httpServletRequest.getAttribute("userId");
+
+    DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
+    if (!(relation.getDoctorId().equals(Id) || relation.getUserId().equals(Id))) {
+      return ResponseEntity.status(500).body(null);
+    }
+    return ResponseEntity.ok(messageService.getNew30Messages(relationId));
+  }
 
   @GetMapping("/after/{relationId}/{messageSeq}")
   public ResponseEntity<List<Message>> getMessagesAfterSeq(

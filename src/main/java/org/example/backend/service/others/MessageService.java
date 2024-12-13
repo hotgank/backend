@@ -12,6 +12,8 @@ public interface MessageService {
 
   List<Message> getLast30Messages(Integer relationId);
 
+  List<Message> getNew30Messages(Integer relationId);
+
   List<Message> getMessagesAfterSeq(Integer relationId, Integer messageSeq);
 
   List<Message> getMessagesBeforeSeq(Integer relationId, Integer messageSeq);

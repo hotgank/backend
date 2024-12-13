@@ -35,6 +35,10 @@ public class MessageServiceImpl implements MessageService {
   }
 
   @Override
+  public List<Message> getNew30Messages(Integer relationId) {
+    return messageMapper.getNew30Messages(relationId);
+  }
+  @Override
   public int insertMessage(Message message) {
     return messageMapper.insert(message);
   }
