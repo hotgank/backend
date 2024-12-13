@@ -21,7 +21,7 @@ public interface MessageService {
 
   int countUnreadMessages(int relationId, int readSeg, String senderType);
 
-  int TodayCousultationUserCount(String doctorId);
+  int todayCousultationUserCount(String doctorId);
 
   public String getReadInfoSeq(int relationId);
 

@@ -77,7 +77,7 @@ public class MessageServiceImpl implements MessageService {
   }
 
   @Override
-  public int TodayCousultationUserCount(String doctorId) {
+  public int todayCousultationUserCount(String doctorId) {
     return messageMapper.TodayCousultationUserCount(doctorId);
   }
 

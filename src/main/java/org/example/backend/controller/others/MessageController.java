@@ -308,14 +308,14 @@ public class MessageController {
     return ResponseEntity.ok("success");
   }
 
-  @GetMapping("/TodayCousultationUserCount")
-  public ResponseEntity<String> TodayCousultationUserCount(
+  @GetMapping("/todayCousultationUserCount")
+  public ResponseEntity<String> todayCousultationUserCount(
       @RequestParam String doctorId, HttpServletRequest httpServletRequest) {
     return ResponseEntity.ok("10");
   }
-  @GetMapping("/TodayCousultationDoctorCount")
+  @GetMapping("/todayCousultationDoctorCount")
   public ResponseEntity<Integer> TodayCousultationDoctorCount(HttpServletRequest httpServletRequest) {
     String userId = (String) httpServletRequest.getAttribute("userId");
-    return ResponseEntity.ok(messageService.TodayCousultationUserCount(userId));
+    return ResponseEntity.ok(messageService.todayCousultationUserCount(userId));
   }
 }
