@@ -3,7 +3,7 @@ package org.example.backend.entity.others;
 public class DetectionAPI {
   private String apiId;
   private String apiType;
-  private String number;
+  private int number;
   private String state;
 
   // getter and setter methods
@@ -19,10 +19,10 @@ public class DetectionAPI {
   public void setApiType(String apiType) {
     this.apiType = apiType;
   }
-  public String getNumber() {
+  public int getNumber() {
     return number;
   }
-  public void setNumber(String number) {
+  public void setNumber(int number) {
     this.number = number;
   }
   public String getState() {
