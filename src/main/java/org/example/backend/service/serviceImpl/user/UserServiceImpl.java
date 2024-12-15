@@ -124,6 +124,7 @@ public class UserServiceImpl implements UserService {
     try {
       String sessionKey = encryptionUtil.encryptMD5(user.getSessionKey());
       user.setSessionKey(sessionKey);
+      user.setLastLogin(LocalDateTime.now());
       userMapper.updateUser(user);
       logger.info("User with ID {} updated successfully", user.getUserId());
       return true;

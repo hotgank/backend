@@ -27,7 +27,10 @@ public class DoctorSqlProvider {
             FROM("d_doctors");
             if (queryString != null && !queryString.equals("")) {
               WHERE("name like '%" + queryString + "%'");
+              OR();
+              WHERE("doctor_id LIKE CONCAT('%', #{queryString}, '%')");
             }
+            ORDER_BY("rating DESC");
             LIMIT("#{pageBegin}, #{PageSize}");
           }
         }.toString();
