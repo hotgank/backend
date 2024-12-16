@@ -46,6 +46,17 @@ public class DoctorServiceImpl implements DoctorService {
   }
 
   @Override
+  public int selectMyDoctorCount(String adminId) {
+    try {
+      return doctorMapper.selectMyDoctorCount(adminId);
+    } catch (Exception e) {
+      // 记录异常日志
+      logger.error("获取医生数量失败", e);
+      return 0;
+    }
+  }
+
+  @Override
   public Doctor selectDoctorByEmail(String email) {
     return doctorMapper.selectDoctorByEmail(email);
   }
@@ -323,7 +334,7 @@ public class DoctorServiceImpl implements DoctorService {
   }
 
   @Override
-  public List<Doctor> selectDoctorByCondition(String queryString, int currentPage, int pageSize) {
+  public List<Doctor> selectDoctorByCondition(String queryString, String adminId, int currentPage, int pageSize) {
     logger.info("根据条件查询医生，当前页: {}, 每页记录数: {}, 查询条件: {}", currentPage, pageSize, queryString);
     try {
       // 启动分页
@@ -336,7 +347,7 @@ public class DoctorServiceImpl implements DoctorService {
           PageHelper.getLocalPage().getEndRow(),
           PageHelper.getLocalPage().getTotal(),
           PageHelper.getLocalPage().getPages());
-      int total = doctorMapper.selectDoctorCount();
+      int total = doctorMapper.selectMyDoctorCount(adminId);
       logger.info("获取医生总数成功，总数: {}", total);
       // 判断分页条件是否合理
       // 不能小于0
@@ -350,11 +361,11 @@ public class DoctorServiceImpl implements DoctorService {
       }
       // 根据pageSize计算总页数，判断currentPage是否合理
       int totalPages = (int) Math.ceil((double) total / pageSize);
-      if (currentPage > totalPages) {
+      if (currentPage > totalPages && totalPages != 0) {
         logger.warn("当前页数不能大于总页数，设置当前页数为{}", totalPages);
         currentPage = totalPages;
       }
-      List<Doctor> list = doctorMapper.selectDoctorByCondition(queryString, (currentPage - 1) * pageSize, pageSize);
+      List<Doctor> list = doctorMapper.selectDoctorByCondition(queryString, adminId, (currentPage - 1) * pageSize, pageSize);
 
       PageInfo<Doctor> pageInfo = new PageInfo<>(list);
 

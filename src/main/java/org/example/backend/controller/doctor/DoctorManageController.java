@@ -3,7 +3,6 @@ package org.example.backend.controller.doctor;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 import org.example.backend.entity.doctor.Doctor;
-import org.example.backend.service.others.HospitalService;
 import org.example.backend.service.doctor.DoctorService;
 import org.example.backend.util.JsonParser;
 import org.example.backend.util.MailUtils;
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/doctor_manage")
 public class DoctorManageController {
-  private static final Logger logger = LoggerFactory.getLogger(DoctorRegisterController.class);
+  private static final Logger logger = LoggerFactory.getLogger(DoctorManageController.class);
   @Autowired private MailUtils mailUtils;
   @Autowired private DoctorService doctorService;
   @Autowired private JsonParser jsonParser;

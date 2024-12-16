@@ -43,6 +43,18 @@ public class DoctorController {
     }
   }
 
+  @GetMapping("/selectMyDoctorCount")
+  public ResponseEntity<String> selectMyDoctorCount(HttpServletRequest request) {
+    String adminId = (String) request.getAttribute("userId");
+    if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
+      int doctorCount = doctorService.selectMyDoctorCount(adminId);
+      return ResponseEntity.ok("{\"doctorCount\":\"" + doctorCount + "\"}");
+    } else {
+      return ResponseEntity.status(500).body("Failed to Get doctor information");
+    }
+  }
+
+
   @GetMapping("/selectUnqualifiedDoctorCount")
   public ResponseEntity<String> selectUnqualifiedDoctorCount(HttpServletRequest request) {
     String adminId = (String) request.getAttribute("userId");
@@ -328,11 +340,12 @@ public class DoctorController {
   }
 
   @PostMapping("/selectPage")
-  public ResponseEntity<String> selectPage(@RequestBody String jsonString){
+  public ResponseEntity<String> selectPage(@RequestBody String jsonString, HttpServletRequest request){
     int currentPage = jsonParser.parseJsonInt(jsonString, "currentPage");
     int pageSize = jsonParser.parseJsonInt(jsonString, "pageSize");
     String queryString = jsonParser.parseJsonString(jsonString, "queryString");
-    List<Doctor> doctors = doctorService.selectDoctorByCondition(queryString, currentPage, pageSize);
+    String adminId = (String) request.getAttribute("userId");
+    List<Doctor> doctors = doctorService.selectDoctorByCondition(queryString, adminId, currentPage, pageSize);
     if (doctors == null){
       return ResponseEntity.status(500).body("Failed");
     }
