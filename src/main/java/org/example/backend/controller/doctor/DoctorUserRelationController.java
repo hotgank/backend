@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.example.backend.entity.user.User;
 import org.example.backend.dto.MessageHandle;
+import org.example.backend.dto.MessageHandlePlus;
 
 @RestController
 @RequestMapping("api/doctor/relation")
@@ -154,7 +155,7 @@ public class DoctorUserRelationController {
         count++;
       }
     }
-    if (count >= 5) {
+    if (count >= 20) {
       return ResponseEntity.status(500).body("You have too many pending invitations");
     }
     DoctorUserRelation doctorUserRelation =
@@ -166,7 +167,7 @@ public class DoctorUserRelationController {
         return ResponseEntity.status(500).body("You had sent a pending invitation already");
       } else if (doctorUserRelation.getRelationStatus().equals("approved")) {
         return ResponseEntity.status(500).body("You have been bound with this doctor already");
-      } else if (doctorUserRelation.getRelationStatus().equals("rejected")){
+      } else if (doctorUserRelation.getRelationStatus().equals("rejected")||doctorUserRelation.getRelationStatus().equals("removeBinding")){
         doctorUserRelation.setRelationStatus("pending");
         boolean updateResult = doctorUserRelationService.updateDoctorUserRelation(doctorUserRelation);
         if (updateResult) {
@@ -383,5 +384,39 @@ public class DoctorUserRelationController {
 
     // 如果 relation 不为空，返回其 ID
     return ResponseEntity.ok(jsonParser.toJsonFromEntity(relation.getRelationId()));
+  }
+
+  @GetMapping("/selectMyPatientsAndRelationIdAndUnread")
+  public ResponseEntity<String> selectMyPatientsAndRelationIdAndUnread(HttpServletRequest request) {
+    String doctorId = (String) request.getAttribute("userId");
+    // 调用服务层来查询患者信息
+    List<User> relations = doctorUserRelationService.selectMyPatients(doctorId, "approved");
+    List<MessageHandlePlus> messages = new ArrayList<>();
+    DoctorUserRelation relation;
+    String unreadJson;
+    int doctorUnread;
+    int userUnread;
+    for (User user : relations) {
+      relation = doctorUserRelationService.selectDoctorUserRelationByIDs(doctorId, user.getUserId());
+      unreadJson = messageService.getReadInfoSeq(relation.getRelationId());
+      doctorUnread = jsonParser.parseJsonInt(unreadJson, "DoctorUnread");
+      userUnread = jsonParser.parseJsonInt(unreadJson, "UserUnread");
+      messages.add(
+          new MessageHandlePlus(
+              user,
+              relation.getRelationId(),
+              doctorUnread,
+              userUnread));
+    }
+
+    String json = jsonParser.toJsonFromEntityList(messages);
+
+    json = jsonParser.removeKeyFromJson(json, "password");
+    json = jsonParser.removeKeyFromJson(json, "email");
+    json = jsonParser.removeKeyFromJson(json, "phone");
+    json = jsonParser.removeKeyFromJson(json, "registrationDate");
+    json = jsonParser.removeKeyFromJson(json, "lastLogin");
+    json = jsonParser.removeKeyFromJson(json, "openid");
+    return ResponseEntity.ok(json);
   }
 }

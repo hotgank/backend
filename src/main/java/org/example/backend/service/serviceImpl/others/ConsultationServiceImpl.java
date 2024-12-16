@@ -1,5 +1,7 @@
 package org.example.backend.service.serviceImpl.others;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -95,9 +97,13 @@ public class ConsultationServiceImpl implements ConsultationService {
       consultation.setRating(rating);
       consultationMapper.insertConsultation(consultation);
       float avgRating = consultationMapper.selectAvgRatingByDoctorId(doctorId);
-      if(avgRating <= 5 && avgRating >= 0) {
+      // 使用BigDecimal进行格式化
+      BigDecimal avgRatingBD = new BigDecimal(avgRating).setScale(2, RoundingMode.HALF_UP);
+      float formattedAvgRating = avgRatingBD.floatValue();
+      System.out.println("平均分：" + formattedAvgRating);
+      if(formattedAvgRating <= 5 && formattedAvgRating >= 0) {
         Doctor doctor = doctorMapper.selectById(doctorId);
-        doctor.setRating(avgRating);
+        doctor.setRating(formattedAvgRating);
         doctorMapper.updateDoctor(doctor);
       }
       return consultation.getConsultationId();

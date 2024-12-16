@@ -94,6 +94,17 @@ public class MessageController {
     }
     return ResponseEntity.ok(messageService.getLast30Messages(relationId));
   }
+  @GetMapping("/new30/{relationId}")
+  public ResponseEntity<List<Message>> getNew30Messages(
+      @PathVariable Integer relationId, HttpServletRequest httpServletRequest) {
+    String Id = (String) httpServletRequest.getAttribute("userId");
+
+    DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
+    if (!(relation.getDoctorId().equals(Id) || relation.getUserId().equals(Id))) {
+      return ResponseEntity.status(500).body(null);
+    }
+    return ResponseEntity.ok(messageService.getNew30Messages(relationId));
+  }
 
   @GetMapping("/after/{relationId}/{messageSeq}")
   public ResponseEntity<List<Message>> getMessagesAfterSeq(
@@ -105,6 +116,10 @@ public class MessageController {
     DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
     if (!(relation.getDoctorId().equals(Id) || relation.getUserId().equals(Id))) {
       return ResponseEntity.status(500).body(null);
+    }
+    boolean flag = messageService.updateReadInfoSeq(Id,relationId, messageSeq);
+    if(!flag){
+      log.info("更新已读数据失败");
     }
     return ResponseEntity.ok(messageService.getMessagesAfterSeq(relationId, messageSeq));
   }
@@ -304,14 +319,14 @@ public class MessageController {
     return ResponseEntity.ok("success");
   }
 
-  @GetMapping("/TodayCousultationUserCount")
-  public ResponseEntity<String> TodayCousultationUserCount(
+  @GetMapping("/todayCousultationUserCount")
+  public ResponseEntity<String> todayCousultationUserCount(
       @RequestParam String doctorId, HttpServletRequest httpServletRequest) {
     return ResponseEntity.ok("10");
   }
-  @GetMapping("/TodayCousultationDoctorCount")
+  @GetMapping("/todayCousultationDoctorCount")
   public ResponseEntity<Integer> TodayCousultationDoctorCount(HttpServletRequest httpServletRequest) {
     String userId = (String) httpServletRequest.getAttribute("userId");
-    return ResponseEntity.ok(messageService.TodayCousultationUserCount(userId));
+    return ResponseEntity.ok(messageService.todayCousultationUserCount(userId));
   }
 }

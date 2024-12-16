@@ -3,11 +3,14 @@ package org.example.backend.service.serviceImpl.others;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import org.example.backend.entity.doctor.DoctorUserRelation;
 import org.example.backend.entity.others.Consultation;
 import org.example.backend.entity.others.Message;
 import org.example.backend.mapper.others.MessageMapper;
 import org.example.backend.service.others.ConsultationService;
 import org.example.backend.service.others.MessageService;
+import org.example.backend.service.doctor.DoctorUserRelationService;
+import org.example.backend.util.RedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +25,19 @@ public class MessageServiceImpl implements MessageService {
 
   @Autowired private ConsultationService consultationService;
 
+  @Autowired private RedisUtil redisUtil;
+
+  @Autowired private DoctorUserRelationService doctorUserRelationService;
+
   @Override
   public Message getLastMessage(Integer relationId) {
     return messageMapper.getLastMessage(relationId);
   }
 
+  @Override
+  public List<Message> getNew30Messages(Integer relationId) {
+    return messageMapper.getNew30Messages(relationId);
+  }
   @Override
   public int insertMessage(Message message) {
     return messageMapper.insert(message);
@@ -70,7 +81,37 @@ public class MessageServiceImpl implements MessageService {
   }
 
   @Override
-  public int TodayCousultationUserCount(String doctorId) {
+  public int todayCousultationUserCount(String doctorId) {
     return messageMapper.TodayCousultationUserCount(doctorId);
+  }
+
+  @Override
+  public String getReadInfoSeq(int relationId) {
+    int DoctorUnread =
+        countUnreadMessages(
+            relationId, redisUtil.getIntegerFromRedis(relationId + "_doctor"), "user");
+    int UserUnread =
+        countUnreadMessages(
+            relationId, redisUtil.getIntegerFromRedis(relationId + "_user"), "doctor");
+    return "{\"DoctorUnread\": " + DoctorUnread + ", \"UserUnread\":" + UserUnread + "}";
+  }
+
+  @Override
+  public boolean updateReadInfoSeq(String userId,int relationId,int ReadSeq) {
+    DoctorUserRelation relation = doctorUserRelationService.getRelationById(relationId);
+    if (relation == null) {
+      return false;
+    }
+    String senderType = null;
+    if (relation.getDoctorId().equals(userId)) {
+      senderType = "doctor";
+    } else if (relation.getUserId().equals(userId)) {
+      senderType = "user";
+    } else {
+      return false;
+    }
+    int UserUnread = redisUtil.getIntegerFromRedis(relationId + "_"+senderType);
+    redisUtil.setNoExpireKey(relationId + "_" + senderType, UserUnread>ReadSeq?UserUnread:ReadSeq);
+    return true;
   }
 }

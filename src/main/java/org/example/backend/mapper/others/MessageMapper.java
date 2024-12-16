@@ -46,6 +46,28 @@ public interface MessageMapper {
   @Options(useGeneratedKeys = true, keyProperty = "messageId")
   int insert(Message message);
 
+  @Select(
+      """
+        SELECT * FROM (
+          SELECT * FROM c_messages
+          WHERE relation_id = #{relationId}
+          ORDER BY message_seq DESC
+          LIMIT 30
+        ) AS last_30_messages
+        ORDER BY message_seq ASC
+      """)
+  @Results({
+      @Result(column = "message_id", property = "messageId"),
+      @Result(column = "relation_id", property = "relationId"),
+      @Result(column = "message_seq", property = "messageSeq"),
+      @Result(column = "sender_type", property = "senderType"),
+      @Result(column = "message_text", property = "messageText"),
+      @Result(column = "timestamp", property = "timestamp"),
+      @Result(column = "message_type", property = "messageType"),
+      @Result(column = "url", property = "url"),
+  })
+  List<Message> getNew30Messages(@Param("relationId") Integer relationId);
+
   // 根据关系ID查询最后30条消息
   @Select(
       """
