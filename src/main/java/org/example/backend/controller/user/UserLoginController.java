@@ -70,12 +70,16 @@ public class UserLoginController {
         user.setOpenid(openId);
         // System.out.println("userOpenid" + user.getOpenid());
         user.setSessionKey(sessionKey);
-        user.setUsername(username);
+        user.setUsername(username + (int)(Math.random() * 1000000));
         user.setAvatarUrl(avatarUrl);
         user.setPhone(phone);
         user.setUserId(userService.register(user));
       } else {
         // 如果微信用户存在，则更新用户信息
+        //查看用户状态，如果被禁用，则返回错误
+        if (user.getStatus().equals("disabled")) {
+          return ResponseEntity.status(500).body("账号已被禁用");
+        }
         user.setSessionKey(sessionKey);
         //        user.setUsername(username);
         //        user.setAvatarUrl(avatarUrl);
