@@ -89,10 +89,27 @@ public class HospitalController {
   }
 
   /**
+   * 删除医院管理员
+   *
+   * @param jsonString json格式字符串，包含医院名
+   * @return 删除结果
+   */
+  @PostMapping("/deleteAdmin")
+  public ResponseEntity<String> deleteAdmin(@RequestBody String jsonString) {
+    String hospitalName = jsonParser.parseJsonString(jsonString, "hospitalName");
+    int result = hospitalService.deleteAdmin(hospitalName);
+    if (result == 1) {
+      return ResponseEntity.ok("Success");
+    } else {
+      return ResponseEntity.status(500).body("Failed to update hospital");
+    }
+  }
+
+  /**
    * 更新医院信息
    *
    * @param hospital 医院对象
-   * @return
+   * @return 返回更新结果
    */
   @PostMapping("/updateHospital")
   public ResponseEntity<String> updateHospital(@RequestBody Hospital hospital) {

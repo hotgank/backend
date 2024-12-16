@@ -79,6 +79,16 @@ public class HospitalServiceImpl implements HospitalService {
   }
 
   @Override
+  public int deleteAdmin(String hospitalName) {
+    try {
+      return hospitalMapper.deleteAdmin(hospitalName);
+    } catch (Exception e) {
+      logger.error("更新医院管理员ID失败", e);
+      return 0;
+    }
+  }
+
+  @Override
   public int updateAdminId(Hospital hospital) {
     try {
       // 检查医院名是否为空

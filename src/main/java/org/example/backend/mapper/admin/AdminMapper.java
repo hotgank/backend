@@ -31,6 +31,23 @@ public interface AdminMapper {
   })
   List<Admin> selectAll();
 
+  @Select("SELECT * FROM a_admins WHERE admin_type = 'second'")
+  @Results({
+          @Result(column = "admin_id", property = "adminId"),
+          @Result(column = "admin_type", property = "adminType"),
+          @Result(column = "supervisor_id", property = "supervisorId"),
+          @Result(column = "unit_name", property = "unitName"),
+          @Result(column = "username", property = "username"),
+          @Result(column = "password", property = "password"),
+          @Result(column = "email", property = "email"),
+          @Result(column = "phone", property = "phone"),
+          @Result(column = "avatar_url", property = "avatarUrl"),
+          @Result(column = "registration_date", property = "registrationDate"),
+          @Result(column = "last_login", property = "lastLogin"),
+          @Result(column = "status", property = "status")
+  })
+  List<Admin> selectSecondAdmins();
+
   @Select("SELECT * FROM a_admins WHERE admin_id = #{adminId}")
   @Results({
     @Result(column = "admin_id", property = "adminId"),

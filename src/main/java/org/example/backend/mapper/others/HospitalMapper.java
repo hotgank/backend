@@ -57,6 +57,15 @@ public interface HospitalMapper {
   int deleteHospital(String hospitalName);
 
   /**
+   * 删除医院的管理员
+   *
+   * @param hospitalName 要删除的医院名称
+   * @return 删除成功行数
+   */
+  @Update("Update o_hospitals SET admin_id =NULL WHERE hospital_name = #{hospitalName}")
+  int deleteAdmin(String hospitalName);
+
+  /**
    * 更新医院地址
    *
    * @param hospital 要更新的医院对象，包含医院名称、地址和管理员ID

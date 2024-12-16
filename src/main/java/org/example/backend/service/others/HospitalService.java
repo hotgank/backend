@@ -1,7 +1,6 @@
 package org.example.backend.service.others;
 
 import java.util.List;
-import org.example.backend.dto.AdminGetHospitalDTO;
 import org.example.backend.dto.HospitalPageResult;
 import org.example.backend.entity.others.Hospital;
 
@@ -37,7 +36,9 @@ public interface HospitalService {
    */
   int deleteHospital(String hospitalName);
 
-  /**
+    int deleteAdmin(String hospitalName);
+
+    /**
    * 更新医院管理员
    *
    * @param hospital 医院对象

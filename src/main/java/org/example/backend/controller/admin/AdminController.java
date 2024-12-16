@@ -42,6 +42,13 @@ public class AdminController {
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(admins));
   }
 
+  @GetMapping("/selectSecondAdmins")
+  public ResponseEntity<String> selectSecondAdmins() {
+    // 调用服务层来查询所有管理员信息
+    List<Admin> admins = adminService.selectSecondAdmins();
+    return ResponseEntity.ok(jsonParser.toJsonFromEntityList(admins));
+  }
+
   @PostMapping("/selectById")
   public ResponseEntity<String> selectById(@RequestBody String adminIdJson) {
     String adminId = jsonParser.parseJsonString(adminIdJson, "adminId");

@@ -27,15 +27,13 @@ public class DoctorSqlProvider {
         new SQL() {
           {
             SELECT("*");
-            FROM("d_doctors");
-            // 选择属于特定管理员医院的医生
-            WHERE(
-                    "(workplace IN (SELECT hospital_name FROM o_hospitals WHERE admin_id = #{adminId})"
-                            + " OR "
-                            + "((SELECT admin_type FROM a_admins WHERE admin_id = #{adminId}) = 'first' AND workplace IS NULL)"
-                            + " OR "
-                            + "((SELECT admin_type FROM a_admins WHERE admin_id = #{adminId}) = 'super'))"
-            );
+            FROM("d_doctors d");
+            LEFT_OUTER_JOIN("o_hospitals h ON d.workplace = h.hospital_name");
+            LEFT_OUTER_JOIN("a_admins a ON a.admin_id = #{adminId}");
+
+            WHERE("(h.admin_id = #{adminId} " +
+                    "OR (a.admin_type = 'first' AND h.admin_id IS NULL) " +
+                    "OR a.admin_type = 'super')");
             if (queryString != null && !queryString.isEmpty()) {
               WHERE(
                       "(name like concat('%', #{queryString}, '%')"

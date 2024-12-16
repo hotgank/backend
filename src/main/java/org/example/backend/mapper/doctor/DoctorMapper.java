@@ -20,12 +20,13 @@ public interface DoctorMapper {
   @Select("SELECT COUNT(*) FROM d_doctors")
   int selectDoctorCount();
 
-  @Select("SELECT COUNT(*) FROM d_doctors " +
-          "WHERE workplace IN (SELECT hospital_name FROM o_hospitals WHERE admin_id = #{adminId})" +
-          " OR " +
-          "((SELECT admin_type FROM a_admins WHERE admin_id = #{adminId}) != 'second' AND workplace IS NULL)" +
-          " OR " +
-          "((SELECT admin_type FROM a_admins WHERE admin_id = #{adminId}) = 'super')")
+  @Select("SELECT COUNT(*) " +
+          "FROM d_doctors d " +
+          "LEFT OUTER JOIN o_hospitals h ON d.workplace = h.hospital_name " +
+          "LEFT OUTER JOIN a_admins a ON a.admin_id = #{adminId} " +
+          "WHERE (h.admin_id = #{adminId} " +
+          "OR (a.admin_type = 'first' AND h.admin_id IS NULL) " +
+          "OR a.admin_type = 'super')")
   int selectMyDoctorCount(@Param("adminId") String adminId);
 
   @Select("SELECT COUNT(*) FROM d_doctors WHERE qualification IS NULL")
