@@ -26,7 +26,11 @@ public class UserSqlProvider {
             SELECT("*");
             FROM("u_users");
             if (queryString != null && !queryString.equals("")) {
-              WHERE("username like '%" + queryString + "%'");
+              WHERE(
+                  "(username like concat('%', #{queryString}, '%')"
+                      + " OR "
+                      + "user_id LIKE concat('%', #{queryString}, '%'))"
+              );
             }
             LIMIT("#{pageBegin}, #{PageSize}");
           }
