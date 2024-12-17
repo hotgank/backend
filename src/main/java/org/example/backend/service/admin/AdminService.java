@@ -8,7 +8,9 @@ public interface AdminService {
 
   List<Admin> selectAll();
 
-  String insert(Admin admin);
+    List<Admin> selectSecondAdmins();
+
+    String insert(Admin admin);
 
   boolean update(Admin admin);
 

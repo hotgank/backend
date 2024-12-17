@@ -47,7 +47,9 @@ public interface DoctorService {
 
   int selectDoctorCount();
 
+  int selectMyDoctorCount(String adminId);
+
   Doctor selectDoctorByEmail(String email);
 
-  List<Doctor> selectDoctorByCondition(String queryString, int currentPage, int pageSize);
+  List<Doctor> selectDoctorByCondition(String queryString, String adminId, int currentPage, int pageSize);
 }

@@ -27,7 +27,7 @@ public interface MessageMapper {
   })
   Message getLastMessage(@Param("relationId") Integer relationId);
 
-  @Select("SELECT * FROM c_messages WHERE relation_id = #{relationId} ORDER BY message_seq ASC")
+  @Select("SELECT * FROM c_messages WHERE relation_id = #{relationId} ORDER BY message_seq ")
   @Results({
     @Result(column = "message_id", property = "messageId"),
     @Result(column = "relation_id", property = "relationId"),
@@ -54,7 +54,7 @@ public interface MessageMapper {
           ORDER BY message_seq DESC
           LIMIT 30
         ) AS last_30_messages
-        ORDER BY message_seq ASC
+        ORDER BY message_seq
       """)
   @Results({
       @Result(column = "message_id", property = "messageId"),
@@ -70,12 +70,17 @@ public interface MessageMapper {
 
   // 根据关系ID查询最后30条消息
   @Select(
-      """
-        SELECT * FROM c_messages
-        WHERE relation_id = #{relationId}
-        ORDER BY message_seq ASC
-        LIMIT 30
-    """)
+          """
+            SELECT *
+            FROM (
+                SELECT *
+                FROM c_messages
+                WHERE relation_id = #{relationId}
+                ORDER BY message_seq DESC
+                LIMIT 30
+            ) AS latest_messages
+            ORDER BY message_seq
+          """)
   @Results({
     @Result(column = "message_id", property = "messageId"),
     @Result(column = "relation_id", property = "relationId"),
@@ -94,7 +99,7 @@ public interface MessageMapper {
         SELECT * FROM c_messages
         WHERE relation_id = #{relationId}
           AND message_seq > #{messageSeq}
-        ORDER BY message_seq ASC
+        ORDER BY message_seq
     """)
   @Results({
     @Result(column = "message_id", property = "messageId"),
@@ -115,7 +120,7 @@ public interface MessageMapper {
         SELECT * FROM c_messages
         WHERE relation_id = #{relationId}
           AND message_seq < #{messageSeq}
-        ORDER BY message_seq ASC
+        ORDER BY message_seq
         LIMIT 15
     """)
   @Results({
@@ -155,21 +160,21 @@ public interface MessageMapper {
   // 查询今天咨询的用户数量
   @Select(
       """
-      SELECT 
+      SELECT
           COUNT(DISTINCT cm.relation_id) AS consultation_count
-      FROM 
+      FROM
           c_messages cm
-      JOIN 
+      JOIN
           d_doctors_users ddu ON cm.relation_id = ddu.relation_id
-      JOIN 
+      JOIN
           d_doctors d ON ddu.doctor_id = d.doctor_id
-      WHERE 
+      WHERE
           d.doctor_id = #{doctorId}
           AND cm.sender_type = 'user'
           AND DATE(cm.timestamp) = CURDATE()
       """
   )
-  int TodayCousultationUserCount(@Param("doctorId") String doctorId);
+  int TodayConsultationUserCount(@Param("doctorId") String doctorId);
 
 
 }

@@ -79,6 +79,16 @@ public class HospitalServiceImpl implements HospitalService {
   }
 
   @Override
+  public int deleteAdmin(String hospitalName) {
+    try {
+      return hospitalMapper.deleteAdmin(hospitalName);
+    } catch (Exception e) {
+      logger.error("更新医院管理员ID失败", e);
+      return 0;
+    }
+  }
+
+  @Override
   public int updateAdminId(Hospital hospital) {
     try {
       // 检查医院名是否为空
@@ -158,7 +168,7 @@ public class HospitalServiceImpl implements HospitalService {
       }
       // 根据pageSize计算总页数，判断currentPage是否合理
       int totalPages = (int) Math.ceil((double) total / pageSize);
-      if (currentPage > totalPages) {
+      if (currentPage > totalPages && totalPages != 0) {
         logger.warn("当前页数不能大于总页数，设置当前页数为{}", totalPages);
         currentPage = totalPages;
       }

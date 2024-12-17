@@ -47,6 +47,17 @@ public class AdminServiceImpl implements AdminService {
   }
 
   @Override
+  public List<Admin> selectSecondAdmins() {
+    try {
+      return adminMapper.selectSecondAdmins();
+    } catch (Exception e) {
+      // 记录异常日志
+      logger.error("获取所有管理员失败", e);
+      return Collections.emptyList();
+    }
+  }
+
+  @Override
   public String insert(Admin admin) {
     try {
       String adminId = "A-" + UUID.randomUUID();

@@ -1,10 +1,8 @@
 package org.example.backend.service.serviceImpl.others;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import org.example.backend.entity.doctor.DoctorUserRelation;
-import org.example.backend.entity.others.Consultation;
 import org.example.backend.entity.others.Message;
 import org.example.backend.mapper.others.MessageMapper;
 import org.example.backend.service.others.ConsultationService;
@@ -82,7 +80,7 @@ public class MessageServiceImpl implements MessageService {
 
   @Override
   public int todayCousultationUserCount(String doctorId) {
-    return messageMapper.TodayCousultationUserCount(doctorId);
+    return messageMapper.TodayConsultationUserCount(doctorId);
   }
 
   @Override
@@ -102,7 +100,7 @@ public class MessageServiceImpl implements MessageService {
     if (relation == null) {
       return false;
     }
-    String senderType = null;
+    String senderType;
     if (relation.getDoctorId().equals(userId)) {
       senderType = "doctor";
     } else if (relation.getUserId().equals(userId)) {
@@ -111,7 +109,7 @@ public class MessageServiceImpl implements MessageService {
       return false;
     }
     int UserUnread = redisUtil.getIntegerFromRedis(relationId + "_"+senderType);
-    redisUtil.setNoExpireKey(relationId + "_" + senderType, UserUnread>ReadSeq?UserUnread:ReadSeq);
+    redisUtil.setNoExpireKey(relationId + "_" + senderType, Math.max(UserUnread, ReadSeq));
     return true;
   }
 }
