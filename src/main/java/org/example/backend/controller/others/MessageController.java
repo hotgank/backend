@@ -213,7 +213,7 @@ public class MessageController {
         messageService.sendMessage(
             relationId,
             senderType,
-            messageText, // 文本消息内容
+            "文件", // 文本消息内容
             messageType, // 自动推断的消息类型
             fileUrl // 文件 URL
             );
@@ -228,10 +228,6 @@ public class MessageController {
     if (contentType != null) {
       if (IMAGE_TYPES.contains(contentType)) {
         return "image"; // 图片
-      } else if (VIDEO_TYPES.contains(contentType)) {
-        return "video"; // 视频
-      } else if (TEXT_TYPES.contains(contentType)) {
-        return "text"; // 文本
       }
     }
     return "file"; // 默认是文件类型
