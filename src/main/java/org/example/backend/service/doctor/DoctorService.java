@@ -45,6 +45,8 @@ public interface DoctorService {
 
   String getAvatarBase64(String doctorId);
 
+  String getDoctorAvatar(String doctorId);
+
   int selectDoctorCount();
 
   int selectMyDoctorCount(String adminId);

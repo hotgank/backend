@@ -70,9 +70,9 @@ public class HealthArticleController {
     jsonString = jsonParser.removeKeyFromJson(jsonString, "phone");
     jsonString = jsonParser.removeKeyFromJson(jsonString, "email");
     jsonString = jsonString.substring(0, jsonString.length() - 1);
-    if (doctorService.getAvatarBase64(doctorId) != null)
+    if (doctorService.getDoctorAvatar(doctorId) != null)
       return ResponseEntity.ok(
-          jsonString + ",\"avatar\":\"" + doctorService.getAvatarBase64(doctorId) + "\"}");
+          jsonString + ",\"avatar\":\"" + doctorService.getDoctorAvatar(doctorId) + "\"}");
     else return ResponseEntity.ok(jsonString + ",\"avatar\":null}");
   }
 

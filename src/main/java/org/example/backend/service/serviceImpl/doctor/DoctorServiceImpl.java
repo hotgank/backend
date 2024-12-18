@@ -35,6 +35,16 @@ public class DoctorServiceImpl implements DoctorService {
   @Autowired private EncryptionUtil encryptionUtil;
 
   @Override
+  public String getDoctorAvatar(String doctorId) {
+    String avatarBase64 = doctorMapper.getAvatarUrl(doctorId);
+    if (avatarBase64 != null && avatarBase64.startsWith("http://localhost:8080")) {
+      avatarBase64 = avatarBase64.replace("http://localhost:8080", "https://zeropw.cn:8081");
+    }
+    return avatarBase64;
+  }
+
+
+  @Override
   public int selectDoctorCount() {
     try {
       return doctorMapper.selectDoctorCount();

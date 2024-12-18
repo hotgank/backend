@@ -153,6 +153,8 @@ public interface DoctorMapper {
   })
   Doctor selectDoctorByUsername(@Param("username") String username);
 
+  @Select("SELECT avatar_url FROM d_doctors WHERE doctor_id = #{doctorId}")
+  String getAvatarUrl(@Param("doctorId") String doctorId);
   @Select("SELECT doctor_id FROM d_doctors WHERE username = #{username}")
   String isUsernameExist(@Param("username") String username);
 
