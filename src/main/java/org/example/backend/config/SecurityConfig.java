@@ -38,6 +38,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers("/UserAvatar/**")
                     .permitAll()
+                    .requestMatchers("/doctor_avatars/**")
+                    .permitAll()
                     .anyRequest()
                     .authenticated() // 其他请求都需要认证
             )
