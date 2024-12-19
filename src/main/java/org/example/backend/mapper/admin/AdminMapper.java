@@ -19,7 +19,7 @@ public interface AdminMapper {
     @Result(column = "admin_id", property = "adminId"),
     @Result(column = "admin_type", property = "adminType"),
     @Result(column = "supervisor_id", property = "supervisorId"),
-    @Result(column = "unit_name", property = "unitName"),
+    @Result(column = "workplace", property = "workplace"),
     @Result(column = "username", property = "username"),
     @Result(column = "password", property = "password"),
     @Result(column = "email", property = "email"),
@@ -36,7 +36,7 @@ public interface AdminMapper {
           @Result(column = "admin_id", property = "adminId"),
           @Result(column = "admin_type", property = "adminType"),
           @Result(column = "supervisor_id", property = "supervisorId"),
-          @Result(column = "unit_name", property = "unitName"),
+          @Result(column = "workplace", property = "workplace"),
           @Result(column = "username", property = "username"),
           @Result(column = "password", property = "password"),
           @Result(column = "email", property = "email"),
@@ -53,7 +53,7 @@ public interface AdminMapper {
     @Result(column = "admin_id", property = "adminId"),
     @Result(column = "admin_type", property = "adminType"),
     @Result(column = "supervisor_id", property = "supervisorId"),
-    @Result(column = "unit_name", property = "unitName"),
+    @Result(column = "workplace", property = "workplace"),
     @Result(column = "username", property = "username"),
     @Result(column = "password", property = "password"),
     @Result(column = "email", property = "email"),
@@ -70,7 +70,7 @@ public interface AdminMapper {
     @Result(column = "admin_id", property = "adminId"),
     @Result(column = "admin_type", property = "adminType"),
     @Result(column = "supervisor_id", property = "supervisorId"),
-    @Result(column = "unit_name", property = "unitName"),
+    @Result(column = "workplace", property = "workplace"),
     @Result(column = "username", property = "username"),
     @Result(column = "password", property = "password"),
     @Result(column = "email", property = "email"),
@@ -87,7 +87,7 @@ public interface AdminMapper {
     @Result(column = "admin_id", property = "adminId"),
     @Result(column = "admin_type", property = "adminType"),
     @Result(column = "supervisor_id", property = "supervisorId"),
-    @Result(column = "unit_name", property = "unitName"),
+    @Result(column = "workplace", property = "workplace"),
     @Result(column = "username", property = "username"),
     @Result(column = "password", property = "password"),
     @Result(column = "email", property = "email"),
@@ -100,9 +100,9 @@ public interface AdminMapper {
   Admin selectAdminByUsername(@Param("username") String username);
 
   @Insert(
-      "INSERT INTO a_admins(admin_id, admin_type, supervisor_id, unit_name, username, "
+      "INSERT INTO a_admins(admin_id, admin_type, supervisor_id, workplace, username, "
           + "password, email, phone, avatar_url, registration_date, last_login, status)"
-          + "VALUES(#{adminId}, #{adminType}, #{supervisorId}, #{unitName}, #{username}, "
+          + "VALUES(#{adminId}, #{adminType}, #{supervisorId}, #{workplace}, #{username}, "
           + "#{password}, #{email}, #{phone}, #{avatarUrl}, #{registrationDate}, "
           + "#{lastLogin}, #{status})")
   void insertAdmin(Admin admin);
@@ -111,7 +111,7 @@ public interface AdminMapper {
       "UPDATE a_admins SET "
           + "admin_type = #{adminType}, "
           + "supervisor_id = #{supervisorId}, "
-          + "unit_name = #{unitName}, "
+          + "workplace = #{workplace}, "
           + "username = #{username}, "
           + "password = #{password}, "
           + "email = #{email}, "

@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.example.backend.entity.admin.LicenseCheck;
-import org.example.backend.service.doctor.DoctorDataService;
+import org.example.backend.service.doctor.DoctorLicenseService;
 import org.example.backend.util.MultipartFileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/doctorLicense")
 public class DoctorLicenseCheckController {
   private static final Logger log = LoggerFactory.getLogger(DoctorController.class);
-  @Autowired private DoctorDataService doctorDataService;
+  @Autowired private DoctorLicenseService doctorLicenseService;
   @Autowired private MultipartFileUtil multipartFileUtil;
 
   @PostMapping("/insert")
@@ -36,7 +36,8 @@ public class DoctorLicenseCheckController {
     licenseCheck.setUrl(url);
     licenseCheck.setStatus("未认证");
     licenseCheck.setCreatedAt(LocalDateTime.now());
-    boolean success = doctorDataService.insertCheckLicense(licenseCheck);
+    licenseCheck.setUpdatedAt(LocalDateTime.now());
+    boolean success = doctorLicenseService.insertCheckLicense(licenseCheck);
     log.info("success:{}", success);
     if (success) {
       return ResponseEntity.ok(licenseCheck);
@@ -48,7 +49,7 @@ public class DoctorLicenseCheckController {
   @GetMapping("/myLicense")
   public ResponseEntity<List<LicenseCheck>> selectMyLicense(HttpServletRequest request) {
     String doctorId = (String) request.getAttribute("userId");
-    List<LicenseCheck> licenseCheck = doctorDataService.selectAllCheckLicense(doctorId);
+    List<LicenseCheck> licenseCheck = doctorLicenseService.selectAllCheckLicense(doctorId);
     if (licenseCheck != null) return ResponseEntity.ok(licenseCheck);
     return ResponseEntity.badRequest().build();
   }

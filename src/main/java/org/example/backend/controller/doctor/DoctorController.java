@@ -54,18 +54,6 @@ public class DoctorController {
     }
   }
 
-
-  @GetMapping("/selectUnqualifiedDoctorCount")
-  public ResponseEntity<String> selectUnqualifiedDoctorCount(HttpServletRequest request) {
-    String adminId = (String) request.getAttribute("userId");
-    if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
-      int unqualifiedDoctorCount = doctorService.selectUnqualifiedDoctorCount();
-      return ResponseEntity.ok("{\"unqualifiedDoctorCount\":\"" + unqualifiedDoctorCount + "\"}");
-    } else {
-      return ResponseEntity.status(500).body("Failed to Get doctor information");
-    }
-  }
-
   @GetMapping("/selectAll")
   public ResponseEntity<String> selectAll() {
 

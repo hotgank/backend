@@ -25,9 +25,20 @@ public class VerifyDoctorQualificationServiceImpl implements VerifyDoctorQualifi
   @Autowired DoctorMapper doctorMapper;
 
   @Override
-  public List<AdminGetDoctorLicenseDTO> selectAll() {
+  public int selectPendingCount(String adminId) {
     try {
-      return licenseCheckMapper.adminSelectAll();
+      return licenseCheckMapper.selectPendingCount(adminId);
+    } catch (Exception e) {
+      // 记录异常日志
+      logger.error("获取未通过审核医生数量失败", e);
+      return 0;
+    }
+  }
+
+  @Override
+  public List<AdminGetDoctorLicenseDTO> selectAll(String adminId) {
+    try {
+      return licenseCheckMapper.adminSelectAll(adminId);
     } catch (Exception e) {
       // 记录异常日志
       logger.error("获取所有审核信息失败", e);
@@ -36,9 +47,9 @@ public class VerifyDoctorQualificationServiceImpl implements VerifyDoctorQualifi
   }
 
   @Override
-  public List<AdminGetDoctorLicenseDTO> selectRecent() {
+  public List<AdminGetDoctorLicenseDTO> selectRecent(String adminId) {
     try {
-      return licenseCheckMapper.adminSelectRecent();
+      return licenseCheckMapper.adminSelectRecent(adminId);
     } catch (Exception e) {
       // 记录异常日志
       logger.error("获取所有审核信息失败", e);
