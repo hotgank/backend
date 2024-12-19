@@ -25,6 +25,20 @@ public class HealthArticleController {
   @Autowired private JsonParser jsonParser;
   @Autowired private DoctorService doctorService;
 
+  @GetMapping("/getPendingCount")
+  public ResponseEntity<String> getPendingHealthArticle(HttpServletRequest request) {
+    try {
+      String adminId = (String) request.getAttribute("userId");
+      if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
+        int pendingArticlesCount = healthArticleService.getPendingCount(adminId);
+        return ResponseEntity.ok("{\"pendingArticlesCount\":\"" + pendingArticlesCount + "\"}");
+      }
+      return ResponseEntity.status(400).body(null);
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body(null);
+    }
+  }
+
   @PostMapping("/add")
   public ResponseEntity<String> addHealthArticle(
       @RequestBody String healthArticle, HttpServletRequest request) {
@@ -41,15 +55,35 @@ public class HealthArticleController {
     else return ResponseEntity.status(500).body("Failed to commit health article");
   }
 
-  @PostMapping("/getAll")
+  @GetMapping("/getAll")
   public ResponseEntity<String> getAllHealthArticle() {
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(healthArticleService.getAll()));
   }
 
-  @PostMapping("/getTotalAll")
+  @GetMapping("/getTotalAll")
   public ResponseEntity<String> getTotalAllHealthArticle(HttpServletRequest request) {
-    String adminId = (String) request.getAttribute("userId");
-    return ResponseEntity.ok(jsonParser.toJsonFromEntityList(healthArticleService.getTotalAll(adminId)));
+    try {
+      String adminId = (String) request.getAttribute("userId");
+      if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
+        return ResponseEntity.ok(jsonParser.toJsonFromEntityList(healthArticleService.getTotalAll(adminId)));
+      }
+      return ResponseEntity.status(400).body(null);
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body(null);
+    }
+  }
+
+  @GetMapping("/getRecentPending")
+  public ResponseEntity<String> getRecentPendingHealthArticle(HttpServletRequest request) {
+    try {
+      String adminId = (String) request.getAttribute("userId");
+      if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
+        return ResponseEntity.ok(jsonParser.toJsonFromEntityList(healthArticleService.getRecentPending(adminId)));
+      }
+      return ResponseEntity.status(400).body(null);
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body(null);
+    }
   }
 
   @PostMapping("/getDoctorByArticleId")

@@ -7,6 +7,8 @@ import org.example.backend.dto.HealthArticleTotalListDTO;
 import org.example.backend.entity.others.HealthArticle;
 
 public interface HealthArticleService {
+  Integer getPendingCount(String adminId);
+
   HealthArticle getById(Integer articleId);
 
   HealthArticleDetailsDTO getDetailsById(Integer articleId);
@@ -14,6 +16,8 @@ public interface HealthArticleService {
   List<HealthArticleTotalListDTO> getAll();
 
   List<HealthArticleTotalListDTO> getTotalAll(String adminId);
+
+  List<HealthArticleTotalListDTO> getRecentPending(String adminId);
 
   boolean createHealthArticle(HealthArticle healthArticle);
 

@@ -21,6 +21,11 @@ public class HealthArticleServiceImpl implements HealthArticleService {
   @Autowired private HealthArticleMapper healthArticleMapper;
 
   @Override
+  public Integer getPendingCount(String adminId) {
+    return healthArticleMapper.selectPendingCount(adminId);
+  }
+
+  @Override
   public HealthArticle getById(Integer articleId) {
     return healthArticleMapper.selectById(articleId);
   }
@@ -38,6 +43,11 @@ public class HealthArticleServiceImpl implements HealthArticleService {
   @Override
   public List<HealthArticleTotalListDTO> getTotalAll(String adminId) {
     return healthArticleMapper.selectListAll(adminId);
+  }
+
+  @Override
+  public List<HealthArticleTotalListDTO> getRecentPending(String adminId) {
+    return healthArticleMapper.selectRecentPendingList(adminId);
   }
 
   @Override
