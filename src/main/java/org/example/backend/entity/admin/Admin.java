@@ -6,7 +6,7 @@ public class Admin {
   private String adminId;
   private String adminType; // enum('super', 'first', 'second')
   private String supervisorId;
-  private String unitName;
+  private String workplace;
   private String username;
   private String password;
   private String email;
@@ -28,8 +28,8 @@ public class Admin {
     return supervisorId;
   }
 
-  public String getUnitName() {
-    return unitName;
+  public String getWorkplace() {
+    return workplace;
   }
 
   public String getUsername() {
@@ -76,8 +76,8 @@ public class Admin {
     this.supervisorId = supervisorId;
   }
 
-  public void setUnitName(String unitName) {
-    this.unitName = unitName;
+  public void setWorkplace(String workplace) {
+    this.workplace = workplace;
   }
 
   public void setUsername(String username) {
@@ -126,7 +126,7 @@ public class Admin {
         + supervisorId
         + '\''
         + ", unitName='"
-        + unitName
+        + workplace
         + '\''
         + ", username='"
         + username

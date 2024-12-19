@@ -8,25 +8,37 @@ import java.util.List;
 
 @Mapper
 public interface LicenseCheckMapper {
-  @Select(
-      "SELECT audit_id, a_license_check.doctor_id, name, gender, position, workplace, url "
-          + "FROM a_license_check, d_doctors WHERE a_license_check.doctor_id = d_doctors.doctor_id "
-          + "AND a_license_check.status = '未认证' ORDER BY created_at")
-  @Results({
-    @Result(column = "audit_id", property = "auditId"),
-    @Result(column = "doctor_id", property = "doctorId"),
-    @Result(column = "name", property = "name"),
-    @Result(column = "gender", property = "gender"),
-    @Result(column = "position", property = "position"),
-    @Result(column = "workplace", property = "workplace"),
-    @Result(column = "url", property = "url")
-  })
-  List<AdminGetDoctorLicenseDTO> adminSelectAll();
 
   @Select(
-      "SELECT audit_id, a_license_check.doctor_id, name, gender, position, workplace, url "
-          + "FROM a_license_check, d_doctors WHERE a_license_check.doctor_id = d_doctors.doctor_id "
-          + "AND a_license_check.status = '未认证' ORDER BY created_at DESC LIMIT 5")
+          "SELECT Count(lc.audit_id) "
+                  + "FROM a_license_check lc "
+                  + "JOIN d_doctors d ON lc.doctor_id = d.doctor_id "
+                  + "JOIN o_hospitals o ON d.workplace = o.hospital_name "
+                  + "JOIN a_admins a ON a.admin_id = #{adminId} "
+                  + "WHERE lc.status = '未认证' "
+                  + "AND ("
+                  + "(a.admin_type = 'second' AND a.admin_id = o.admin_id) "
+                  + "OR (a.admin_type = 'first' AND d.workplace NOT IN (SELECT h.hospital_name FROM o_hospitals h WHERE h.admin_id IS NOT NULL)) "
+                  + "OR (a.admin_type = 'super')"
+                  + ") "
+                  + "ORDER BY lc.created_at"
+  )
+  int selectPendingCount(@Param("adminId") String adminId);
+
+  @Select(
+          "SELECT lc.audit_id, lc.doctor_id, d.name, d.gender, d.position, d.workplace, lc.url "
+                  + "FROM a_license_check lc "
+                  + "JOIN d_doctors d ON lc.doctor_id = d.doctor_id "
+                  + "JOIN o_hospitals o ON d.workplace = o.hospital_name "
+                  + "JOIN a_admins a ON a.admin_id = #{adminId} "
+                  + "WHERE lc.status = '未认证' "
+                  + "AND ("
+                  + "(a.admin_type = 'second' AND a.admin_id = o.admin_id) "
+                  + "OR (a.admin_type = 'first' AND d.workplace NOT IN (SELECT h.hospital_name FROM o_hospitals h WHERE h.admin_id IS NOT NULL)) "
+                  + "OR (a.admin_type = 'super')"
+                  + ") "
+                  + "ORDER BY lc.created_at"
+  )
   @Results({
     @Result(column = "audit_id", property = "auditId"),
     @Result(column = "doctor_id", property = "doctorId"),
@@ -36,7 +48,31 @@ public interface LicenseCheckMapper {
     @Result(column = "workplace", property = "workplace"),
     @Result(column = "url", property = "url")
   })
-  List<AdminGetDoctorLicenseDTO> adminSelectRecent();
+  List<AdminGetDoctorLicenseDTO> adminSelectAll(@Param("adminId") String adminId);
+
+  @Select(
+          "SELECT lc.audit_id, lc.doctor_id, d.name, d.gender, d.position, d.workplace, lc.url "
+                  + "FROM a_license_check lc "
+                  + "JOIN d_doctors d ON lc.doctor_id = d.doctor_id "
+                  + "JOIN o_hospitals o ON d.workplace = o.hospital_name "
+                  + "JOIN a_admins a ON a.admin_id = #{adminId} "
+                  + "WHERE lc.status = '未认证' "
+                  + "AND ("
+                  + "(a.admin_type = 'second' AND a.admin_id = o.admin_id) "
+                  + "OR (a.admin_type = 'first' AND d.workplace NOT IN (SELECT h.hospital_name FROM o_hospitals h WHERE h.admin_id IS NOT NULL)) "
+                  + "OR (a.admin_type = 'super')"
+                  + ") "
+                  + "ORDER BY lc.created_at DESC LIMIT 5")
+  @Results({
+    @Result(column = "audit_id", property = "auditId"),
+    @Result(column = "doctor_id", property = "doctorId"),
+    @Result(column = "name", property = "name"),
+    @Result(column = "gender", property = "gender"),
+    @Result(column = "position", property = "position"),
+    @Result(column = "workplace", property = "workplace"),
+    @Result(column = "url", property = "url")
+  })
+  List<AdminGetDoctorLicenseDTO> adminSelectRecent(@Param("adminId") String adminId);
 
   @Select(
       "SELECT audit_id, doctor_id, admin_id, status, created_at, url, updated_at, comment FROM a_license_check "
@@ -63,7 +99,7 @@ public interface LicenseCheckMapper {
           + "VALUES (#{auditId}, #{doctorId}, #{adminId}, #{status}, #{createdAt}, #{url}, #{updatedAt}, #{comment})")
   boolean insert(LicenseCheck licenseCheck);
 
-  @Select("SELECT * FROM a_license_check WHERE doctor_id = #{doctorId}")
+  @Select("SELECT * FROM a_license_check WHERE doctor_id = #{doctorId} ORDER BY updated_at DESC")
   @Results({
     @Result(column = "audit_id", property = "auditId"),
     @Result(column = "doctor_id", property = "doctorId"),
@@ -74,4 +110,7 @@ public interface LicenseCheckMapper {
     @Result(column = "updated_at", property = "updatedAt"),
   })
   List<LicenseCheck> selectByDoctorId(@Param("doctorId") String doctorId);
+
+  @Delete("DELETE FROM a_license_check WHERE doctor_id = #{doctorId} AND status = '未认证'")
+  boolean deletePendingByDoctorId(@Param("doctorId") String doctorId);
 }
