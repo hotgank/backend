@@ -36,8 +36,8 @@ public class HealthArticleServiceImpl implements HealthArticleService {
   }
 
   @Override
-  public List<HealthArticleTotalListDTO> getTotalAll() {
-    return healthArticleMapper.selectListAll();
+  public List<HealthArticleTotalListDTO> getTotalAll(String adminId) {
+    return healthArticleMapper.selectListAll(adminId);
   }
 
   @Override

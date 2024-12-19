@@ -47,8 +47,9 @@ public class HealthArticleController {
   }
 
   @PostMapping("/getTotalAll")
-  public ResponseEntity<String> getTotalAllHealthArticle() {
-    return ResponseEntity.ok(jsonParser.toJsonFromEntityList(healthArticleService.getTotalAll()));
+  public ResponseEntity<String> getTotalAllHealthArticle(HttpServletRequest request) {
+    String adminId = (String) request.getAttribute("userId");
+    return ResponseEntity.ok(jsonParser.toJsonFromEntityList(healthArticleService.getTotalAll(adminId)));
   }
 
   @PostMapping("/getDoctorByArticleId")

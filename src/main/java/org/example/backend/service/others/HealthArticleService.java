@@ -13,7 +13,7 @@ public interface HealthArticleService {
 
   List<HealthArticleTotalListDTO> getAll();
 
-  List<HealthArticleTotalListDTO> getTotalAll();
+  List<HealthArticleTotalListDTO> getTotalAll(String adminId);
 
   boolean createHealthArticle(HealthArticle healthArticle);
 

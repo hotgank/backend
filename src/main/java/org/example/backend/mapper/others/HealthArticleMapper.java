@@ -1,13 +1,8 @@
 package org.example.backend.mapper.others;
 
 import java.util.List;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+
+import org.apache.ibatis.annotations.*;
 import org.example.backend.dto.HealthArticleDetailsDTO;
 import org.example.backend.dto.HealthArticleTotalListDTO;
 import org.example.backend.entity.others.HealthArticle;
@@ -88,8 +83,17 @@ public interface HealthArticleMapper {
   List<HealthArticle> selectByDoctorId(String doctorId);
 
   @Select("SELECT ha.article_id, d.name, ha.title, ha.content, ha.publish_date, ha.type, ha.status " +
-                 "FROM o_health_articles ha " +
-                 "JOIN d_doctors d ON ha.doctor_id = d.doctor_id")
+          "FROM o_health_articles ha " +
+          "JOIN d_doctors d ON ha.doctor_id = d.doctor_id " +
+          "JOIN o_hospitals o ON d.workplace = o.hospital_name " +
+          "JOIN a_admins a ON a.admin_id = #{adminId} " +
+          "AND (" +
+          "(a.admin_type = 'second' AND a.admin_id = o.admin_id) " +
+          "OR (a.admin_type = 'first' AND d.workplace NOT IN " +
+          "(SELECT h.hospital_name FROM o_hospitals h WHERE h.admin_id IS NOT NULL)) " +
+          "OR (a.admin_type = 'super')" +
+          ") "
+  )
   @Results({
       @Result(column = "article_id", property = "articleId"),
       @Result(column = "name", property = "name"),
@@ -98,7 +102,7 @@ public interface HealthArticleMapper {
       @Result(column = "type", property = "type"),
       @Result(column = "status", property = "status"),
   })
-  List<HealthArticleTotalListDTO> selectListAll();
+  List<HealthArticleTotalListDTO> selectListAll(@Param("adminId") String adminId);
 
 
   @Select("SELECT COUNT(*) FROM o_health_articles WHERE doctor_id=#{doctorId} AND status='已发布'")
