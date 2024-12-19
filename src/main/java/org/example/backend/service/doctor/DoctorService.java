@@ -5,8 +5,6 @@ import org.example.backend.entity.doctor.Doctor;
 
 public interface DoctorService {
 
-  int selectUnqualifiedDoctorCount();
-
   Doctor selectById(String doctorId);
 
   List<Doctor> selectAll();

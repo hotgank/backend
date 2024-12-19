@@ -29,9 +29,6 @@ public interface DoctorMapper {
           "OR a.admin_type = 'super')")
   int selectMyDoctorCount(@Param("adminId") String adminId);
 
-  @Select("SELECT COUNT(*) FROM d_doctors WHERE qualification IS NULL")
-  int selectUnqualifiedDoctorCount();
-
   @Select("SELECT * FROM d_doctors WHERE workplace In " +
           "(SELECT hospital_name FROM o_hospitals WHERE admin_id IS NULL)")
   @Results({
@@ -106,6 +103,12 @@ public interface DoctorMapper {
           + "WHERE doctor_id = #{doctorId}")
   void updateDoctor(Doctor doctor);
 
+  @Update(
+          "UPDATE d_doctors "
+                  + "SET qualification = #{qualification} "
+                  + "WHERE doctor_id = #{doctorId}")
+  boolean updateDoctorQualification(@Param("doctorId") String doctorId, @Param("qualification") String qualification);
+
   @Delete("DELETE FROM d_doctors WHERE doctor_id = #{doctorId}")
   void deleteDoctor(@Param("doctorId") String doctorId);
 
@@ -155,6 +158,7 @@ public interface DoctorMapper {
 
   @Select("SELECT avatar_url FROM d_doctors WHERE doctor_id = #{doctorId}")
   String getAvatarUrl(@Param("doctorId") String doctorId);
+
   @Select("SELECT doctor_id FROM d_doctors WHERE username = #{username}")
   String isUsernameExist(@Param("username") String username);
 

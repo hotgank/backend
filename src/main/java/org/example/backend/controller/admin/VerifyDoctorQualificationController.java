@@ -15,13 +15,24 @@ public class VerifyDoctorQualificationController {
 
   @Autowired private VerifyDoctorQualificationService verifyDoctorQualificationService;
 
+  @GetMapping("/selectPendingCount")
+  public ResponseEntity<String> selectPendingCount(HttpServletRequest request) {
+    String adminId = (String) request.getAttribute("userId");
+    if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
+      int pendingCount = verifyDoctorQualificationService.selectPendingCount(adminId);
+      return ResponseEntity.ok("{\"pendingCount\":\"" + pendingCount + "\"}");
+    } else {
+      return ResponseEntity.status(500).body("Failed to Get pending information");
+    }
+  }
+
   @GetMapping("/selectAll")
   public ResponseEntity<?> selectAll(HttpServletRequest request) {
     try {
       String adminId = (String) request.getAttribute("userId");
       if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
         return ResponseEntity.ok(
-            jsonParser.toJsonFromEntityList(verifyDoctorQualificationService.selectAll()));
+            jsonParser.toJsonFromEntityList(verifyDoctorQualificationService.selectAll(adminId)));
       }
       return ResponseEntity.status(400).body(null);
     } catch (Exception e) {
@@ -35,7 +46,7 @@ public class VerifyDoctorQualificationController {
       String adminId = (String) request.getAttribute("userId");
       if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
         return ResponseEntity.ok(
-            jsonParser.toJsonFromEntityList(verifyDoctorQualificationService.selectRecent()));
+            jsonParser.toJsonFromEntityList(verifyDoctorQualificationService.selectRecent(adminId)));
       }
       return ResponseEntity.status(400).body(null);
     } catch (Exception e) {
