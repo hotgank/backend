@@ -2,6 +2,8 @@ package org.example.backend.controller.others;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
+
+import org.example.backend.dto.HealthArticleDetailsDTO;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.others.HealthArticle;
 import org.example.backend.service.others.HealthArticleService;
@@ -41,15 +43,11 @@ public class HealthArticleController {
 
   @PostMapping("/getAll")
   public ResponseEntity<String> getAllHealthArticle() {
-    String jsonString = jsonParser.toJsonFromEntityList(healthArticleService.getAll());
-    jsonString = jsonParser.removeKeyFromJson(jsonString, "doctorId");
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(healthArticleService.getAll()));
   }
 
   @PostMapping("/getTotalAll")
   public ResponseEntity<String> getTotalAllHealthArticle() {
-    String jsonString = jsonParser.toJsonFromEntityList(healthArticleService.getAll());
-    jsonString = jsonParser.removeKeyFromJson(jsonString, "doctorId");
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(healthArticleService.getTotalAll()));
   }
 
@@ -82,10 +80,8 @@ public class HealthArticleController {
     String jsonString =
         jsonParser.toJsonFromEntityList(healthArticleService.getByDoctorId(doctorId));
     jsonString = jsonParser.removeKeyFromJson(jsonString, "doctorId");
-    jsonString = jsonParser.removeKeyFromJson(jsonString, "publishDate");
-    jsonString = jsonParser.removeKeyFromJson(jsonString, "status");
     return ResponseEntity.ok(
-        jsonParser.toJsonFromEntityList(healthArticleService.getByDoctorId(doctorId)));
+        jsonString);
   }
 
   @PostMapping("/update")
@@ -110,14 +106,13 @@ public class HealthArticleController {
   }
 
   @PostMapping("/details")
-  public ResponseEntity<String> getHealthArticleDetails(@RequestBody String healthArticle) {
-    int articleId = jsonParser.parseJsonInt(healthArticle, "articleId");
-    HealthArticle healthArticle1 = healthArticleService.getById(articleId);
-    if (healthArticle1 == null) {
+  public ResponseEntity<String> getHealthArticleDetails(@RequestBody String healthArticleJson) {
+    int articleId = jsonParser.parseJsonInt(healthArticleJson, "articleId");
+    HealthArticleDetailsDTO healthArticleDetailsDTO = healthArticleService.getDetailsById(articleId);
+    if (healthArticleDetailsDTO == null) {
       return ResponseEntity.status(404).body("Not Found");
     }
-    String jsonString = jsonParser.toJsonFromEntity(healthArticle1);
-    jsonString = jsonParser.removeKeyFromJson(jsonString, "doctorId");
+    String jsonString = jsonParser.toJsonFromEntity(healthArticleDetailsDTO);
     return ResponseEntity.ok(jsonString);
   }
 

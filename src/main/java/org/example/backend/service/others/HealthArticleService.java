@@ -1,14 +1,19 @@
 package org.example.backend.service.others;
 
 import java.util.List;
+
+import org.example.backend.dto.HealthArticleDetailsDTO;
+import org.example.backend.dto.HealthArticleTotalListDTO;
 import org.example.backend.entity.others.HealthArticle;
 
 public interface HealthArticleService {
   HealthArticle getById(Integer articleId);
 
-  List<HealthArticle> getAll();
+  HealthArticleDetailsDTO getDetailsById(Integer articleId);
 
-  List<HealthArticle> getTotalAll();
+  List<HealthArticleTotalListDTO> getAll();
+
+  List<HealthArticleTotalListDTO> getTotalAll();
 
   boolean createHealthArticle(HealthArticle healthArticle);
 

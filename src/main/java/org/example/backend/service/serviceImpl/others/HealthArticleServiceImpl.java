@@ -1,5 +1,7 @@
 package org.example.backend.service.serviceImpl.others;
 
+import org.example.backend.dto.HealthArticleDetailsDTO;
+import org.example.backend.dto.HealthArticleTotalListDTO;
 import org.example.backend.entity.others.HealthArticle;
 import org.example.backend.mapper.others.HealthArticleMapper;
 import org.example.backend.service.others.HealthArticleService;
@@ -24,12 +26,17 @@ public class HealthArticleServiceImpl implements HealthArticleService {
   }
 
   @Override
-  public List<HealthArticle> getAll() {
+  public HealthArticleDetailsDTO getDetailsById(Integer articleId) {
+    return healthArticleMapper.selectDetailsById(articleId);
+  }
+
+  @Override
+  public List<HealthArticleTotalListDTO> getAll() {
     return healthArticleMapper.selectList();
   }
 
   @Override
-  public List<HealthArticle> getTotalAll() {
+  public List<HealthArticleTotalListDTO> getTotalAll() {
     return healthArticleMapper.selectListAll();
   }
 
