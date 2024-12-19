@@ -1,5 +1,7 @@
 package org.example.backend.service.serviceImpl.others;
 
+import org.example.backend.dto.HealthArticleDetailsDTO;
+import org.example.backend.dto.HealthArticleTotalListDTO;
 import org.example.backend.entity.others.HealthArticle;
 import org.example.backend.mapper.others.HealthArticleMapper;
 import org.example.backend.service.others.HealthArticleService;
@@ -19,18 +21,33 @@ public class HealthArticleServiceImpl implements HealthArticleService {
   @Autowired private HealthArticleMapper healthArticleMapper;
 
   @Override
+  public Integer getPendingCount(String adminId) {
+    return healthArticleMapper.selectPendingCount(adminId);
+  }
+
+  @Override
   public HealthArticle getById(Integer articleId) {
     return healthArticleMapper.selectById(articleId);
   }
 
   @Override
-  public List<HealthArticle> getAll() {
+  public HealthArticleDetailsDTO getDetailsById(Integer articleId) {
+    return healthArticleMapper.selectDetailsById(articleId);
+  }
+
+  @Override
+  public List<HealthArticleTotalListDTO> getAll() {
     return healthArticleMapper.selectList();
   }
 
   @Override
-  public List<HealthArticle> getTotalAll() {
-    return healthArticleMapper.selectListAll();
+  public List<HealthArticleTotalListDTO> getTotalAll(String adminId) {
+    return healthArticleMapper.selectListAll(adminId);
+  }
+
+  @Override
+  public List<HealthArticleTotalListDTO> getRecentPending(String adminId) {
+    return healthArticleMapper.selectRecentPendingList(adminId);
   }
 
   @Override

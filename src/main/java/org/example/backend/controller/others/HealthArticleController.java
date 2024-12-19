@@ -2,6 +2,8 @@ package org.example.backend.controller.others;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
+
+import org.example.backend.dto.HealthArticleDetailsDTO;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.others.HealthArticle;
 import org.example.backend.service.others.HealthArticleService;
@@ -23,6 +25,20 @@ public class HealthArticleController {
   @Autowired private JsonParser jsonParser;
   @Autowired private DoctorService doctorService;
 
+  @GetMapping("/getPendingCount")
+  public ResponseEntity<String> getPendingHealthArticle(HttpServletRequest request) {
+    try {
+      String adminId = (String) request.getAttribute("userId");
+      if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
+        int pendingArticlesCount = healthArticleService.getPendingCount(adminId);
+        return ResponseEntity.ok("{\"pendingArticlesCount\":\"" + pendingArticlesCount + "\"}");
+      }
+      return ResponseEntity.status(400).body(null);
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body(null);
+    }
+  }
+
   @PostMapping("/add")
   public ResponseEntity<String> addHealthArticle(
       @RequestBody String healthArticle, HttpServletRequest request) {
@@ -39,18 +55,35 @@ public class HealthArticleController {
     else return ResponseEntity.status(500).body("Failed to commit health article");
   }
 
-  @PostMapping("/getAll")
+  @GetMapping("/getAll")
   public ResponseEntity<String> getAllHealthArticle() {
-    String jsonString = jsonParser.toJsonFromEntityList(healthArticleService.getAll());
-    jsonString = jsonParser.removeKeyFromJson(jsonString, "doctorId");
     return ResponseEntity.ok(jsonParser.toJsonFromEntityList(healthArticleService.getAll()));
   }
 
-  @PostMapping("/getTotalAll")
-  public ResponseEntity<String> getTotalAllHealthArticle() {
-    String jsonString = jsonParser.toJsonFromEntityList(healthArticleService.getAll());
-    jsonString = jsonParser.removeKeyFromJson(jsonString, "doctorId");
-    return ResponseEntity.ok(jsonParser.toJsonFromEntityList(healthArticleService.getTotalAll()));
+  @GetMapping("/getTotalAll")
+  public ResponseEntity<String> getTotalAllHealthArticle(HttpServletRequest request) {
+    try {
+      String adminId = (String) request.getAttribute("userId");
+      if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
+        return ResponseEntity.ok(jsonParser.toJsonFromEntityList(healthArticleService.getTotalAll(adminId)));
+      }
+      return ResponseEntity.status(400).body(null);
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body(null);
+    }
+  }
+
+  @GetMapping("/getRecentPending")
+  public ResponseEntity<String> getRecentPendingHealthArticle(HttpServletRequest request) {
+    try {
+      String adminId = (String) request.getAttribute("userId");
+      if (adminId != null && !adminId.isEmpty() && adminId.charAt(0) == 'A') {
+        return ResponseEntity.ok(jsonParser.toJsonFromEntityList(healthArticleService.getRecentPending(adminId)));
+      }
+      return ResponseEntity.status(400).body(null);
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body(null);
+    }
   }
 
   @PostMapping("/getDoctorByArticleId")
@@ -82,10 +115,8 @@ public class HealthArticleController {
     String jsonString =
         jsonParser.toJsonFromEntityList(healthArticleService.getByDoctorId(doctorId));
     jsonString = jsonParser.removeKeyFromJson(jsonString, "doctorId");
-    jsonString = jsonParser.removeKeyFromJson(jsonString, "publishDate");
-    jsonString = jsonParser.removeKeyFromJson(jsonString, "status");
     return ResponseEntity.ok(
-        jsonParser.toJsonFromEntityList(healthArticleService.getByDoctorId(doctorId)));
+        jsonString);
   }
 
   @PostMapping("/update")
@@ -110,14 +141,13 @@ public class HealthArticleController {
   }
 
   @PostMapping("/details")
-  public ResponseEntity<String> getHealthArticleDetails(@RequestBody String healthArticle) {
-    int articleId = jsonParser.parseJsonInt(healthArticle, "articleId");
-    HealthArticle healthArticle1 = healthArticleService.getById(articleId);
-    if (healthArticle1 == null) {
+  public ResponseEntity<String> getHealthArticleDetails(@RequestBody String healthArticleJson) {
+    int articleId = jsonParser.parseJsonInt(healthArticleJson, "articleId");
+    HealthArticleDetailsDTO healthArticleDetailsDTO = healthArticleService.getDetailsById(articleId);
+    if (healthArticleDetailsDTO == null) {
       return ResponseEntity.status(404).body("Not Found");
     }
-    String jsonString = jsonParser.toJsonFromEntity(healthArticle1);
-    jsonString = jsonParser.removeKeyFromJson(jsonString, "doctorId");
+    String jsonString = jsonParser.toJsonFromEntity(healthArticleDetailsDTO);
     return ResponseEntity.ok(jsonString);
   }
 

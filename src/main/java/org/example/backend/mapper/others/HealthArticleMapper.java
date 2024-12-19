@@ -1,13 +1,10 @@
 package org.example.backend.mapper.others;
 
 import java.util.List;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+
+import org.apache.ibatis.annotations.*;
+import org.example.backend.dto.HealthArticleDetailsDTO;
+import org.example.backend.dto.HealthArticleTotalListDTO;
 import org.example.backend.entity.others.HealthArticle;
 
 @Mapper
@@ -29,17 +26,43 @@ public interface HealthArticleMapper {
   })
   HealthArticle selectById(Integer articleId);
 
-  @Select("SELECT * FROM o_health_articles WHERE status = '已发布'")
+  @Select("SELECT ha.article_id, ha.title, ha.content, ha.publish_date, ha.type, ha.status, " +
+          "d.name , d.username, d.gender, d.position, d.workplace, d.qualification, d.experience, d.avatar_url " +
+          "FROM o_health_articles ha " +
+          "JOIN d_doctors d ON ha.doctor_id = d.doctor_id " +
+          "WHERE ha.article_id = #{articleId}")
   @Results({
-    @Result(column = "article_id", property = "articleId"),
-    @Result(column = "doctor_id", property = "doctorId"),
-    @Result(column = "title", property = "title"),
-    @Result(column = "content", property = "content"),
-    @Result(column = "publish_date", property = "publishDate"),
-    @Result(column = "type", property = "type"),
-    @Result(column = "status", property = "status"),
+          @Result(column = "article_id", property = "articleId"),
+          @Result(column = "title", property = "title"),
+          @Result(column = "content", property = "content"),
+          @Result(column = "publish_date", property = "publishDate"),
+          @Result(column = "type", property = "type"),
+          @Result(column = "status", property = "status"),
+          @Result(column = "name", property = "name"),
+          @Result(column = "username", property = "username"),
+          @Result(column = "gender", property = "gender"),
+          @Result(column = "position", property = "position"),
+          @Result(column = "workplace", property = "workplace"),
+          @Result(column = "qualification", property = "qualification"),
+          @Result(column = "experience", property = "experience"),
+          @Result(column = "avatar_url", property = "avatarUrl"),
   })
-  List<HealthArticle> selectList();
+  HealthArticleDetailsDTO selectDetailsById(Integer articleId);
+
+  @Select("SELECT ha.article_id, d.name, ha.title, ha.content, ha.publish_date, ha.type, ha.status " +
+          "FROM o_health_articles ha " +
+          "JOIN d_doctors d ON ha.doctor_id = d.doctor_id " +
+          "WHERE ha.status = '已发布'" +
+          "ORDER BY ha.publish_date DESC")
+  @Results({
+          @Result(column = "article_id", property = "articleId"),
+          @Result(column = "name", property = "name"),
+          @Result(column = "title", property = "title"),
+          @Result(column = "publish_date", property = "publishDate"),
+          @Result(column = "type", property = "type"),
+          @Result(column = "status", property = "status"),
+  })
+  List<HealthArticleTotalListDTO> selectList();
 
   @Update(
       "UPDATE o_health_articles SET doctor_id=#{doctorId},title=#{title},content=#{content},publish_date=#{publishDate},type=#{type},status=#{status} WHERE article_id=#{articleId}")
@@ -60,18 +83,68 @@ public interface HealthArticleMapper {
   })
   List<HealthArticle> selectByDoctorId(String doctorId);
 
-  @Select("SELECT * FROM o_health_articles")
+  @Select("SELECT ha.article_id, d.name, ha.title, ha.content, ha.publish_date, ha.type, ha.status " +
+          "FROM o_health_articles ha " +
+          "JOIN d_doctors d ON ha.doctor_id = d.doctor_id " +
+          "JOIN o_hospitals o ON d.workplace = o.hospital_name " +
+          "JOIN a_admins a ON a.admin_id = #{adminId} " +
+          "AND (" +
+          "(a.admin_type = 'second' AND a.admin_id = o.admin_id) " +
+          "OR (a.admin_type = 'first' AND d.workplace NOT IN " +
+          "(SELECT h.hospital_name FROM o_hospitals h WHERE h.admin_id IS NOT NULL)) " +
+          "OR (a.admin_type = 'super')" +
+          ") " +
+          "ORDER BY ha.publish_date DESC "
+  )
   @Results({
       @Result(column = "article_id", property = "articleId"),
-      @Result(column = "doctor_id", property = "doctorId"),
+      @Result(column = "name", property = "name"),
       @Result(column = "title", property = "title"),
-      @Result(column = "content", property = "content"),
       @Result(column = "publish_date", property = "publishDate"),
       @Result(column = "type", property = "type"),
       @Result(column = "status", property = "status"),
   })
-  List<HealthArticle> selectListAll();
+  List<HealthArticleTotalListDTO> selectListAll(@Param("adminId") String adminId);
 
+  @Select("SELECT ha.article_id, d.name, ha.title, ha.content, ha.publish_date, ha.type, ha.status " +
+          "FROM o_health_articles ha " +
+          "JOIN d_doctors d ON ha.doctor_id = d.doctor_id " +
+          "JOIN o_hospitals o ON d.workplace = o.hospital_name " +
+          "JOIN a_admins a ON a.admin_id = #{adminId} " +
+          "WHERE ha.status = '未审核' " +
+          "AND (" +
+          "(a.admin_type = 'second' AND a.admin_id = o.admin_id) " +
+          "OR (a.admin_type = 'first' AND d.workplace NOT IN " +
+          "(SELECT h.hospital_name FROM o_hospitals h WHERE h.admin_id IS NOT NULL)) " +
+          "OR (a.admin_type = 'super')" +
+          ") " +
+          "ORDER BY ha.publish_date DESC " +
+          "LIMIT 5"
+  )
+  @Results({
+          @Result(column = "article_id", property = "articleId"),
+          @Result(column = "name", property = "name"),
+          @Result(column = "title", property = "title"),
+          @Result(column = "publish_date", property = "publishDate"),
+          @Result(column = "type", property = "type"),
+          @Result(column = "status", property = "status"),
+  })
+  List<HealthArticleTotalListDTO> selectRecentPendingList(@Param("adminId") String adminId);
+
+  @Select("SELECT COUNT(ha.article_id) " +
+          "FROM o_health_articles ha " +
+          "JOIN d_doctors d ON ha.doctor_id = d.doctor_id " +
+          "JOIN o_hospitals o ON d.workplace = o.hospital_name " +
+          "JOIN a_admins a ON a.admin_id = #{adminId} " +
+          "WHERE ha.status = '未审核' " +
+          "AND (" +
+          "(a.admin_type = 'second' AND a.admin_id = o.admin_id) " +
+          "OR (a.admin_type = 'first' AND d.workplace NOT IN " +
+          "(SELECT h.hospital_name FROM o_hospitals h WHERE h.admin_id IS NOT NULL)) " +
+          "OR (a.admin_type = 'super')" +
+          ") "
+  )
+  int selectPendingCount(@Param("adminId") String adminId);
 
   @Select("SELECT COUNT(*) FROM o_health_articles WHERE doctor_id=#{doctorId} AND status='已发布'")
   int selectCountByDoctorId(String doctorId);
