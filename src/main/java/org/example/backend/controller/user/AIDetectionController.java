@@ -63,13 +63,20 @@ public class AIDetectionController {
     report.setReadState("unread");
     int reportId = reportService.insertReport(report);
     // Start the async task
-    detectAsync(imageUrl, reportId);
-
-    return ResponseEntity.ok("已提交检测，正在处理...");
+    int result =detectAsync(imageUrl, reportId);
+    if (result == 0) {
+      return ResponseEntity.ok("已提交检测，正在处理...");
+    } else if (result == 1){
+      reportService.deleteByReportId(reportId);
+      return ResponseEntity.badRequest().body("图片大小不符合要求");
+    } else {
+      reportService.deleteByReportId(reportId);
+      return ResponseEntity.badRequest().body("检测失败");
+    }
   }
 
   @Async
-  public void detectAsync(String imageUrl, int reportId) {
+  public int detectAsync(String imageUrl, int reportId) {
     // API产品路径
     String requestUrl = "https://ibody.market.alicloudapi.com/ai_market/ai_universal/zheng_mian/v1";
     // 阿里云APPCODE
@@ -94,12 +101,15 @@ public class AIDetectionController {
     String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
     String imgFile = baseDirectory + fileName;
 
+    // 定义最大允许的文件大小为1.5MB（以字节为单位）
+    final long MAX_FILE_SIZE = (long) (1.5 * 1024 * 1024);
     // 启用BASE64编码方式进行识别
     String imgBase64;
     try {
       File file = new File(imgFile);
-      if (!file.exists()) {
-        return; // Return early if image does not exist
+      if (!file.exists() || file.length() > MAX_FILE_SIZE) {
+        logger.error("图片大小不符合");
+        return 1; // Return early if image does not exist
       }
 
       // 读取图片文件并进行Base64编码
@@ -107,12 +117,12 @@ public class AIDetectionController {
       try (FileInputStream finPutStream = new FileInputStream(file)) {
         int bytesRead = finPutStream.read(content);
         if (bytesRead != content.length) {
-          return; // Return early if reading image fails
+          return 1; // Return early if reading image fails
         }
       }
       imgBase64 = new String(encodeBase64(content));
     } catch (IOException e) {
-      return; // Handle the exception appropriately
+      return 1; // Handle the exception appropriately
     }
 
     // 构建请求体
@@ -128,12 +138,15 @@ public class AIDetectionController {
         logger.info("AIDetect Response: {}", response);
         report.setState("检测完成");
         reportService.updateReport(report);
+        return 0;
       } else {
         report.setState("检测失败");
         reportService.updateReport(report);
+        return 2;
       }
     } catch (IOException e) {
       // Log the exception or handle accordingly
+      return 2;
     }
   }
 
