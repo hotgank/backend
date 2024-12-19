@@ -67,8 +67,10 @@ public class AIDetectionController {
     if (result == 0) {
       return ResponseEntity.ok("已提交检测，正在处理...");
     } else if (result == 1){
+      reportService.deleteByReportId(reportId);
       return ResponseEntity.badRequest().body("图片大小不符合要求");
     } else {
+      reportService.deleteByReportId(reportId);
       return ResponseEntity.badRequest().body("检测失败");
     }
   }
