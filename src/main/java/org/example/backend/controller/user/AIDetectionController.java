@@ -73,7 +73,7 @@ public class AIDetectionController {
     // API产品路径
     String requestUrl = "https://ibody.market.alicloudapi.com/ai_market/ai_universal/zheng_mian/v1";
     // 阿里云APPCODE
-    String appcode = "55bf6b311a034407a649d019b62d224d";
+    String appcode = "b6d089b896044471b323d68e5f26f812";
 
     // 定义请求头
     Map<String, String> headers = new HashMap<>();
