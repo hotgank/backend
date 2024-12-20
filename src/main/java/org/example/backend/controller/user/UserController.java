@@ -214,4 +214,14 @@ public class UserController {
     users.forEach(user -> user.setPassword(""));
     return ResponseEntity.ok(users);
   }
+
+  @GetMapping("/selectUserStatus")
+  public ResponseEntity<String> selectUserStatus(HttpServletRequest request) {
+    String userId = (String) request.getAttribute("userId");
+    User user = userService.selectById(userId);
+    if (user == null) {
+      return ResponseEntity.status(500).body("Failed to get user status");
+    }
+    return ResponseEntity.ok("{\"status\":\"" + user.getStatus() + "\"}");
+  }
 }
