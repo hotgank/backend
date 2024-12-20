@@ -250,7 +250,7 @@ public class AdminController {
       Files.write(path, imageBytes);
 
       // 返回图片的 URL
-      String imageUrl = "http://localhost:8080/admin_avatars/" + fileName;
+      String imageUrl = "https://zeropw.cn:8081/admin_avatars/" + fileName;
       Admin admin = adminService.selectById(adminId);
       admin.setAvatarUrl(imageUrl);
 

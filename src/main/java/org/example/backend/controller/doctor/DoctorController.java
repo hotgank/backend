@@ -284,7 +284,7 @@ public class DoctorController {
       Files.write(path, imageBytes);
 
       // 返回图片的 URL
-      String imageUrl = "http://localhost:8080/doctor_avatars/" + fileName;
+      String imageUrl = "https://zeropw.cn:8081/doctor_avatars/" + fileName;
       Doctor doctor = doctorService.selectById(doctorId);
       doctor.setAvatarUrl(imageUrl);
 
