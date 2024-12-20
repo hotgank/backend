@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
 import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -71,15 +73,32 @@ public class ExcelReader {
       case STRING -> {
         if (field.getType() == String.class) {
           field.set(entity, cell.getStringCellValue());
+        } else if (field.getType() == Date.class) {
+          try {
+            // 尝试解析字符串为日期
+            field.set(entity, parseDateStringToDate(cell.getStringCellValue()));
+          } catch (ParseException e) {
+            logger.warn("Failed to parse date string: {}", cell.getStringCellValue(), e);
+            setDefaultForNullField(field, entity);
+          }
         }
       }
       case NUMERIC -> {
-        if (DateUtil.isCellDateFormatted(cell) && field.getType() == Date.class) {
-          field.set(entity, cell.getDateCellValue());
-        } else if (field.getType() == int.class || field.getType() == Integer.class) {
-          field.set(entity, (int) cell.getNumericCellValue());
-        } else if (field.getType() == double.class || field.getType() == Double.class) {
-          field.set(entity, cell.getNumericCellValue());
+        if (DateUtil.isCellDateFormatted(cell)) {
+          if (field.getType() == Date.class) {
+            field.set(entity, cell.getDateCellValue());
+          } else if (field.getType() == String.class) {
+            field.set(entity, new SimpleDateFormat("yyyy-MM-dd").format(cell.getDateCellValue()));
+          }
+        } else {
+          double numericValue = cell.getNumericCellValue();
+          if (field.getType() == int.class || field.getType() == Integer.class) {
+            field.set(entity, (int) numericValue);
+          } else if (field.getType() == double.class || field.getType() == Double.class) {
+            field.set(entity, numericValue);
+          } else if (field.getType() == String.class) {
+            field.set(entity, String.valueOf(numericValue));
+          }
         }
       }
       case BOOLEAN -> {
@@ -90,6 +109,18 @@ public class ExcelReader {
       default -> logger.warn("Unsupported cell type for field {} in entity {}", field.getName(), entity.getClass().getSimpleName());
     }
   }
+
+  private Date parseDateStringToDate(String dateString) throws ParseException {
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    try {
+      return dateFormat.parse(dateString);
+    } catch (ParseException e) {
+      // 尝试另一种格式
+      dateFormat.applyPattern("MM/dd/yyyy");
+      return dateFormat.parse(dateString);
+    }
+  }
+
 
   /**
    * 为实体类中的null字段设置默认值
@@ -102,13 +133,13 @@ public class ExcelReader {
    */
   private <T> void setDefaultForNullField(Field field, T entity) throws IllegalAccessException {
     if (field.getType() == String.class) {
-      field.set(entity, "");
+      field.set(entity, null);
     } else if (field.getType() == int.class || field.getType() == Integer.class) {
-      field.set(entity, 0);
+      field.set(entity, null);
     } else if (field.getType() == double.class || field.getType() == Double.class) {
-      field.set(entity, 0.0);
+      field.set(entity, null);
     } else if (field.getType() == Date.class) {
-      field.set(entity, null); // 可以根据需要设置默认日期
+      field.set(entity, null);
     } else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
       field.set(entity, false);
     }

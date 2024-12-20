@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -100,9 +101,16 @@ public class DoctorServiceImpl implements DoctorService {
       doctor.setDoctorId(doctorId);
       String password = encryptionUtil.encryptMD5(doctor.getPassword());
       doctor.setPassword(password);
+      double phoneDouble = Double.parseDouble(doctor.getPhone());
+      String phoneStandardString = String.format("%.0f", phoneDouble);
+      doctor.setPhone(phoneStandardString);
+      doctor.setPhone(phoneStandardString);
+      doctor.setQualification("未认证");
       doctor.setRating(-1);
-      doctor.setStatus("active");
+      doctor.setAvatarUrl(null);
       doctor.setRegistrationDate(LocalDateTime.now());
+      doctor.setLastLogin(null);
+      doctor.setStatus("active");
       doctorMapper.insertDoctor(doctor);
       logger.info("Doctor with ID {} inserted successfully", doctor.getDoctorId());
       return doctorId;

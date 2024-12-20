@@ -61,6 +61,7 @@ public class ImportController {
         String url = jsonParser.parseJsonString(urlJson, "url");
         String fileUrl = multipartFileUtil.saveFile(file, url);
         List<Doctor> doctors = excelReader.readExcel(fileUrl, Doctor.class);
+        System.out.println(doctors);
         if (doctors != null) {
           doctorService.insertAllDoctors(doctors);
           return ResponseEntity.ok("Doctor information added successfully");
