@@ -20,6 +20,10 @@ public class RedisUtil {
     redisTemplate.opsForValue().set(userId, token, 300, TimeUnit.MINUTES); // 5小时
   }
 
+  public boolean deleteTokenFromRedis(String userId) {
+    return redisTemplate.delete(userId);
+  }
+
   public boolean validateToken(String userId, String token) {
     // 从 Redis 获取存储的 token
     String storedToken = redisTemplate.opsForValue().get(userId);

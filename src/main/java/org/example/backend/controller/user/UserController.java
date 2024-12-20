@@ -8,6 +8,7 @@ import org.example.backend.entity.user.User;
 import org.example.backend.service.user.UserService;
 import org.example.backend.util.ExcelReader;
 import org.example.backend.util.JsonParser;
+import org.example.backend.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,8 @@ public class UserController {
   @Autowired private JsonParser jsonParser;
 
   @Autowired private ExcelReader excelReader;
+
+  @Autowired private RedisUtil redisUtil;
 
   @PostMapping("/uploadUsername")
   public ResponseEntity<String> uploadUsername(
@@ -135,10 +138,14 @@ public class UserController {
     String userId = jsonParser.parseJsonString(userJson, "userId");
 
     // 调用服务层来禁用用户账户
-    boolean success = userService.banAccount(userId);
+    boolean success1=redisUtil.deleteTokenFromRedis(userId),success2=false;
 
-    if (success) {
-      return ResponseEntity.ok("User account disabled successfully");
+
+    if (success1) {
+      success2 = userService.banAccount(userId);
+      if (success2) {
+        return ResponseEntity.ok("User account disabled successfully");
+      }
     }
     return ResponseEntity.status(500).body("Failed to ban user account");
   }
