@@ -25,6 +25,8 @@ public interface DoctorService {
 
   String generateRegisterCode(String email);
 
+  String generateRegisterCode(String email,char c);
+
   boolean registerDoctor(Doctor doctor);
 
   boolean validatePassword(String doctorId, String password);

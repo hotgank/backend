@@ -43,7 +43,7 @@ public class DoctorManageController {
       return ResponseEntity.status(400).body("错误请求");
     }
 
-    String registerCode = doctorService.generateRegisterCode(email);
+    String registerCode = doctorService.generateRegisterCode(email,'O');
     logger.info("生成的注册码: {}", registerCode);
 
     if (mailUtils.sendMail(email, "更改邮箱验证码是: " + registerCode, "更改邮箱")) {
@@ -70,7 +70,7 @@ public class DoctorManageController {
       return ResponseEntity.status(400).body("邮箱已存在");
     }
 
-    String registerCode = doctorService.generateRegisterCode(email);
+    String registerCode = doctorService.generateRegisterCode(email,'N');
     logger.info("生成的注册码: {}", registerCode);
 
     if (mailUtils.sendMail(email, "更改邮箱验证码是: " + registerCode, "更改邮箱")) {
@@ -100,11 +100,11 @@ public class DoctorManageController {
     }
 
     // 检查注册码是否有效
-    if (!doctorService.validateRegisterCode(oldEmail, oldCode)) {
+    if (oldCode.charAt(0)!='O'||!doctorService.validateRegisterCode(oldEmail, oldCode)) {
       logger.error("旧邮箱更改码无效，邮箱: {}, 注册码: {}", oldEmail, oldCode);
       return ResponseEntity.status(400).body("旧更改码错误或无效");
     }
-    if (!doctorService.validateRegisterCode(newEmail, newCode)) {
+    if (newCode.charAt(0)!='N'||!doctorService.validateRegisterCode(newEmail, newCode)) {
       logger.error("新邮箱更改码无效，邮箱: {}, 注册码: {}", newEmail, newCode);
       return ResponseEntity.status(400).body("新邮箱码错误或无效");
     }
@@ -156,7 +156,7 @@ public class DoctorManageController {
       return ResponseEntity.status(400).body("错误请求");
     }
 
-    String registerCode = doctorService.generateRegisterCode(email);
+    String registerCode = doctorService.generateRegisterCode(email,'D');
     logger.info("生成的注销码: {}", registerCode);
 
     if (mailUtils.sendMail(email, "注销账号验证码是: " + registerCode, "注销账号")) {
@@ -179,7 +179,7 @@ public class DoctorManageController {
     String deleteCode = jsonParser.parseJsonString(doctorJson, "deleteCode");
     Doctor doctor = doctorService.selectById(doctorId);
     String email = doctor.getEmail();
-    if (!doctorService.validateRegisterCode(email, deleteCode)) {
+    if (deleteCode.charAt(0)!='D'||!doctorService.validateRegisterCode(email, deleteCode)) {
       logger.error("注销账号码无效，邮箱: {}, 注册码: {}", email, deleteCode);
       return ResponseEntity.status(400).body("注销账号码错误或无效");
     }

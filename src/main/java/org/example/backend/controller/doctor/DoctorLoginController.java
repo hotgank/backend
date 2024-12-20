@@ -131,7 +131,7 @@ public class DoctorLoginController {
 
     log.info("收到发送注册码请求，邮箱: {}", email);
 
-    String registerCode = doctorService.generateRegisterCode(email);
+    String registerCode = doctorService.generateRegisterCode(email,'F');
     log.info("生成的忘记密码验证码: {}", registerCode);
 
     if (mailUtils.sendMail(email, "忘记密码验证码是: " + registerCode, "忘记密码")) {
@@ -153,7 +153,7 @@ public class DoctorLoginController {
       log.error("该邮箱未注册");
       return ResponseEntity.status(400).body("该邮箱未注册");
     }
-    if (!doctorService.validateRegisterCode(email, changeCode)) {
+    if (changeCode.charAt(0)!='F'||!doctorService.validateRegisterCode(email, changeCode)) {
       log.error("忘记密码码无效，邮箱: {}, 注册码: {}", email, changeCode);
       return ResponseEntity.status(400).body("忘记密码码错误或无效");
     }
