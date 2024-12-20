@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -94,17 +93,37 @@ public class DoctorServiceImpl implements DoctorService {
     }
   }
 
-  @Override
-  public String insert(Doctor doctor) {
+    @Override
+    public String insert(Doctor doctor) {
+        try {
+            String doctorId = "D-" + UUID.randomUUID();
+            doctor.setDoctorId(doctorId);
+            String password = encryptionUtil.encryptMD5(doctor.getPassword());
+            doctor.setPassword(password);
+            doctor.setRating(-1);
+            doctor.setStatus("active");
+            doctor.setRegistrationDate(LocalDateTime.now());
+            doctorMapper.insertDoctor(doctor);
+            logger.info("Doctor with ID {} inserted successfully", doctor.getDoctorId());
+            return doctorId;
+        } catch (Exception e) {
+            logger.error(
+                    "Error inserting doctor with ID {}: {}", doctor.getDoctorId(), e.getMessage(), e);
+            return null;
+        }
+    }
+
+  public String insertSingleLine(Doctor doctor) {
     try {
       String doctorId = "D-" + UUID.randomUUID();
       doctor.setDoctorId(doctorId);
       String password = encryptionUtil.encryptMD5(doctor.getPassword());
       doctor.setPassword(password);
-      double phoneDouble = Double.parseDouble(doctor.getPhone());
-      String phoneStandardString = String.format("%.0f", phoneDouble);
-      doctor.setPhone(phoneStandardString);
-      doctor.setPhone(phoneStandardString);
+      if(doctor.getPhone() != null){
+          double phoneDouble = Double.parseDouble(doctor.getPhone());
+          String phoneStandardString = String.format("%.0f", phoneDouble);
+          doctor.setPhone(phoneStandardString);
+      }
       doctor.setQualification("未认证");
       doctor.setRating(-1);
       doctor.setAvatarUrl(null);
@@ -112,7 +131,6 @@ public class DoctorServiceImpl implements DoctorService {
       doctor.setLastLogin(null);
       doctor.setStatus("active");
       doctorMapper.insertDoctor(doctor);
-      logger.info("Doctor with ID {} inserted successfully", doctor.getDoctorId());
       return doctorId;
     } catch (Exception e) {
       logger.error(
@@ -125,7 +143,10 @@ public class DoctorServiceImpl implements DoctorService {
   public boolean insertAllDoctors(List<Doctor> doctors) {
     try {
       for (Doctor doctor : doctors) {
-        insert(doctor);
+        String doctorId = insertSingleLine(doctor);
+        if(doctorId != null){
+            logger.info("Doctor {} inserted successfully", doctorId);
+        }
       }
       logger.info("All doctors inserted successfully");
       return true;
