@@ -1,6 +1,6 @@
 package org.example.backend.entity.doctor;
 
-import java.sql.Date;
+import java.util.Date;
 import java.time.LocalDateTime;
 
 public class Doctor {
