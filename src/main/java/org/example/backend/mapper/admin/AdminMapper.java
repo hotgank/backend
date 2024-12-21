@@ -125,4 +125,7 @@ public interface AdminMapper {
 
   @Delete("DELETE FROM a_admins WHERE admin_id = #{adminId}")
   void deleteAdmin(@Param("adminId") String adminId);
+
+  @Select("SELECT admin_id FROM a_admins WHERE email = #{email}")
+  String isEmailExist(@Param("email") String email);
 }
