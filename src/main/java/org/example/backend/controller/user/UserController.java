@@ -138,13 +138,19 @@ public class UserController {
     String userId = jsonParser.parseJsonString(userJson, "userId");
 
     // 调用服务层来禁用用户账户
-    boolean success1=redisUtil.deleteTokenFromRedis(userId),success2=false;
-
-
-    if (success1) {
-      success2 = userService.banAccount(userId);
-      if (success2) {
-        return ResponseEntity.ok("User account disabled successfully");
+    String token=redisUtil.getTokenFromRedis(userId);
+    if (token!=null) {
+      boolean success =redisUtil.deleteTokenFromRedis(userId);
+      if (success) {
+        boolean success1 = userService.banAccount(userId);
+        if (success1) {
+          return ResponseEntity.ok("User account banned successfully");
+        }
+      }
+    } else {
+      boolean success = userService.banAccount(userId);
+      if (success) {
+        return ResponseEntity.ok("User account banned successfully");
       }
     }
     return ResponseEntity.status(500).body("Failed to ban user account");
