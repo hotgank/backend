@@ -56,7 +56,7 @@ public class DoctorRegisterController {
       return ResponseEntity.status(400).body("邮箱已存在");
     }
 
-    String registerCode = doctorService.generateRegisterCode(email);
+    String registerCode = doctorService.generateRegisterCode(email,'R');
     logger.info("生成的注册码: {}", registerCode);
 
     if (mailUtils.sendMail(email, "您的注册码是: " + registerCode, "注册验证码")) {
@@ -101,7 +101,7 @@ public class DoctorRegisterController {
     }
 
     // 检查注册码是否有效
-    if (!doctorService.validateRegisterCode(email, registerCode)) {
+    if (registerCode.charAt(0)!='R'||!doctorService.validateRegisterCode(email, registerCode)) {
       logger.error("注册码无效，邮箱: {}, 注册码: {}", email, registerCode);
       return ResponseEntity.status(400).body("注册码错误或无效");
     }

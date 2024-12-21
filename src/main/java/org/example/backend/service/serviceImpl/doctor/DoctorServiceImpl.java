@@ -307,6 +307,23 @@ public class DoctorServiceImpl implements DoctorService {
   }
 
   @Override
+  public String generateRegisterCode(String email, char c) {
+    // 检查Redis中是否已存在该邮箱的验证码
+    if (Boolean.TRUE.equals(redisTemplate.hasKey(email))) {
+      // 如果存在，则删除旧的验证码
+      redisTemplate.delete(email);
+    }
+
+    // 生成一个唯一的注册码
+    String registerCode = c + UUID.randomUUID().toString().substring(0, 8);
+
+    // 将新的验证码存储到Redis中，设置过期时间为5分钟
+    redisTemplate.opsForValue().set(email, registerCode, 5, TimeUnit.MINUTES);
+
+    return registerCode;
+  }
+
+  @Override
   public boolean registerDoctor(Doctor doctor) {
     // 插入医生信息到数据库
     return insert(doctor) != null;
