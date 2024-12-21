@@ -3,7 +3,7 @@ package org.example.backend.controller.admin;
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.entity.user.User;
-import org.example.backend.service.doctor.DoctorService;
+import org.example.backend.service.doctor.ImportDoctorService;
 import org.example.backend.service.user.UserService;
 import org.example.backend.util.ExcelReader;
 import org.example.backend.util.JsonParser;
@@ -24,7 +24,7 @@ public class ImportController {
 
   @Autowired UserService userService;
 
-  @Autowired DoctorService doctorService;
+  @Autowired ImportDoctorService importDoctorService;
 
   @Autowired MultipartFileUtil multipartFileUtil;
 
@@ -63,7 +63,7 @@ public class ImportController {
         List<Doctor> doctors = excelReader.readExcel(fileUrl, Doctor.class);
         System.out.println(doctors);
         if (doctors != null) {
-          doctorService.insertAllDoctors(doctors);
+          importDoctorService.insertAllDoctors(doctors);
           return ResponseEntity.ok("Doctor information added successfully");
         }
       }

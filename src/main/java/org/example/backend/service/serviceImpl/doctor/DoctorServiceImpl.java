@@ -114,49 +114,6 @@ public class DoctorServiceImpl implements DoctorService {
         }
     }
 
-  public String insertSingleLine(Doctor doctor) {
-    try {
-      String doctorId = "D-" + UUID.randomUUID();
-      doctor.setDoctorId(doctorId);
-      String password = encryptionUtil.encryptMD5(doctor.getPassword());
-      doctor.setPassword(password);
-      if(doctor.getPhone() != null){
-          double phoneDouble = Double.parseDouble(doctor.getPhone());
-          String phoneStandardString = String.format("%.0f", phoneDouble);
-          doctor.setPhone(phoneStandardString);
-      }
-      doctor.setQualification("未认证");
-      doctor.setRating(-1);
-      doctor.setAvatarUrl(null);
-      doctor.setRegistrationDate(LocalDateTime.now());
-      doctor.setLastLogin(null);
-      doctor.setStatus("active");
-      doctorMapper.insertDoctor(doctor);
-      return doctorId;
-    } catch (Exception e) {
-      logger.error(
-          "Error inserting doctor with ID {}: {}", doctor.getDoctorId(), e.getMessage(), e);
-      return null;
-    }
-  }
-
-  @Override
-  public boolean insertAllDoctors(List<Doctor> doctors) {
-    try {
-      for (Doctor doctor : doctors) {
-        String doctorId = insertSingleLine(doctor);
-        if(doctorId != null){
-            logger.info("Doctor {} inserted successfully", doctorId);
-        }
-      }
-      logger.info("All doctors inserted successfully");
-      return true;
-    } catch (Exception e) {
-      logger.error("Error inserting doctors: {}", e.getMessage(), e);
-      return false;
-    }
-  }
-
   @Override
   public boolean update(Doctor doctor) {
     try {
@@ -368,13 +325,6 @@ public class DoctorServiceImpl implements DoctorService {
 
   @Override
   public boolean registerDoctor(Doctor doctor) {
-    // 检查注册码是否有效
-    String email = doctor.getEmail();
-
-    // 验证注册码是否有效
-
-    // 创建医生对象
-
     // 插入医生信息到数据库
     return insert(doctor) != null;
   }
