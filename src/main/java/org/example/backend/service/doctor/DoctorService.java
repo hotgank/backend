@@ -11,8 +11,6 @@ public interface DoctorService {
 
   String insert(Doctor doctor);
 
-  boolean insertAllDoctors(List<Doctor> doctors);
-
   boolean update(Doctor doctor);
 
   boolean delete(String doctorId);

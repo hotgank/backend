@@ -12,6 +12,7 @@ import java.util.Base64;
 import java.util.List;
 import org.example.backend.entity.doctor.Doctor;
 import org.example.backend.service.doctor.DoctorService;
+import org.example.backend.service.doctor.ImportDoctorService;
 import org.example.backend.util.ExcelReader;
 import org.example.backend.util.JsonParser;
 import org.slf4j.Logger;
@@ -27,6 +28,8 @@ public class DoctorController {
 
   private static final Logger log = LoggerFactory.getLogger(DoctorController.class);
   @Autowired private DoctorService doctorService;
+
+  @Autowired private ImportDoctorService importDoctorService;
 
   @Autowired private JsonParser jsonParser;
 
@@ -123,7 +126,7 @@ public class DoctorController {
     String url = jsonParser.parseJsonString(urlJson, "url");
     List<Doctor> doctors = excelReader.readExcel(url, Doctor.class);
     // 调用服务层来添加医生信息到数据库
-    boolean success = doctorService.insertAllDoctors(doctors);
+    boolean success = importDoctorService.insertAllDoctors(doctors);
     if (success) {
       return ResponseEntity.ok("doctor information added successfully");
     } else {
