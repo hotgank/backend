@@ -61,6 +61,9 @@ public class ImportDoctorServiceImpl implements ImportDoctorService {
             if (!validateGender(doctor)) return null;
             if (!validateWorkplace(doctor)) return null;
 
+            String phone = convertScientificNotation(doctor.getPhone());
+            doctor.setPhone(phone);
+
             setDefaultValues(doctor);
             String doctorId = generateDoctorId();
             doctor.setDoctorId(doctorId);
@@ -121,12 +124,16 @@ public class ImportDoctorServiceImpl implements ImportDoctorService {
     private boolean validatePhone(Doctor doctor) {
         String phone = doctor.getPhone();
         if (phone == null) return true; // 手机号可以为空
-        if (phone.length() != 11) {
-            logger.error("导入医生：{} 失败, 手机号码长度必须为11个数字: {}", doctor.getDoctorId(), phone);
-            return false;
-        }
+        phone = convertScientificNotation(phone);
         try {
-            Double.parseDouble(phone);
+                if (!phone.matches( "^[0-9]+$")) {
+                    logger.error("导入医生：{} 失败, 手机号码只能包含数字: {}", doctor.getDoctorId(), phone);
+                    return false;
+                }
+                if (phone.length() > 11) {
+                logger.error("导入医生：{} 失败, 手机号码长度不能超过11个数字: {}", doctor.getDoctorId(), phone);
+                return false;
+            }
         } catch (NumberFormatException e) {
             logger.error("导入医生：{} 失败, 手机号码格式不正确: {}", doctor.getDoctorId(), phone);
             return false;
@@ -173,6 +180,31 @@ public class ImportDoctorServiceImpl implements ImportDoctorService {
             return false;
         }
         return true;
+    }
+
+    public String convertScientificNotation(String phone) {
+        if (phone == null || phone.isEmpty()) {
+            return phone;
+        }
+
+        int eIndex = phone.indexOf('E');
+        if (eIndex == -1) {
+            return phone; // 如果没有E，直接返回原字符串
+        }
+
+        // 截取E之前的字符作为浮点数x
+        String xStr = phone.substring(0, eIndex);
+        double x = Double.parseDouble(xStr);
+
+        // 截取E之后的字符作为整数y
+        String yStr = phone.substring(eIndex + 1);
+        int y = Integer.parseInt(yStr);
+
+        // 计算z = x * 10^y
+        long z = (long) (x * Math.pow(10, y));
+
+        // 将z转换为字符串并返回
+        return String.valueOf(z).replace(".", "");
     }
 
     private void setDefaultValues(Doctor doctor) {
