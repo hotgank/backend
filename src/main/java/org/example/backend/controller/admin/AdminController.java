@@ -158,7 +158,7 @@ public class AdminController {
 
   @PostMapping("/ban")
   public ResponseEntity<String> banAdmin(@RequestBody String adminIdJson) {
-    String adminId = jsonParser.parseJsonString(adminIdJson, "doctorId");
+    String adminId = jsonParser.parseJsonString(adminIdJson, "adminId");
     // 调用服务层来禁用医生账户
     String token=redisUtil.getTokenFromRedis(adminId);
     if (token!=null) {
