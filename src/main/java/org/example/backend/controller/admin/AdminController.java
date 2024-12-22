@@ -14,6 +14,7 @@ import java.util.Objects;
 import org.example.backend.entity.admin.Admin;
 import org.example.backend.service.admin.AdminService;
 import org.example.backend.util.JsonParser;
+import org.example.backend.util.RedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ public class AdminController {
   @Autowired private AdminService adminService;
 
   @Autowired private JsonParser jsonParser;
+
+  @Autowired private RedisUtil redisUtil;
 
   @GetMapping("/selectAll")
   public ResponseEntity<String> selectAll() {
@@ -155,15 +158,24 @@ public class AdminController {
 
   @PostMapping("/ban")
   public ResponseEntity<String> banAdmin(@RequestBody String adminIdJson) {
-    String adminId = jsonParser.parseJsonString(adminIdJson, "adminId");
-    // 调用服务层来删除管理员信息
-    boolean success = adminService.banAdmin(adminId);
-
-    if (success) {
-      return ResponseEntity.ok("Admin information banned successfully");
+    String adminId = jsonParser.parseJsonString(adminIdJson, "doctorId");
+    // 调用服务层来禁用医生账户
+    String token=redisUtil.getTokenFromRedis(adminId);
+    if (token!=null) {
+      boolean success =redisUtil.deleteTokenFromRedis(adminId);
+      if (success) {
+        boolean success1 = adminService.banAdmin(adminId);
+        if (success1) {
+          return ResponseEntity.ok("Admin information banned successfully");
+        }
+      }
     } else {
-      return ResponseEntity.status(500).body("Failed to ban admin information");
+      boolean success = adminService.banAdmin(adminId);
+      if (success) {
+        return ResponseEntity.ok("Admin information banned successfully");
+      }
     }
+    return ResponseEntity.status(500).body("Failed to ban admin information");
   }
 
   @PostMapping("/delete")
