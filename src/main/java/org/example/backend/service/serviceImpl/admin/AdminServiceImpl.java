@@ -60,12 +60,23 @@ public class AdminServiceImpl implements AdminService {
   @Override
   public String insert(Admin admin) {
     try {
-      String adminId = "A-" + UUID.randomUUID();
-      admin.setAdminId(adminId);
+      Admin selectedAdmin;
+      selectedAdmin = adminMapper.selectAdminByUsername(admin.getUsername());
+      if(selectedAdmin != null){
+        logger.info("管理员用户名 {} 已存在", admin.getUsername());
+        return null;
+      }
+      selectedAdmin = adminMapper.selectAdminByEmail(admin.getEmail());
+      if(selectedAdmin != null){
+        logger.info("管理员邮箱 {} 已存在", admin.getEmail());
+        return null;
+      }
       String password = encryptionUtil.encryptMD5(admin.getPassword());
       admin.setPassword(password);
       admin.setRegistrationDate(LocalDateTime.now());
       admin.setStatus("active");
+      String adminId = "A-" + UUID.randomUUID();
+      admin.setAdminId(adminId);
       adminMapper.insertAdmin(admin);
       logger.info("Admin with ID {} inserted successfully", admin.getAdminId());
       return adminId;
