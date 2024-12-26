@@ -157,8 +157,12 @@ public class AdminController {
   }
 
   @PostMapping("/ban")
-  public ResponseEntity<String> banAdmin(@RequestBody String adminIdJson) {
+  public ResponseEntity<String> banAdmin(@RequestBody String adminIdJson, HttpServletRequest request) {
+    String myAdminId = (String) request.getAttribute("userId");
     String adminId = jsonParser.parseJsonString(adminIdJson, "adminId");
+    if(Objects.equals(myAdminId, adminId)){
+      return ResponseEntity.badRequest().body("不能禁用自己");
+    }
     // 调用服务层来禁用医生账户
     String token=redisUtil.getTokenFromRedis(adminId);
     if (token!=null) {
@@ -179,8 +183,12 @@ public class AdminController {
   }
 
   @PostMapping("/delete")
-  public ResponseEntity<String> deleteAdmin(@RequestBody String adminIdJson) {
+  public ResponseEntity<String> deleteAdmin(@RequestBody String adminIdJson, HttpServletRequest request) {
+    String myAdminId = (String) request.getAttribute("userId");
     String adminId = jsonParser.parseJsonString(adminIdJson, "adminId");
+    if(Objects.equals(myAdminId, adminId)){
+      return ResponseEntity.badRequest().body("不能删除自己");
+    }
     // 调用服务层来删除管理员信息
     boolean success = adminService.delete(adminId);
 
