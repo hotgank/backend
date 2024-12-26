@@ -15,6 +15,7 @@ import org.example.backend.service.doctor.DoctorService;
 import org.example.backend.service.doctor.ImportDoctorService;
 import org.example.backend.util.ExcelReader;
 import org.example.backend.util.JsonParser;
+import org.example.backend.util.RedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ public class DoctorController {
   @Autowired private JsonParser jsonParser;
 
   @Autowired private ExcelReader excelReader;
+
+  @Autowired private RedisUtil redisUtil;
 
   @GetMapping("/selectDoctorCount")
   public ResponseEntity<String> selectDoctorCount(HttpServletRequest request) {
@@ -84,12 +87,21 @@ public class DoctorController {
   @PostMapping("/ban")
   public ResponseEntity<String> banAccount(@RequestBody String doctorJson) {
     String doctorId = jsonParser.parseJsonString(doctorJson, "doctorId");
-
     // 调用服务层来禁用医生账户
-    boolean success = doctorService.banAccount(doctorId);
-
-    if (success) {
-      return ResponseEntity.ok("doctor account disabled successfully");
+    String token=redisUtil.getTokenFromRedis(doctorId);
+    if (token!=null) {
+      boolean success =redisUtil.deleteTokenFromRedis(doctorId);
+      if (success) {
+        boolean success1 = doctorService.banAccount(doctorId);
+        if (success1) {
+          return ResponseEntity.ok("doctor account disabled successfully");
+        }
+      }
+    } else {
+      boolean success = doctorService.banAccount(doctorId);
+      if (success) {
+        return ResponseEntity.ok("doctor account disabled successfully");
+      }
     }
     return ResponseEntity.status(500).body("Failed to ban doctor account");
   }

@@ -8,6 +8,7 @@ import org.example.backend.entity.user.User;
 import org.example.backend.service.user.UserService;
 import org.example.backend.util.ExcelReader;
 import org.example.backend.util.JsonParser;
+import org.example.backend.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,8 @@ public class UserController {
   @Autowired private JsonParser jsonParser;
 
   @Autowired private ExcelReader excelReader;
+
+  @Autowired private RedisUtil redisUtil;
 
   @PostMapping("/uploadUsername")
   public ResponseEntity<String> uploadUsername(
@@ -135,10 +138,20 @@ public class UserController {
     String userId = jsonParser.parseJsonString(userJson, "userId");
 
     // 调用服务层来禁用用户账户
-    boolean success = userService.banAccount(userId);
-
-    if (success) {
-      return ResponseEntity.ok("User account disabled successfully");
+    String token=redisUtil.getTokenFromRedis(userId);
+    if (token!=null) {
+      boolean success =redisUtil.deleteTokenFromRedis(userId);
+      if (success) {
+        boolean success1 = userService.banAccount(userId);
+        if (success1) {
+          return ResponseEntity.ok("User account banned successfully");
+        }
+      }
+    } else {
+      boolean success = userService.banAccount(userId);
+      if (success) {
+        return ResponseEntity.ok("User account banned successfully");
+      }
     }
     return ResponseEntity.status(500).body("Failed to ban user account");
   }
@@ -213,5 +226,15 @@ public class UserController {
     }
     users.forEach(user -> user.setPassword(""));
     return ResponseEntity.ok(users);
+  }
+
+  @GetMapping("/selectUserStatus")
+  public ResponseEntity<String> selectUserStatus(HttpServletRequest request) {
+    String userId = (String) request.getAttribute("userId");
+    User user = userService.selectById(userId);
+    if (user == null) {
+      return ResponseEntity.status(500).body("Failed to get user status");
+    }
+    return ResponseEntity.ok("{\"status\":\"" + user.getStatus() + "\"}");
   }
 }
