@@ -154,21 +154,29 @@ public class AdminController {
   }
 
   @PostMapping("/ban")
-  public ResponseEntity<String> banAdmin(@RequestBody String adminIdJson) {
+  public ResponseEntity<String> banAdmin(@RequestBody String adminIdJson, HttpServletRequest request) {
+    String myAdminId = (String) request.getAttribute("userId");
     String adminId = jsonParser.parseJsonString(adminIdJson, "adminId");
+    if(Objects.equals(myAdminId, adminId)){
+      return ResponseEntity.badRequest().body("不能禁用自己");
+    }
     // 调用服务层来删除管理员信息
     boolean success = adminService.banAdmin(adminId);
 
     if (success) {
-      return ResponseEntity.ok("Admin information banned successfully");
+      return ResponseEntity.ok("Admin banned successfully");
     } else {
-      return ResponseEntity.status(500).body("Failed to ban admin information");
+      return ResponseEntity.status(500).body("Failed to ban admin");
     }
   }
 
   @PostMapping("/delete")
-  public ResponseEntity<String> deleteAdmin(@RequestBody String adminIdJson) {
+  public ResponseEntity<String> deleteAdmin(@RequestBody String adminIdJson, HttpServletRequest request) {
+    String myAdminId = (String) request.getAttribute("userId");
     String adminId = jsonParser.parseJsonString(adminIdJson, "adminId");
+    if(Objects.equals(myAdminId, adminId)){
+      return ResponseEntity.badRequest().body("不能删除自己");
+    }
     // 调用服务层来删除管理员信息
     boolean success = adminService.delete(adminId);
 
