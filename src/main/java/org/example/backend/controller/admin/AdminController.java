@@ -160,6 +160,9 @@ public class AdminController {
   public ResponseEntity<String> banAdmin(@RequestBody String adminIdJson, HttpServletRequest request) {
     String myAdminId = (String) request.getAttribute("userId");
     String adminId = jsonParser.parseJsonString(adminIdJson, "adminId");
+    if(Objects.equals(myAdminId, adminId)){
+      return ResponseEntity.badRequest().body("不能禁用自己");
+    }
     // 调用服务层来禁用医生账户
     String token=redisUtil.getTokenFromRedis(adminId);
     if (token!=null) {
@@ -177,17 +180,6 @@ public class AdminController {
       }
     }
     return ResponseEntity.status(500).body("Failed to ban admin information");
-    if(Objects.equals(myAdminId, adminId)){
-      return ResponseEntity.badRequest().body("不能禁用自己");
-    }
-    // 调用服务层来删除管理员信息
-    boolean success = adminService.banAdmin(adminId);
-
-    if (success) {
-      return ResponseEntity.ok("Admin banned successfully");
-    } else {
-      return ResponseEntity.status(500).body("Failed to ban admin");
-    }
   }
 
   @PostMapping("/delete")
